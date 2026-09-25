@@ -6,8 +6,10 @@
 
     <title>Power Factor Calculator | ControlsCalc</title>
 
-    <meta name="description"
-          content="Calculate power factor, real power, apparent power, reactive power, and 3-phase current from electrical measurements.">
+    <meta
+        name="description"
+        content="Free power factor calculator for single-phase and three-phase electrical systems. Calculate power factor, real power, apparent power, reactive power, and current."
+    >
 
     <style>
         * {
@@ -17,88 +19,104 @@
         body {
             margin: 0;
             font-family: Arial, Helvetica, sans-serif;
-            background: #f4f6f8;
-            color: #1f2933;
+            color: #172033;
+            background: #f5f7fa;
             line-height: 1.6;
         }
 
-        header {
-            background: #17202a;
-            color: white;
+        a {
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
         }
 
         .container {
-            max-width: 1100px;
+            width: min(1000px, calc(100% - 40px));
             margin: 0 auto;
-            padding: 0 20px;
+        }
+
+        /* Header */
+
+        header {
+            background: #ffffff;
+            border-bottom: 1px solid #e1e5eb;
         }
 
         .header-inner {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
             min-height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
         .logo {
-            color: white;
-            text-decoration: none;
-            font-size: 1.35rem;
-            font-weight: bold;
+            font-size: 22px;
+            font-weight: 800;
+            color: #172033;
+        }
+
+        nav {
+            display: flex;
+            gap: 24px;
         }
 
         nav a {
-            color: #d9e2ec;
-            text-decoration: none;
-            margin-left: 24px;
-            font-size: 0.95rem;
+            font-size: 15px;
         }
 
-        nav a:hover {
-            color: white;
-        }
-
-        .hero {
-            background: white;
-            border-bottom: 1px solid #d9e2ec;
-            padding: 50px 0;
-        }
-
-        .hero h1 {
-            margin: 0 0 12px;
-            font-size: 2.4rem;
-            color: #17202a;
-        }
-
-        .hero p {
-            max-width: 780px;
-            margin: 0;
-            color: #52606d;
-            font-size: 1.08rem;
-        }
+        /* Main */
 
         main {
-            padding: 36px 0 60px;
+            padding: 48px 0 70px;
         }
 
-        .calculator-card {
-            background: white;
-            border: 1px solid #d9e2ec;
-            border-radius: 10px;
-            padding: 28px;
+        .breadcrumbs {
+            margin-bottom: 24px;
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .intro {
             margin-bottom: 32px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
         }
 
-        .calculator-card h2 {
-            margin-top: 0;
-            color: #17202a;
+        .intro h1 {
+            margin: 0 0 16px;
+            font-size: clamp(32px, 5vw, 46px);
+            line-height: 1.1;
+            letter-spacing: -1px;
+        }
+
+        .intro p {
+            max-width: 800px;
+            margin: 8px 0;
+            color: #64748b;
+            font-size: 17px;
+        }
+
+        /* Calculator */
+
+        .calculator {
+            background: #ffffff;
+            border: 1px solid #dfe5ec;
+            border-radius: 14px;
+            padding: 32px;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 18px rgba(15, 23, 42, 0.04);
+        }
+
+        .calculator h2 {
+            margin: 0 0 24px;
+            font-size: 25px;
         }
 
         .form-grid {
             display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 18px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 22px;
         }
 
         .field {
@@ -107,224 +125,291 @@
         }
 
         .field label {
-            font-weight: bold;
             margin-bottom: 7px;
-            color: #34495e;
+            font-weight: 700;
+            font-size: 15px;
         }
 
         .field input,
         .field select {
             width: 100%;
-            padding: 11px 12px;
-            border: 1px solid #bcccdc;
-            border-radius: 6px;
-            font-size: 1rem;
-            background: white;
+            padding: 13px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            background: #ffffff;
+            color: #172033;
+            font-size: 16px;
+            outline: none;
         }
 
         .field input:focus,
         .field select:focus {
-            outline: none;
-            border-color: #486581;
-            box-shadow: 0 0 0 2px rgba(72, 101, 129, 0.12);
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
         }
 
-        .full-width {
-            grid-column: 1 / -1;
+        .field small {
+            margin-top: 6px;
+            color: #64748b;
+            font-size: 13px;
         }
 
-        button {
-            margin-top: 22px;
-            padding: 12px 22px;
+        .calculate-button {
+            width: 100%;
+            margin-top: 26px;
+            padding: 14px 18px;
             border: none;
-            border-radius: 6px;
-            background: #243b53;
-            color: white;
-            font-size: 1rem;
-            font-weight: bold;
+            border-radius: 8px;
+            background: #2563eb;
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 700;
             cursor: pointer;
         }
 
-        button:hover {
-            background: #334e68;
+        .calculate-button:hover {
+            background: #1d4ed8;
         }
 
-        .results {
-            margin-top: 26px;
-            padding: 20px;
-            background: #f0f4f8;
-            border-radius: 8px;
-            border: 1px solid #d9e2ec;
+        /* Result */
+
+        .result {
+            display: none;
+            margin-top: 24px;
+            padding: 24px;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 10px;
         }
 
-        .result-main {
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: #17202a;
-            margin-bottom: 12px;
+        .result.show {
+            display: block;
         }
 
-        .result-row {
-            display: flex;
-            justify-content: space-between;
-            gap: 20px;
-            padding: 7px 0;
-            border-bottom: 1px solid #d9e2ec;
-        }
-
-        .result-row:last-child {
-            border-bottom: none;
-        }
-
-        .result-label {
-            color: #52606d;
+        .result h3 {
+            margin: 0 0 8px;
+            color: #1d4ed8;
+            font-size: 18px;
         }
 
         .result-value {
-            font-weight: bold;
-            text-align: right;
+            margin: 0;
+            font-size: 36px;
+            font-weight: 800;
+            color: #172033;
         }
 
-        .warning {
-            margin-top: 16px;
-            padding: 13px 15px;
-            background: #fff8e1;
-            border-left: 4px solid #d99a00;
-            border-radius: 4px;
-            color: #5f4b00;
+        .result-details {
+            margin: 8px 0 0;
+            color: #475569;
         }
+
+        .secondary-results {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .secondary-result {
+            padding: 14px;
+            background: #ffffff;
+            border: 1px solid #dbeafe;
+            border-radius: 8px;
+        }
+
+        .secondary-result-label {
+            display: block;
+            margin-bottom: 4px;
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        .secondary-result-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: #172033;
+        }
+
+        /* Error */
 
         .error {
-            margin-top: 16px;
-            padding: 13px 15px;
-            background: #fff0f0;
-            border-left: 4px solid #c0392b;
-            border-radius: 4px;
-            color: #7b241c;
+            display: none;
+            margin-top: 18px;
+            padding: 14px 16px;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+            color: #991b1b;
         }
 
-        .info-box {
-            padding: 18px;
-            margin: 20px 0;
-            background: #eef3f7;
-            border-left: 4px solid #486581;
-            border-radius: 4px;
+        .error.show {
+            display: block;
         }
 
-        section {
-            background: white;
-            border: 1px solid #d9e2ec;
-            border-radius: 10px;
-            padding: 28px;
+        /* Warning */
+
+        .warning {
+            display: none;
+            margin-top: 18px;
+            padding: 14px 16px;
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            border-radius: 8px;
+            color: #92400e;
+        }
+
+        .warning.show {
+            display: block;
+        }
+
+        /* Content Sections */
+
+        .content-section {
+            background: #ffffff;
+            border: 1px solid #dfe5ec;
+            border-radius: 12px;
+            padding: 30px;
             margin-bottom: 24px;
         }
 
-        section h2 {
-            margin-top: 0;
-            color: #17202a;
+        .content-section h2 {
+            margin: 0 0 16px;
+            font-size: 23px;
         }
 
-        section h3 {
-            color: #243b53;
-            margin-top: 28px;
+        .content-section h3 {
+            margin: 24px 0 10px;
+            font-size: 18px;
         }
 
-        code {
-            background: #f0f4f8;
-            padding: 2px 5px;
-            border-radius: 4px;
-            font-family: Consolas, monospace;
+        .content-section p {
+            margin: 10px 0;
+        }
+
+        .content-section ul,
+        .content-section ol {
+            padding-left: 24px;
+        }
+
+        .content-section li {
+            margin-bottom: 8px;
         }
 
         .formula {
-            background: #f0f4f8;
-            border: 1px solid #d9e2ec;
-            border-radius: 7px;
-            padding: 18px;
             margin: 18px 0;
-            text-align: center;
-            font-family: Consolas, monospace;
-            font-size: 1.05rem;
+            padding: 18px;
+            background: #f5f7fa;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-family: "Courier New", monospace;
+            font-size: 16px;
             overflow-x: auto;
         }
 
-        .example {
-            background: #f8fafc;
-            border-left: 4px solid #486581;
-            padding: 20px;
-            margin: 22px 0;
-        }
+        /* Tables */
 
-        table {
+        .reference-table {
             width: 100%;
             border-collapse: collapse;
             margin: 20px 0;
         }
 
-        th,
-        td {
-            padding: 10px 12px;
-            border: 1px solid #d9e2ec;
+        .reference-table th,
+        .reference-table td {
+            padding: 12px 14px;
+            border: 1px solid #e2e8f0;
             text-align: left;
         }
 
-        th {
-            background: #f0f4f8;
-            color: #243b53;
+        .reference-table th {
+            background: #f8fafc;
+            font-size: 14px;
         }
 
-        .related-links {
+        /* Related */
+
+        .related-list {
             display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 12px;
-            margin-top: 18px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            padding: 0;
+            list-style: none;
         }
 
-        .related-links a {
+        .related-list li {
+            margin: 0;
+        }
+
+        .related-list a {
             display: block;
-            padding: 13px 15px;
-            background: #f0f4f8;
-            border: 1px solid #d9e2ec;
-            border-radius: 6px;
-            color: #243b53;
-            text-decoration: none;
-            font-weight: bold;
+            padding: 12px 14px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
         }
 
-        .related-links a:hover {
-            background: #e4e9ee;
+        .related-list a:hover {
+            background: #eff6ff;
+            text-decoration: none;
         }
+
+        /* Footer */
 
         footer {
-            background: #17202a;
-            color: #bcccdc;
-            padding: 30px 0;
-            margin-top: 20px;
+            padding: 32px 0;
+            background: #ffffff;
+            border-top: 1px solid #e1e5eb;
+            color: #64748b;
+            font-size: 14px;
         }
 
-        @media (max-width: 700px) {
-            .form-grid,
-            .related-links {
-                grid-template-columns: 1fr;
-            }
+        footer p {
+            margin: 4px 0;
+        }
 
-            .hero h1 {
-                font-size: 1.9rem;
+        /* Mobile */
+
+        @media (max-width: 650px) {
+
+            .container {
+                width: min(100% - 28px, 1000px);
             }
 
             .header-inner {
-                flex-direction: column;
-                align-items: flex-start;
-                padding: 15px 20px;
+                min-height: 58px;
             }
 
             nav {
-                margin-top: 8px;
+                gap: 14px;
             }
 
-            nav a {
-                margin-left: 0;
-                margin-right: 18px;
+            main {
+                padding-top: 32px;
+            }
+
+            .calculator {
+                padding: 22px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .secondary-results {
+                grid-template-columns: 1fr;
+            }
+
+            .related-list {
+                grid-template-columns: 1fr;
+            }
+
+            .result-value {
+                font-size: 30px;
+            }
+
+            .reference-table {
+                font-size: 14px;
             }
         }
     </style>
@@ -334,216 +419,307 @@
 
 <header>
     <div class="container header-inner">
-        <a href="../" class="logo">ControlsCalc</a>
+
+        <a href="../index.html" class="logo">
+            ControlsCalc
+        </a>
 
         <nav>
-            <a href="../#calculators">Calculators</a>
+            <a href="../index.html">Calculators</a>
             <a href="../guides/index.html">Guides</a>
         </nav>
+
     </div>
 </header>
 
-<div class="hero">
-    <div class="container">
-        <h1>Power Factor Calculator</h1>
-
-        <p>
-            Calculate power factor, real power, apparent power, reactive power,
-            and current for single-phase and three-phase electrical systems.
-        </p>
-    </div>
-</div>
 
 <main>
+
     <div class="container">
 
-        <div class="calculator-card">
+        <div class="breadcrumbs">
+            <a href="../index.html">ControlsCalc</a>
+            &nbsp; / &nbsp;
+            Power Factor
+        </div>
+
+
+        <section class="intro">
+
+            <h1>Power Factor Calculator</h1>
+
+            <p>
+                Calculate power factor, real power, apparent power, reactive
+                power, and current for single-phase and three-phase electrical
+                systems.
+            </p>
+
+            <p>
+                Enter the system voltage, current, and real power to determine
+                the electrical power relationships in the system.
+            </p>
+
+        </section>
+
+
+        <!-- Calculator -->
+
+        <section class="calculator">
 
             <h2>Calculate Power Factor</h2>
 
             <div class="form-grid">
 
-                <div class="field full-width">
-                    <label for="system">System Type</label>
+                <div class="field">
 
-                    <select id="system">
+                    <label for="systemType">
+                        System Type
+                    </label>
+
+                    <select id="systemType">
                         <option value="three">3-Phase</option>
                         <option value="single">Single-Phase</option>
                     </select>
+
+                    <small>
+                        Select the electrical system configuration.
+                    </small>
+
                 </div>
 
+
                 <div class="field">
-                    <label for="voltage">Voltage (V)</label>
+
+                    <label for="voltage">
+                        Voltage (V)
+                    </label>
+
                     <input
                         type="number"
                         id="voltage"
-                        value="480"
-                        min="0"
+                        placeholder="Example: 480"
                         step="any"
                     >
+
+                    <small>
+                        Use line-to-line voltage for a 3-phase system.
+                    </small>
+
                 </div>
 
+
                 <div class="field">
-                    <label for="current">Current (A)</label>
+
+                    <label for="current">
+                        Current (A)
+                    </label>
+
                     <input
                         type="number"
                         id="current"
-                        value="20"
-                        min="0"
+                        placeholder="Example: 20"
                         step="any"
                     >
+
+                    <small>
+                        Enter the measured or calculated current.
+                    </small>
+
                 </div>
 
-                <div class="field full-width">
-                    <label for="realPower">Real Power (kW)</label>
+
+                <div class="field">
+
+                    <label for="realPower">
+                        Real Power (kW)
+                    </label>
+
                     <input
                         type="number"
                         id="realPower"
-                        value="12"
-                        min="0"
+                        placeholder="Example: 12"
                         step="any"
                     >
+
+                    <small>
+                        Actual power being consumed by the load.
+                    </small>
+
                 </div>
 
             </div>
 
-            <button onclick="calculatePowerFactor()">
+
+            <button
+                type="button"
+                class="calculate-button"
+                onclick="calculatePowerFactor()"
+            >
                 Calculate
             </button>
 
-            <div id="result"></div>
 
-        </div>
+            <div id="error" class="error"></div>
 
-        <section>
+
+            <div id="warning" class="warning"></div>
+
+
+            <div id="result" class="result">
+
+                <h3>Power Factor</h3>
+
+                <p id="resultValue" class="result-value"></p>
+
+                <p id="resultDetails" class="result-details"></p>
+
+
+                <div class="secondary-results">
+
+                    <div class="secondary-result">
+
+                        <span class="secondary-result-label">
+                            Real Power
+                        </span>
+
+                        <span
+                            id="realPowerResult"
+                            class="secondary-result-value"
+                        ></span>
+
+                    </div>
+
+
+                    <div class="secondary-result">
+
+                        <span class="secondary-result-label">
+                            Apparent Power
+                        </span>
+
+                        <span
+                            id="apparentPowerResult"
+                            class="secondary-result-value"
+                        ></span>
+
+                    </div>
+
+
+                    <div class="secondary-result">
+
+                        <span class="secondary-result-label">
+                            Reactive Power
+                        </span>
+
+                        <span
+                            id="reactivePowerResult"
+                            class="secondary-result-value"
+                        ></span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- What Is Power Factor -->
+
+        <section class="content-section">
+
             <h2>What Is Power Factor?</h2>
 
             <p>
-                Power factor describes how effectively an AC electrical system
-                converts apparent power into real power.
+                Power factor describes the relationship between real power and
+                apparent power in an AC electrical system.
             </p>
 
             <div class="formula">
-                PF = Real Power ÷ Apparent Power
+                Power Factor = Real Power ÷ Apparent Power
             </div>
 
             <p>
-                Real power is the power actually doing useful work, such as
-                turning a motor shaft, heating an element, or operating
-                equipment.
+                A power factor of 1.00 means that real power and apparent power
+                are equal. Lower power factor means that more current is
+                required to deliver the same amount of real power.
             </p>
 
-            <p>
-                Apparent power represents the combination of real and reactive
-                power that the electrical system must supply.
-            </p>
-
-            <p>
-                Power factor is expressed as a number between 0 and 1, or
-                sometimes as a percentage.
-            </p>
-
-            <div class="info-box">
-                <strong>Important:</strong>
-                Power factor is not the same thing as motor efficiency.
-                Efficiency describes the conversion of electrical input power
-                into mechanical output power. Power factor describes the
-                relationship between real and apparent electrical power.
-            </div>
         </section>
 
-        <section>
-            <h2>Real Power, Reactive Power, and Apparent Power</h2>
+
+        <!-- Real Reactive Apparent -->
+
+        <section class="content-section">
+
+            <h2>Real, Reactive, and Apparent Power</h2>
 
             <p>
-                AC power systems are commonly described using three related
-                quantities.
+                AC electrical systems are commonly described using three
+                related quantities.
             </p>
 
-            <h3>Real Power — kW</h3>
+            <ul>
 
-            <p>
-                Real power is the portion of electrical power that performs
-                useful work.
-            </p>
+                <li>
+                    <strong>Real Power (kW)</strong> — power that performs
+                    useful work, such as turning a motor shaft or producing
+                    heat.
+                </li>
 
-            <div class="formula">
-                Real Power = kW
-            </div>
+                <li>
+                    <strong>Reactive Power (kVAR)</strong> — power associated
+                    with energy storage and return in inductive or capacitive
+                    equipment.
+                </li>
 
-            <h3>Apparent Power — kVA</h3>
+                <li>
+                    <strong>Apparent Power (kVA)</strong> — the combined
+                    electrical loading represented by voltage and current.
+                </li>
 
-            <p>
-                Apparent power represents the total electrical loading seen
-                by the source and conductors.
-            </p>
-
-            <div class="formula">
-                kVA = √(kW² + kVAR²)
-            </div>
-
-            <h3>Reactive Power — kVAR</h3>
-
-            <p>
-                Reactive power is associated with energy being alternately
-                stored and returned by inductive and capacitive elements.
-            </p>
-
-            <div class="formula">
-                kVAR = √(kVA² − kW²)
-            </div>
-
-            <p>
-                These quantities form the familiar power triangle.
-            </p>
+            </ul>
 
             <div class="formula">
                 kVA² = kW² + kVAR²
             </div>
+
         </section>
 
-        <section>
+
+        <!-- Three Phase -->
+
+        <section class="content-section">
+
             <h2>3-Phase Power Factor Formula</h2>
 
             <p>
-                For a balanced 3-phase system, apparent power can be
-                calculated from line-to-line voltage and line current:
+                For a balanced three-phase system using line-to-line voltage:
             </p>
 
             <div class="formula">
-                kVA =
-                (√3 × V × I) ÷ 1000
+                kVA = (√3 × V × I) ÷ 1000
+
+                <br><br>
+
+                PF = kW ÷ kVA
             </div>
 
             <p>
-                Therefore:
+                Combining these relationships gives:
             </p>
 
             <div class="formula">
-                PF =
-                kW ÷ kVA
+                PF = (kW × 1000) ÷ (√3 × V × I)
             </div>
 
-            <p>
-                Combining the two equations gives:
-            </p>
-
-            <div class="formula">
-                PF =
-                (kW × 1000)
-                ÷
-                (√3 × V × I)
-            </div>
-
-            <div class="info-box">
-                <strong>Voltage convention:</strong>
-                For this 3-phase calculation, use line-to-line voltage.
-                For example, a typical 480 V 3-phase system should be entered
-                as 480 V, not 277 V.
-            </div>
         </section>
 
-        <section>
+
+        <!-- Single Phase -->
+
+        <section class="content-section">
+
             <h2>Single-Phase Power Factor Formula</h2>
 
             <p>
@@ -551,8 +727,11 @@
             </p>
 
             <div class="formula">
-                kVA =
-                (V × I) ÷ 1000
+                kVA = (V × I) ÷ 1000
+
+                <br><br>
+
+                PF = kW ÷ kVA
             </div>
 
             <p>
@@ -560,401 +739,328 @@
             </p>
 
             <div class="formula">
-                PF =
-                (kW × 1000)
-                ÷
-                (V × I)
+                PF = (kW × 1000) ÷ (V × I)
             </div>
+
         </section>
 
-        <section>
-            <h2>Worked Example: 480 V, 3-Phase Load</h2>
+
+        <!-- Worked Example -->
+
+        <section class="content-section">
+
+            <h2>Worked Example</h2>
 
             <p>
-                Suppose a 480 V, 3-phase load is drawing 20 A and consuming
-                12 kW.
-            </p>
-
-            <p>
-                First calculate apparent power:
+                Suppose a 480 V three-phase system is drawing 20 A and
+                consuming 12 kW of real power.
             </p>
 
             <div class="formula">
-                kVA =
-                (√3 × 480 × 20) ÷ 1000
-            </div>
+                kVA = (√3 × 480 × 20) ÷ 1000
 
-            <div class="formula">
+                <br><br>
+
                 kVA ≈ 16.63
             </div>
 
             <p>
-                Then calculate power factor:
+                The power factor is then:
             </p>
 
             <div class="formula">
-                PF =
-                12 ÷ 16.63
+                PF = 12 ÷ 16.63
+
+                <br><br>
+
+                PF ≈ 0.72
             </div>
 
-            <div class="formula">
-                PF ≈ 0.722
-            </div>
+            <p>
+                The remaining apparent power is associated with reactive power
+                in the system.
+            </p>
 
-            <div class="example">
-                <strong>Result: PF ≈ 0.72</strong>
-
-                <p>
-                    This means approximately 72% of the apparent power is
-                    being converted into real power for this simplified
-                    measurement.
-                </p>
-            </div>
         </section>
 
-        <section>
+
+        <!-- Why PF Matters -->
+
+        <section class="content-section">
+
             <h2>Why Power Factor Affects Current</h2>
 
             <p>
-                For a given amount of real power, a lower power factor requires
+                For a given amount of real power, lower power factor requires
                 more current.
             </p>
 
             <p>
-                Rearranging the 3-phase power equation:
+                In a three-phase system:
             </p>
 
             <div class="formula">
-                I =
-                (kW × 1000)
-                ÷
-                (√3 × V × PF)
+                I = (kW × 1000) ÷ (√3 × V × PF)
             </div>
 
             <p>
-                Because power factor appears in the denominator, reducing PF
-                increases the required current for the same real power.
+                This is why power factor is important when evaluating conductor
+                loading, transformer capacity, switchgear, motor operation,
+                and electrical distribution systems.
             </p>
 
-            <div class="example">
-                <strong>Example:</strong>
-
-                <p>
-                    Consider a 12 kW load at 480 V.
-                </p>
-
-                <p>
-                    At PF = 0.95, the current is approximately
-                    <strong>15.20 A</strong>.
-                </p>
-
-                <p>
-                    At PF = 0.70, the current increases to approximately
-                    <strong>20.62 A</strong>.
-                </p>
-            </div>
-
-            <p>
-                The real power is the same in both cases, but the electrical
-                system must carry more current when the power factor is lower.
-            </p>
         </section>
 
-        <section>
+
+        <!-- Leading Lagging -->
+
+        <section class="content-section">
+
             <h2>Leading and Lagging Power Factor</h2>
 
             <p>
-                Power factor can also be described by whether current leads
-                or lags voltage.
-            </p>
-
-            <h3>Lagging Power Factor</h3>
-
-            <p>
                 Inductive loads such as motors and transformers commonly have
-                lagging power factor.
-            </p>
-
-            <h3>Leading Power Factor</h3>
-
-            <p>
-                Capacitive loads can produce leading power factor.
+                lagging power factor because current lags voltage.
             </p>
 
             <p>
-                The basic magnitude calculation performed by this calculator
-                does not determine leading versus lagging. That requires
-                information about the phase relationship or reactive power
-                direction.
+                Capacitive loads can produce leading power factor because
+                current leads voltage.
             </p>
+
+            <p>
+                The calculator determines the magnitude of power factor from
+                the supplied voltage, current, and real power. It does not
+                determine whether the system is leading or lagging.
+            </p>
+
         </section>
 
-        <section>
+
+        <!-- Motors -->
+
+        <section class="content-section">
+
             <h2>Power Factor and Motors</h2>
 
             <p>
-                Motors are an important source of reactive power demand in
-                industrial facilities.
+                Motors are a common source of reactive power in industrial and
+                commercial electrical systems.
             </p>
 
             <p>
-                Motor power factor changes with operating load. A motor
-                operating lightly loaded can have a substantially different
-                power factor than the same motor operating near its rated
-                load.
+                Motor power factor varies with operating conditions, motor
+                design, loading, and other factors. The power factor listed on
+                a motor nameplate or obtained from an appropriate measurement
+                should be used when available.
             </p>
 
             <p>
-                This is one reason why a theoretical power-factor value should
-                not automatically be assumed to be constant under all
-                operating conditions.
+                Power factor should not be confused with motor efficiency.
+                Efficiency describes the relationship between mechanical output
+                and electrical input power, while power factor describes the
+                relationship between real and apparent electrical power.
             </p>
 
-            <p>
-                When available, motor nameplate information and measured
-                electrical data provide better information about the actual
-                operating condition.
-            </p>
         </section>
 
-        <section>
-            <h2>Power Factor vs. Efficiency</h2>
 
-            <p>
-                These two concepts are frequently confused.
-            </p>
+        <!-- Troubleshooting -->
 
-            <table>
-                <thead>
-                    <tr>
-                        <th>Quantity</th>
-                        <th>What It Describes</th>
-                    </tr>
-                </thead>
+        <section class="content-section">
 
-                <tbody>
-                    <tr>
-                        <td>Power Factor</td>
-                        <td>
-                            Relationship between real power and apparent power
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>Efficiency</td>
-                        <td>
-                            Relationship between useful output power and input power
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>kW</td>
-                        <td>
-                            Real electrical power
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>kVA</td>
-                        <td>
-                            Apparent electrical power
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>kVAR</td>
-                        <td>
-                            Reactive power
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <div class="info-box">
-                A motor can have both a power factor and an efficiency value.
-                They describe different parts of the energy conversion process
-                and should not be substituted for one another.
-            </div>
-        </section>
-
-        <section>
             <h2>Field Troubleshooting</h2>
 
-            <h3>Measured current seems unusually high</h3>
-
             <p>
-                Check power factor along with voltage and real power. A low
-                power factor can cause higher current for the same real power.
+                If calculated power factor appears unexpectedly low, verify
+                the measurements and system configuration before assuming the
+                load itself is the problem.
             </p>
 
-            <h3>Power factor changes with load</h3>
+            <ol>
 
-            <p>
-                This can be normal for motors and other inductive equipment.
-                Compare measurements at different operating conditions before
-                assuming the equipment is malfunctioning.
-            </p>
+                <li>
+                    Verify the voltage measurement and whether it is
+                    line-to-line or line-to-neutral.
+                </li>
 
-            <h3>Calculated PF is greater than 1</h3>
+                <li>
+                    Verify the current measurement and confirm the correct
+                    phase or system measurement.
+                </li>
 
-            <p>
-                A power factor magnitude greater than 1 is not physically valid.
-                Check:
-            </p>
+                <li>
+                    Confirm that real power is measured in kW rather than kVA.
+                </li>
 
-            <ul>
-                <li>Voltage measurement</li>
-                <li>Current measurement</li>
-                <li>Power measurement</li>
-                <li>Single-phase vs. 3-phase selection</li>
-                <li>Line-to-line vs. line-to-neutral voltage</li>
-                <li>Instrument configuration</li>
-            </ul>
+                <li>
+                    Confirm whether the system is single-phase or three-phase.
+                </li>
 
-            <h3>Calculated PF does not match an electrical meter</h3>
+                <li>
+                    Compare calculated values with nameplate data or
+                    instrumentation measurements where available.
+                </li>
 
-            <p>
-                Verify that the measurements represent the same operating
-                condition and that the meter and calculation are using the
-                same phase configuration and voltage convention.
-            </p>
+            </ol>
 
-            <p>
-                Also remember that this basic calculation assumes a balanced
-                system. Real installations can have voltage imbalance,
-                harmonic distortion, and other effects that make simple
-                calculations less representative.
-            </p>
         </section>
 
-        <section>
-            <h2>Common Mistakes</h2>
 
-            <ul>
+        <!-- Common Mistakes -->
+
+        <section class="content-section">
+
+            <h2>Common Power Factor Mistakes</h2>
+
+            <ol>
+
                 <li>
-                    Using line-to-neutral voltage in the 3-phase formula.
+                    <strong>Confusing kW and kVA.</strong>
+                    Real power and apparent power are not the same quantity.
                 </li>
 
                 <li>
-                    Forgetting the √3 factor for a 3-phase system.
+                    <strong>Using the wrong voltage.</strong>
+                    Three-phase calculations normally use line-to-line voltage.
                 </li>
 
                 <li>
-                    Using a single-phase equation for a 3-phase load.
+                    <strong>Confusing power factor with efficiency.</strong>
+                    They describe different electrical characteristics.
                 </li>
 
                 <li>
-                    Confusing kW with kVA.
+                    <strong>Assuming every motor has the same power factor.</strong>
+                    Power factor varies with motor and operating conditions.
                 </li>
 
                 <li>
-                    Confusing power factor with efficiency.
+                    <strong>Ignoring system imbalance or harmonics.</strong>
+                    The simple equations are useful approximations but do not
+                    capture every characteristic of a real electrical system.
                 </li>
 
-                <li>
-                    Assuming motor power factor is constant at every load.
-                </li>
+            </ol>
 
-                <li>
-                    Treating the calculated value as a substitute for actual
-                    measured power-factor data when accurate measurements are
-                    available.
-                </li>
-            </ul>
         </section>
 
-        <section>
+
+        <!-- Quick Reference -->
+
+        <section class="content-section">
+
             <h2>Quick Reference</h2>
 
-            <table>
+            <table class="reference-table">
+
                 <thead>
+
                     <tr>
                         <th>Quantity</th>
-                        <th>Formula</th>
+                        <th>Relationship</th>
                     </tr>
+
                 </thead>
 
                 <tbody>
+
                     <tr>
                         <td>Power Factor</td>
                         <td>PF = kW ÷ kVA</td>
                     </tr>
 
                     <tr>
-                        <td>3-Phase Apparent Power</td>
-                        <td>kVA = √3 × V × I ÷ 1000</td>
+                        <td>3-Phase kVA</td>
+                        <td>√3 × V × I ÷ 1000</td>
                     </tr>
 
                     <tr>
-                        <td>Single-Phase Apparent Power</td>
-                        <td>kVA = V × I ÷ 1000</td>
+                        <td>Single-Phase kVA</td>
+                        <td>V × I ÷ 1000</td>
                     </tr>
 
                     <tr>
                         <td>Reactive Power</td>
-                        <td>kVAR = √(kVA² − kW²)</td>
+                        <td>√(kVA² − kW²)</td>
                     </tr>
 
                     <tr>
                         <td>3-Phase Current</td>
-                        <td>I = kW × 1000 ÷ (√3 × V × PF)</td>
+                        <td>kW × 1000 ÷ (√3 × V × PF)</td>
                     </tr>
+
                 </tbody>
+
             </table>
+
         </section>
 
-        <section>
+
+        <!-- Related -->
+
+        <section class="content-section">
+
             <h2>Related Calculators</h2>
 
-            <div class="related-links">
+            <ul class="related-list">
 
-                <a href="3-phase-motor-current.html">
-                    3-Phase Motor Current
-                </a>
+                <li>
+                    <a href="3-phase-motor-current.html">
+                        3-Phase Motor Current
+                    </a>
+                </li>
 
-                <a href="ohms-law.html">
-                    Ohm's Law
-                </a>
+                <li>
+                    <a href="ohms-law.html">
+                        Ohm’s Law
+                    </a>
+                </li>
 
-                <a href="voltage-divider.html">
-                    Voltage Divider
-                </a>
+                <li>
+                    <a href="voltage-divider.html">
+                        Voltage Divider
+                    </a>
+                </li>
 
-                <a href="../guides/index.html">
-                    Controls & Instrumentation Guides
-                </a>
+                <li>
+                    <a href="frequency-rpm.html">
+                        Frequency ↔ RPM
+                    </a>
+                </li>
 
-            </div>
+            </ul>
+
         </section>
 
     </div>
+
 </main>
 
+
 <footer>
+
     <div class="container">
-        <strong>ControlsCalc</strong>
-        <br>
-        Controls & instrumentation calculators and field references.
+
+        <p>
+            <strong>ControlsCalc</strong>
+        </p>
+
+        <p>
+            Engineering and controls calculators for technicians and engineers.
+        </p>
+
     </div>
+
 </footer>
 
+
 <script>
-function formatNumber(value, decimals = 3) {
-    if (!Number.isFinite(value)) {
-        return "—";
-    }
-
-    if (Math.abs(value) < 1e-10) {
-        value = 0;
-    }
-
-    return Number(value.toFixed(decimals)).toLocaleString();
-}
-
 
 function calculatePowerFactor() {
 
-    const system = document.getElementById("system").value;
+    const systemType =
+        document.getElementById("systemType").value;
 
     const voltage =
         parseFloat(document.getElementById("voltage").value);
@@ -965,157 +1071,159 @@ function calculatePowerFactor() {
     const realPower =
         parseFloat(document.getElementById("realPower").value);
 
+    const error =
+        document.getElementById("error");
+
+    const warning =
+        document.getElementById("warning");
+
     const result =
         document.getElementById("result");
 
-    result.innerHTML = "";
+
+    error.classList.remove("show");
+    warning.classList.remove("show");
+    result.classList.remove("show");
+
 
     if (
         !Number.isFinite(voltage) ||
         !Number.isFinite(current) ||
         !Number.isFinite(realPower)
     ) {
-        result.innerHTML =
-            '<div class="error">Please enter valid numeric values.</div>';
+
+        error.textContent =
+            "Please enter valid values for voltage, current, and real power.";
+
+        error.classList.add("show");
 
         return;
     }
+
 
     if (voltage <= 0) {
-        result.innerHTML =
-            '<div class="error">Voltage must be greater than zero.</div>';
+
+        error.textContent =
+            "Voltage must be greater than zero.";
+
+        error.classList.add("show");
 
         return;
     }
+
 
     if (current <= 0) {
-        result.innerHTML =
-            '<div class="error">Current must be greater than zero.</div>';
+
+        error.textContent =
+            "Current must be greater than zero.";
+
+        error.classList.add("show");
 
         return;
     }
+
 
     if (realPower < 0) {
-        result.innerHTML =
-            '<div class="error">Real power cannot be negative for this calculation.</div>';
+
+        error.textContent =
+            "Real power cannot be negative for this calculation.";
+
+        error.classList.add("show");
 
         return;
     }
+
 
     let apparentPower;
 
-    if (system === "three") {
+
+    if (systemType === "three") {
 
         apparentPower =
-            Math.sqrt(3) *
-            voltage *
-            current /
-            1000;
+            (Math.sqrt(3) * voltage * current) / 1000;
 
     } else {
 
         apparentPower =
-            voltage *
-            current /
-            1000;
+            (voltage * current) / 1000;
+
     }
 
+
     if (apparentPower <= 0) {
-        result.innerHTML =
-            '<div class="error">Apparent power must be greater than zero.</div>';
+
+        error.textContent =
+            "The calculated apparent power must be greater than zero.";
+
+        error.classList.add("show");
 
         return;
     }
 
+
     const powerFactor =
         realPower / apparentPower;
 
-    const pfClamped =
-        Math.min(Math.max(powerFactor, 0), 1);
 
-    const reactivePowerSquared =
-        Math.pow(apparentPower, 2) -
-        Math.pow(realPower, 2);
+    if (powerFactor > 1.000001) {
 
-    const reactivePower =
-        Math.sqrt(
-            Math.max(reactivePowerSquared, 0)
-        );
+        warning.textContent =
+            "The calculated power factor is greater than 1.00. " +
+            "Check the voltage, current, real power, and system configuration.";
 
-    let warning = "";
-
-    if (powerFactor > 1) {
-
-        warning =
-            '<div class="warning">' +
-            '<strong>Check the inputs:</strong> ' +
-            'The calculated power factor is greater than 1. ' +
-            'Verify voltage, current, real power, and system type.' +
-            '</div>';
+        warning.classList.add("show");
 
     }
 
-    result.innerHTML =
-        '<div class="results">' +
 
-            '<div class="result-main">' +
-                "Power Factor = " +
-                formatNumber(pfClamped, 3) +
-            '</div>' +
+    const boundedPowerFactor =
+        Math.min(powerFactor, 1);
 
-            '<div class="result-row">' +
-                '<span class="result-label">System</span>' +
-                '<span class="result-value">' +
-                    (system === "three"
-                        ? "3-Phase"
-                        : "Single-Phase") +
-                '</span>' +
-            '</div>' +
 
-            '<div class="result-row">' +
-                '<span class="result-label">Real Power</span>' +
-                '<span class="result-value">' +
-                    formatNumber(realPower, 3) +
-                    " kW" +
-                '</span>' +
-            '</div>' +
+    const reactivePower =
+        Math.sqrt(
+            Math.max(
+                0,
+                Math.pow(apparentPower, 2) -
+                Math.pow(realPower, 2)
+            )
+        );
 
-            '<div class="result-row">' +
-                '<span class="result-label">Apparent Power</span>' +
-                '<span class="result-value">' +
-                    formatNumber(apparentPower, 3) +
-                    " kVA" +
-                '</span>' +
-            '</div>' +
 
-            '<div class="result-row">' +
-                '<span class="result-label">Reactive Power</span>' +
-                '<span class="result-value">' +
-                    formatNumber(reactivePower, 3) +
-                    " kVAR" +
-                '</span>' +
-            '</div>' +
+    const systemName =
+        systemType === "three"
+            ? "3-Phase"
+            : "Single-Phase";
 
-            '<div class="result-row">' +
-                '<span class="result-label">Voltage</span>' +
-                '<span class="result-value">' +
-                    formatNumber(voltage, 1) +
-                    " V" +
-                '</span>' +
-            '</div>' +
 
-            '<div class="result-row">' +
-                '<span class="result-label">Current</span>' +
-                '<span class="result-value">' +
-                    formatNumber(current, 3) +
-                    " A" +
-                '</span>' +
-            '</div>' +
+    document.getElementById("resultValue").textContent =
+        boundedPowerFactor.toFixed(3);
 
-            warning +
 
-        '</div>';
+    document.getElementById("resultDetails").textContent =
+        systemName +
+        " system • " +
+        voltage.toLocaleString() +
+        " V • " +
+        current.toLocaleString() +
+        " A";
+
+
+    document.getElementById("realPowerResult").textContent =
+        realPower.toFixed(3) + " kW";
+
+
+    document.getElementById("apparentPowerResult").textContent =
+        apparentPower.toFixed(3) + " kVA";
+
+
+    document.getElementById("reactivePowerResult").textContent =
+        reactivePower.toFixed(3) + " kVAR";
+
+
+    result.classList.add("show");
 }
+
 </script>
 
 </body>
