@@ -1,1 +1,69 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>4–20 mA Scaling | ControlsCalc</title><meta name="description" content="Convert a measured 4–20 mA signal into engineering units."><link rel="stylesheet" href="../style.css"></head><body><header><nav class="wrap"><a class="brand" href="../index.html">ControlsCalc</a><div class="links"><a href="../index.html">Calculators</a><a href="../guides/index.html">Guides</a></div></nav></header><main class="wrap calc"><span class="tag">ControlsCalc</span><h1>4–20 mA Scaling</h1><p class="muted">Convert a measured 4–20 mA signal into engineering units.</p><div class="panel" data-calc="420scale"></div><div class="panel"><h2>Field note</h2><p>Use this as a practical reference. Verify transmitter ranges, wiring, scaling, device documentation, and applicable project standards before making control changes.</p></div></main><footer><div class="wrap">ControlsCalc — practical controls and instrumentation calculators.</div></footer><script src="../script.js"></script></body></html>
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>4–20 mA Scaling Calculator | ControlsCalc</title>
+
+    <meta name="description" content="Free 4–20 mA scaling calculator for converting transmitter current into engineering units. Includes the formula, worked example, field tips, and common mistakes.">
+
+    <meta name="keywords" content="4-20 mA scaling calculator, 4-20 mA formula, 4-20 mA scaling, current to engineering units, transmitter scaling calculator, analog input scaling">
+
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+
+<header>
+    <div class="container">
+        <h1>ControlsCalc</h1>
+
+        <nav>
+            <a href="../index.html">Home</a>
+            <a href="../index.html#calculators">Calculators</a>
+            <a href="../guides/index.html">Guides</a>
+        </nav>
+    </div>
+</header>
+
+<main class="container">
+
+    <!-- Page Introduction -->
+
+    <section class="calculator-intro">
+
+        <h1>4–20 mA Scaling Calculator</h1>
+
+        <p>
+            Convert a measured 4–20 mA transmitter signal into engineering units.
+            This calculator works with pressure, temperature, flow, level, and other
+            linear 4–20 mA instrumentation signals.
+        </p>
+
+        <p>
+            Enter the transmitter's lower and upper range values along with the
+            measured current to calculate the corresponding process value.
+        </p>
+
+    </section>
+
+
+    <!-- Calculator -->
+
+    <section class="calculator-card">
+
+        <h2>Calculate Engineering Units</h2>
+
+        <div class="input-group">
+            <label for="lowRange">
+                Lower Range Value
+            </label>
+
+            <input
+                type="number"
+                id="lowRange"
+                placeholder="Example: 0"
+                step="any"
+```
