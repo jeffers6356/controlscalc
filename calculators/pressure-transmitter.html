@@ -198,10 +198,63 @@
                 grid-column: auto;
             }
         }
+        /* Header */
+
+        header {
+            background: #ffffff;
+            border-bottom: 1px solid #e1e5eb;
+        }
+        
+        .header-inner {
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .logo {
+            font-size: 22px;
+            font-weight: 800;
+            color: #172033;
+            text-decoration: none;
+        }
+        
+        nav {
+            display: flex;
+            gap: 24px;
+        }
+        
+        nav a {
+            color: #2563eb;
+            text-decoration: none;
+            font-size: 15px;
+        }
+        
+        nav a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 
 <body>
+
+<header>
+    <div class="container header-inner">
+
+        <a href="../" class="logo">
+            ControlsCalc
+        </a>
+
+        <nav>
+            <a href="../#calculators">Calculators</a>
+            <a href="../guides/index.html">Guides</a>
+        </nav>
+
+    </div>
+</header>
+
+
+<main>
 
 <div class="container">
 
@@ -659,6 +712,20 @@ function calculate() {
     `;
 }
 </script>
+
+</main>
+
+<footer>
+    <div class="container">
+        <p>
+            <strong>ControlsCalc</strong>
+        </p>
+
+        <p>
+            Engineering and controls calculators for technicians and engineers.
+        </p>
+    </div>
+</footer>
 
 </body>
 </html>
