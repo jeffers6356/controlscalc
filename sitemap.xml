@@ -1,56 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
-  <url>
-    <loc>https://controlscalc.jeffers6356.workers.dev/</loc>
-  </url>
+    <!-- Homepage -->
+    <url>
+        <loc>https://controlscalc.jeffers6356.workers.dev/</loc>
+    </url>
 
-  <url>
-    <loc>https://controlscalc.jeffers6356.workers.dev/calculators/4-20ma-scaling.html</loc>
-  </url>
+    <!-- Calculators -->
+    <url>
+        <loc>https://controlscalc.jeffers6356.workers.dev/calculators/4-20ma-scaling.html</loc>
+    </url>
+    <url>
+        <loc>https://controlscalc.jeffers6356.workers.dev/calculators/4-20ma-voltage.html</loc>
+    </url>
+    <url>
+        <loc>https://controlscalc.jeffers6356.workers.dev/calculators/4-20ma-resistor.html</loc>
+    </url>
+    <url>
+        <loc>https://controlscalc.jeffers6356.workers.dev/calculators/0-10v-scaling.html</loc>
+    </url>
+    <url>
+        <loc>https://controlscalc.jeffers6356.workers.dev/calculators/analog-scaling.html</loc>
+    </url>
+    <url>
+        <loc>https://controlscalc.jeffers6356.workers.dev/calculators/ohms-law.html</loc>
+    </url>
+    <url>
+        <loc>https://controlscalc.jeffers6356.workers.dev/calculators/voltage-divider.html</loc>
+    </url>
+    <url>
+        <loc>https://controlscalc.jeffers6356.workers.dev/calculators/pt100-resistance.html</loc>
+    </url>
+    <url>
+        <loc>https://controlscalc.jeffers6356.workers.dev/calculators/pressure-transmitter.html</loc>
+    </url>
+    <url>
+        <loc>https://controlscalc.jeffers6356.workers.dev/calculators/flow-transmitter.html</loc>
+    </url>
+    <url>
+        <loc>https://controlscalc.jeffers6356.workers.dev/calculators/3-phase-motor-current.html</loc>
+    </url>
+    <url>
+        <loc>https://controlscalc.jeffers6356.workers.dev/calculators/power-factor.html</loc>
+    </url>
+    <url>
+        <loc>https://controlscalc.jeffers6356.workers.dev/calculators/frequency-rpm.html</loc>
+    </url>
+    <url>
+        <loc>https://controlscalc.jeffers6356.workers.dev/calculators/ieee-754.html</loc>
+    </url>
 
-  <url>
-    <loc>https://controlscalc.jeffers6356.workers.dev/calculators/4-20ma-voltage.html</loc>
-  </url>
-
-  <url>
-    <loc>https://controlscalc.jeffers6356.workers.dev/calculators/4-20ma-resistor.html</loc>
-  </url>
-
-  <url>
-    <loc>https://controlscalc.jeffers6356.workers.dev/calculators/0-10v-scaling.html</loc>
-  </url>
-
-  <url>
-    <loc>https://controlscalc.jeffers6356.workers.dev/calculators/analog-scaling.html</loc>
-  </url>
-
-  <url>
-    <loc>https://controlscalc.jeffers6356.workers.dev/calculators/ohms-law.html</loc>
-  </url>
-
-  <url>
-    <loc>https://controlscalc.jeffers6356.workers.dev/calculators/voltage-divider.html</loc>
-  </url>
-
-  <url>
-    <loc>https://controlscalc.jeffers6356.workers.dev/calculators/pt100-resistance.html</loc>
-  </url>
-
-  <url>
-    <loc>https://controlscalc.jeffers6356.workers.dev/calculators/pressure-transmitter.html</loc>
-  </url>
-
-  <url>
-    <loc>https://controlscalc.jeffers6356.workers.dev/guides/index.html</loc>
-  </url>
-
-  <url>
-    <loc>https://controlscalc.jeffers6356.workers.dev/guides/4-20ma.html</loc>
-  </url>
-
-  <url>
-    <loc>https://controlscalc.jeffers6356.workers.dev/guides/plc-scaling.html</loc>
-  </url>
+    <!-- Guides -->
+    <url>
+        <loc>https://controlscalc.jeffers6356.workers.dev/guides/index.html</loc>
+    </url>
+    <url>
+        <loc>https://controlscalc.jeffers6356.workers.dev/guides/4-20ma.html</loc>
+    </url>
+    <url>
+        <loc>https://controlscalc.jeffers6356.workers.dev/guides/plc-scaling.html</loc>
+    </url>
+    <url>
+        <loc>https://controlscalc.jeffers6356.workers.dev/guides/flow-square-root.html</loc>
+    </url>
 
 </urlset>
