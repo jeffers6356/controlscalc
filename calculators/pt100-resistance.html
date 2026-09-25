@@ -1543,6 +1543,11 @@ function formatNumber(value, decimals = 3) {
     return Number(value.toFixed(decimals)).toLocaleString();
 }
 
+function formatTemperature(value) {
+    if (!Number.isFinite(value)) return "—";
+    if (Math.abs(value) < 1e-6) value = 0;
+    return Number(value.toFixed(2)).toLocaleString();
+}
 
 /*
     Initialize.
