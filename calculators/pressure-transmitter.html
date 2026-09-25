@@ -1,15 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Pressure Transmitter Scaling Calculator | ControlsCalc</title>
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-    <meta name="description"
-          content="Calculate pressure from a 4–20 mA pressure transmitter signal. Includes LRV, URV, gauge and absolute pressure, worked examples, formulas, and field troubleshooting.">
+    <title>
+        Pressure Transmitter Scaling Calculator | ControlsCalc
+    </title>
+
+    <meta
+        name="description"
+        content="Calculate pressure from a 4–20 mA pressure transmitter signal. Includes LRV, URV, gauge and absolute pressure, worked examples, formulas, and field troubleshooting."
+    >
 
     <style>
+
         * {
             box-sizing: border-box;
         }
@@ -17,104 +28,227 @@
         body {
             margin: 0;
             font-family: Arial, Helvetica, sans-serif;
-            background: #f4f7fb;
-            color: #10233f;
+            background: #f5f7fa;
+            color: #172033;
             line-height: 1.6;
         }
 
-        .container {
-            max-width: 900px;
-            margin: 40px auto;
-            padding: 34px;
-            background: white;
-            border-radius: 14px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        a {
+            color: #2563eb;
         }
 
+        /* Header */
+
+        header {
+            background: #ffffff;
+            border-bottom: 1px solid #dfe5ec;
+        }
+
+        .header-inner {
+            width: min(1000px, calc(100% - 40px));
+            margin: 0 auto;
+            min-height: 68px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 20px;
+        }
+
+        .logo {
+            color: #172033;
+            text-decoration: none;
+            font-size: 1.45rem;
+            font-weight: 700;
+        }
+
+        nav {
+            display: flex;
+            gap: 20px;
+        }
+
+        nav a {
+            color: #475569;
+            text-decoration: none;
+            font-size: 0.95rem;
+        }
+
+        nav a:hover {
+            color: #2563eb;
+        }
+
+        /* Main */
+
+        main {
+            width: min(1000px, calc(100% - 40px));
+            margin: 0 auto;
+            padding: 34px 0 60px;
+        }
+
+        /* Breadcrumb */
+
+        .breadcrumb {
+            font-size: 0.9rem;
+            margin-bottom: 18px;
+            color: #64748b;
+        }
+
+        .breadcrumb a {
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        /* Typography */
+
         h1 {
-            margin-top: 0;
-            font-size: 30px;
+            font-size: 2.35rem;
+            line-height: 1.2;
+            margin: 0 0 12px;
+            color: #172033;
         }
 
         h2 {
-            margin-top: 42px;
-            font-size: 23px;
-            color: #10233f;
+            color: #172033;
+            margin-top: 38px;
+            line-height: 1.3;
         }
 
         h3 {
-            margin-top: 28px;
-            font-size: 18px;
+            color: #172033;
+            margin-top: 26px;
         }
 
         p {
-            color: #172b46;
+            color: #334155;
         }
 
-        .subtitle {
-            color: #52657d;
-            margin-bottom: 28px;
+        .intro {
+            font-size: 1.08rem;
+            max-width: 850px;
+            color: #475569;
+            margin-bottom: 0;
+        }
+
+        /* Calculator */
+
+        .calculator {
+            background: #ffffff;
+            border: 1px solid #dfe5ec;
+            border-radius: 14px;
+
+            padding: 32px;
+            margin-top: 28px;
+
+            box-shadow:
+                0 4px 14px rgba(15, 23, 42, 0.06);
+        }
+
+        .calculator h2 {
+            margin-top: 0;
         }
 
         .form-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
+
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+
+            gap: 18px;
+
+            margin-top: 22px;
         }
 
         .field {
-            margin-bottom: 4px;
-        }
-
-        label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 7px;
-        }
-
-        input,
-        select {
-            width: 100%;
-            padding: 13px 14px;
-            font-size: 16px;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            background: white;
-        }
-
-        input:focus,
-        select:focus {
-            outline: none;
-            border-color: #2864e8;
-            box-shadow: 0 0 0 3px rgba(40,100,232,0.12);
+            min-width: 0;
         }
 
         .full-width {
             grid-column: 1 / -1;
         }
 
-        button {
-            margin-top: 20px;
-            padding: 13px 25px;
-            border: none;
+        /* Inputs */
+
+        label {
+            display: block;
+
+            font-weight: 700;
+
+            margin-bottom: 7px;
+
+            color: #334155;
+        }
+
+        input,
+        select {
+            width: 100%;
+
+            padding: 12px;
+
+            border: 1px solid #cbd5e1;
+
             border-radius: 8px;
-            background: #2864e8;
-            color: white;
-            font-size: 17px;
-            font-weight: bold;
+
+            font-size: 1rem;
+
+            background: #ffffff;
+
+            color: #172033;
+        }
+
+        input:focus,
+        select:focus {
+            outline: 2px solid #bfdbfe;
+
+            border-color: #2563eb;
+        }
+
+        /* Calculate Button */
+
+        .button-row {
+            margin-top: 22px;
+        }
+
+        .calculate-button {
+            width: 100%;
+
+            background: #2563eb;
+
+            color: #ffffff;
+
+            border: none;
+
+            border-radius: 8px;
+
+            padding: 13px 18px;
+
+            font-size: 1rem;
+
+            font-weight: 700;
+
             cursor: pointer;
         }
 
-        button:hover {
-            background: #1f55c8;
+        .calculate-button:hover {
+            background: #1d4ed8;
         }
 
+        /* Result */
+
         .result {
-            margin-top: 26px;
-            padding: 24px;
-            background: #eef5ff;
-            border-left: 5px solid #2864e8;
-            border-radius: 8px;
+            display: none;
+
+            margin-top: 22px;
+
+            padding: 20px;
+
+            border-radius: 10px;
+
+            background: #eff6ff;
+
+            border: 1px solid #bfdbfe;
+
+            border-left: 5px solid #2563eb;
         }
 
         .result h2 {
@@ -122,72 +256,224 @@
         }
 
         .result-value {
-            font-size: 30px;
-            font-weight: bold;
-            margin: 12px 0;
+            font-size: 2rem;
+
+            font-weight: 700;
+
+            color: #1d4ed8;
+
+            margin: 10px 0 16px;
         }
 
-        .formula {
-            padding: 18px;
-            background: #f6f8fb;
-            border: 1px solid #dce3ec;
+        /* Status / Warning */
+
+        .warning {
+            margin-top: 18px;
+
+            padding: 15px 17px;
+
+            background: #fff7ed;
+
+            border: 1px solid #fed7aa;
+
+            border-left: 5px solid #f97316;
+
             border-radius: 8px;
+
+            color: #9a3412;
+        }
+
+        /* Error */
+
+        .error {
+            display: none;
+
+            margin-top: 18px;
+
+            padding: 14px;
+
+            border-radius: 8px;
+
+            background: #fef2f2;
+
+            border: 1px solid #fecaca;
+
+            color: #991b1b;
+        }
+
+        /* Content Sections */
+
+        .content-section {
+            background: #ffffff;
+
+            border: 1px solid #dfe5ec;
+
+            border-radius: 12px;
+
+            padding: 30px;
+
+            margin-top: 24px;
+        }
+
+        .content-section h2 {
+            margin-top: 0;
+        }
+
+        /* Formula */
+
+        .formula {
+            background: #f5f7fa;
+
+            color: #172033;
+
+            padding: 18px 20px;
+
+            border: 1px solid #e2e8f0;
+
+            border-radius: 8px;
+
             font-family: "Courier New", monospace;
-            font-size: 16px;
+
+            font-size: 1.02rem;
+
+            margin: 18px 0;
+
             overflow-x: auto;
         }
 
+        /* Examples */
+
         .example {
-            padding: 20px;
             background: #f8fafc;
-            border: 1px solid #dce3ec;
-            border-radius: 8px;
+
+            border: 1px solid #e2e8f0;
+
+            border-radius: 10px;
+
+            padding: 20px;
+
             margin-top: 18px;
         }
 
+        /* Tables */
+
         .reference-table {
             width: 100%;
+
             border-collapse: collapse;
-            margin-top: 18px;
+
+            margin: 20px 0;
+
+            background: #ffffff;
         }
 
         .reference-table th,
         .reference-table td {
-            border: 1px solid #d7dee8;
-            padding: 11px;
+            border: 1px solid #cbd5e1;
+
+            padding: 11px 13px;
+
             text-align: left;
         }
 
         .reference-table th {
-            background: #eef2f7;
+            background: #f1f5f9;
+
+            color: #172033;
         }
 
+        /* Notes */
+
         .note {
-            padding: 16px;
-            background: #fff8e6;
-            border-left: 4px solid #e2a400;
-            border-radius: 6px;
-            margin-top: 18px;
+            background: #fff7ed;
+
+            border: 1px solid #fed7aa;
+
+            border-left: 5px solid #f97316;
+
+            padding: 18px 20px;
+
+            border-radius: 8px;
+
+            margin-top: 20px;
+        }
+
+        /* Related Calculators */
+
+        .related {
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+
+            gap: 14px;
+
+            margin-top: 20px;
         }
 
         .related a {
-            color: #2864e8;
+            display: block;
+
+            padding: 15px;
+
+            background: #f8fafc;
+
+            border: 1px solid #e2e8f0;
+
+            border-radius: 8px;
+
             text-decoration: none;
-            font-weight: bold;
+
+            color: #2563eb;
+
+            font-weight: 700;
         }
 
         .related a:hover {
-            text-decoration: underline;
+            border-color: #bfdbfe;
+
+            background: #eff6ff;
         }
 
-        ul {
-            padding-left: 22px;
+        /* Lists */
+
+        ul,
+        ol {
+            padding-left: 25px;
         }
 
-        @media (max-width: 700px) {
-            .container {
-                margin: 15px;
-                padding: 22px;
+        /* Footer */
+
+        footer {
+            background: #ffffff;
+
+            color: #64748b;
+
+            text-align: center;
+
+            padding: 25px;
+
+            font-size: 0.9rem;
+
+            border-top: 1px solid #dfe5ec;
+        }
+
+        /* Mobile */
+
+        @media (max-width: 650px) {
+
+            .header-inner {
+                min-height: auto;
+
+                padding: 16px 0;
+
+                flex-direction: column;
+
+                align-items: flex-start;
+            }
+
+            nav {
+                gap: 16px;
             }
 
             .form-grid {
@@ -197,535 +483,1158 @@
             .full-width {
                 grid-column: auto;
             }
-        }
-        /* Header */
 
-        header {
-            background: #ffffff;
-            border-bottom: 1px solid #e1e5eb;
+            .related {
+                grid-template-columns: 1fr;
+            }
+
+            .calculator,
+            .content-section {
+                padding: 22px;
+            }
+
+            h1 {
+                font-size: 1.9rem;
+            }
+
         }
-        
-        .header-inner {
-            min-height: 64px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        
-        .logo {
-            font-size: 22px;
-            font-weight: 800;
-            color: #172033;
-            text-decoration: none;
-        }
-        
-        nav {
-            display: flex;
-            gap: 24px;
-        }
-        
-        nav a {
-            color: #2563eb;
-            text-decoration: none;
-            font-size: 15px;
-        }
-        
-        nav a:hover {
-            text-decoration: underline;
-        }
+
     </style>
+
 </head>
+
 
 <body>
 
+
 <header>
-    <div class="container header-inner">
+
+    <div class="header-inner">
 
         <a href="../" class="logo">
             ControlsCalc
         </a>
 
         <nav>
-            <a href="../#calculators">Calculators</a>
-            <a href="../guides/index.html">Guides</a>
+
+            <a href="../#calculators">
+                Calculators
+            </a>
+
+            <a href="../guides/index.html">
+                Guides
+            </a>
+
         </nav>
 
     </div>
+
 </header>
 
 
 <main>
 
-<div class="container">
 
-    <h1>Pressure Transmitter Scaling Calculator</h1>
+    <div class="breadcrumb">
 
-    <p class="subtitle">
+        <a href="../">
+            Calculators
+        </a>
+
+        → Pressure Transmitter Scaling Calculator
+
+    </div>
+
+
+    <h1>
+        Pressure Transmitter Scaling Calculator
+    </h1>
+
+
+    <p class="intro">
+
         Convert a 4–20 mA pressure transmitter signal into a pressure value
         using the transmitter's calibrated range.
+
     </p>
 
-    <div class="form-grid">
 
-        <div class="field">
-            <label for="lrv">Lower Range Value (LRV)</label>
-            <input type="number" id="lrv" value="0" step="any">
+    <!-- Calculator -->
+
+    <section class="calculator">
+
+        <h2>
+            Calculate Pressure
+        </h2>
+
+
+        <div class="form-grid">
+
+
+            <div class="field">
+
+                <label for="lrv">
+                    Lower Range Value (LRV)
+                </label>
+
+                <input
+                    type="number"
+                    id="lrv"
+                    value="0"
+                    step="any"
+                >
+
+            </div>
+
+
+            <div class="field">
+
+                <label for="urv">
+                    Upper Range Value (URV)
+                </label>
+
+                <input
+                    type="number"
+                    id="urv"
+                    value="100"
+                    step="any"
+                >
+
+            </div>
+
+
+            <div class="field">
+
+                <label for="unit">
+                    Pressure Unit
+                </label>
+
+                <select id="unit">
+
+                    <option value="psi">
+                        PSI
+                    </option>
+
+                    <option value="kpa">
+                        kPa
+                    </option>
+
+                    <option value="bar">
+                        bar
+                    </option>
+
+                    <option value="inh2o">
+                        inH₂O
+                    </option>
+
+                    <option value="inhg">
+                        inHg
+                    </option>
+
+                    <option value="mpa">
+                        MPa
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="field">
+
+                <label for="pressureType">
+                    Pressure Type
+                </label>
+
+                <select id="pressureType">
+
+                    <option value="gauge">
+                        Gauge Pressure
+                    </option>
+
+                    <option value="absolute">
+                        Absolute Pressure
+                    </option>
+
+                    <option value="vacuum">
+                        Vacuum / Negative Gauge Pressure
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="field full-width">
+
+                <label for="current">
+                    Measured Current (mA)
+                </label>
+
+                <input
+                    type="number"
+                    id="current"
+                    value="12"
+                    step="any"
+                >
+
+            </div>
+
         </div>
 
-        <div class="field">
-            <label for="urv">Upper Range Value (URV)</label>
-            <input type="number" id="urv" value="100" step="any">
+
+        <div class="button-row">
+
+            <button
+                class="calculate-button"
+                onclick="calculate()"
+            >
+                Calculate Pressure
+            </button>
+
         </div>
 
-        <div class="field">
-            <label for="unit">Pressure Unit</label>
-            <select id="unit">
-                <option value="psi">PSI</option>
-                <option value="kpa">kPa</option>
-                <option value="bar">bar</option>
-                <option value="inh2o">inH₂O</option>
-                <option value="inhg">inHg</option>
-                <option value="mpa">MPa</option>
-            </select>
-        </div>
 
-        <div class="field">
-            <label for="pressureType">Pressure Type</label>
-            <select id="pressureType">
-                <option value="gauge">Gauge Pressure</option>
-                <option value="absolute">Absolute Pressure</option>
-                <option value="vacuum">Vacuum / Negative Gauge Pressure</option>
-            </select>
-        </div>
+        <div
+            id="result"
+            class="result"
+        ></div>
 
-        <div class="field full-width">
-            <label for="current">Measured Current (mA)</label>
-            <input type="number" id="current" value="12" step="any">
-        </div>
 
-    </div>
+        <div
+            id="error"
+            class="error"
+        ></div>
 
-    <button onclick="calculate()">Calculate Pressure</button>
+    </section>
 
-    <div id="result" class="result" style="display:none;"></div>
 
-    <h2>How Pressure Transmitter Scaling Works</h2>
+    <!-- How It Works -->
 
-    <p>
-        A typical pressure transmitter converts a measured pressure range
-        into a 4–20 mA signal. The transmitter's Lower Range Value (LRV)
-        corresponds to 4 mA, while the Upper Range Value (URV) corresponds
-        to 20 mA.
-    </p>
+    <section class="content-section">
 
-    <p>
-        The receiving PLC, controller, or meter uses the same range
-        information to convert the measured current back into pressure.
-    </p>
-
-    <div class="formula">
-        Pressure = LRV + ((mA − 4) ÷ 16) × (URV − LRV)
-    </div>
-
-    <h3>What the variables mean</h3>
-
-    <ul>
-        <li><strong>LRV:</strong> Pressure represented by 4 mA</li>
-        <li><strong>URV:</strong> Pressure represented by 20 mA</li>
-        <li><strong>mA:</strong> Measured transmitter output current</li>
-        <li><strong>16:</strong> The 16 mA span between 4 and 20 mA</li>
-    </ul>
-
-    <h2>4–20 mA Pressure Reference Points</h2>
-
-    <table class="reference-table">
-        <thead>
-            <tr>
-                <th>Current</th>
-                <th>% of Span</th>
-                <th>Example: 0–100 PSI</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>4 mA</td>
-                <td>0%</td>
-                <td>0 PSI</td>
-            </tr>
-            <tr>
-                <td>8 mA</td>
-                <td>25%</td>
-                <td>25 PSI</td>
-            </tr>
-            <tr>
-                <td>12 mA</td>
-                <td>50%</td>
-                <td>50 PSI</td>
-            </tr>
-            <tr>
-                <td>16 mA</td>
-                <td>75%</td>
-                <td>75 PSI</td>
-            </tr>
-            <tr>
-                <td>20 mA</td>
-                <td>100%</td>
-                <td>100 PSI</td>
-            </tr>
-        </tbody>
-    </table>
-
-    <h2>Worked Example</h2>
-
-    <div class="example">
+        <h2>
+            How Pressure Transmitter Scaling Works
+        </h2>
 
         <p>
-            Suppose a pressure transmitter is configured for:
-        </p>
 
-        <ul>
-            <li>LRV = 0 PSI</li>
-            <li>URV = 100 PSI</li>
-            <li>Measured signal = 12 mA</li>
-        </ul>
+            A typical pressure transmitter converts a measured pressure range
+            into a 4–20 mA signal. The transmitter's Lower Range Value (LRV)
+            corresponds to 4 mA, while the Upper Range Value (URV) corresponds
+            to 20 mA.
+
+        </p>
 
         <p>
-            First determine how far the signal is through its 4–20 mA span:
+
+            The receiving PLC, controller, or meter uses the same range
+            information to convert the measured current back into pressure.
+
         </p>
+
 
         <div class="formula">
-            (12 − 4) ÷ 16 = 0.50
+
+            Pressure = LRV + ((mA − 4) ÷ 16) × (URV − LRV)
+
         </div>
 
+
+        <h3>
+            What the Variables Mean
+        </h3>
+
+        <ul>
+
+            <li>
+                <strong>LRV:</strong>
+                Pressure represented by 4 mA
+            </li>
+
+            <li>
+                <strong>URV:</strong>
+                Pressure represented by 20 mA
+            </li>
+
+            <li>
+                <strong>mA:</strong>
+                Measured transmitter output current
+            </li>
+
+            <li>
+                <strong>16:</strong>
+                The 16 mA span between 4 and 20 mA
+            </li>
+
+        </ul>
+
+    </section>
+
+
+    <!-- Reference Points -->
+
+    <section class="content-section">
+
+        <h2>
+            4–20 mA Pressure Reference Points
+        </h2>
+
+
+        <table class="reference-table">
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Current
+                    </th>
+
+                    <th>
+                        % of Span
+                    </th>
+
+                    <th>
+                        Example: 0–100 PSI
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                <tr>
+
+                    <td>
+                        4 mA
+                    </td>
+
+                    <td>
+                        0%
+                    </td>
+
+                    <td>
+                        0 PSI
+                    </td>
+
+                </tr>
+
+                <tr>
+
+                    <td>
+                        8 mA
+                    </td>
+
+                    <td>
+                        25%
+                    </td>
+
+                    <td>
+                        25 PSI
+                    </td>
+
+                </tr>
+
+                <tr>
+
+                    <td>
+                        12 mA
+                    </td>
+
+                    <td>
+                        50%
+                    </td>
+
+                    <td>
+                        50 PSI
+                    </td>
+
+                </tr>
+
+                <tr>
+
+                    <td>
+                        16 mA
+                    </td>
+
+                    <td>
+                        75%
+                    </td>
+
+                    <td>
+                        75 PSI
+                    </td>
+
+                </tr>
+
+                <tr>
+
+                    <td>
+                        20 mA
+                    </td>
+
+                    <td>
+                        100%
+                    </td>
+
+                    <td>
+                        100 PSI
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </section>
+
+
+    <!-- Worked Example -->
+
+    <section class="content-section">
+
+        <h2>
+            Worked Example
+        </h2>
+
+
+        <div class="example">
+
+            <p>
+
+                Suppose a pressure transmitter is configured for:
+
+            </p>
+
+
+            <ul>
+
+                <li>
+                    LRV = 0 PSI
+                </li>
+
+                <li>
+                    URV = 100 PSI
+                </li>
+
+                <li>
+                    Measured signal = 12 mA
+                </li>
+
+            </ul>
+
+
+            <p>
+
+                First determine how far the signal is through its 4–20 mA span:
+
+            </p>
+
+
+            <div class="formula">
+
+                (12 − 4) ÷ 16 = 0.50
+
+            </div>
+
+
+            <p>
+
+                The signal is therefore at 50% of the transmitter's range.
+
+            </p>
+
+
+            <div class="formula">
+
+                0 + (0.50 × 100) = 50 PSI
+
+            </div>
+
+
+            <p>
+
+                <strong>
+                    Result: 12 mA represents 50 PSI.
+                </strong>
+
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- Gauge vs Absolute -->
+
+    <section class="content-section">
+
+        <h2>
+            Gauge vs. Absolute Pressure
+        </h2>
+
+
         <p>
-            The signal is therefore at 50% of the transmitter's range.
+
+            Pressure transmitters can be configured to measure different
+            pressure references. This matters when interpreting the value
+            reported by the transmitter.
+
         </p>
+
+
+        <ul>
+
+            <li>
+
+                <strong>
+                    Gauge pressure:
+                </strong>
+
+                Measures pressure relative to atmospheric pressure.
+
+            </li>
+
+
+            <li>
+
+                <strong>
+                    Absolute pressure:
+                </strong>
+
+                Measures pressure relative to a vacuum reference.
+
+            </li>
+
+
+            <li>
+
+                <strong>
+                    Vacuum / negative gauge:
+                </strong>
+
+                Represents pressure below atmospheric pressure using negative
+                gauge values.
+
+            </li>
+
+        </ul>
+
+
+        <div class="note">
+
+            <strong>
+                Important:
+            </strong>
+
+            The 4–20 mA scaling formula does not inherently know whether a
+            pressure value is gauge or absolute. The LRV and URV must match
+            the transmitter's actual configured range and pressure reference.
+
+        </div>
+
+    </section>
+
+
+    <!-- LRV / URV -->
+
+    <section class="content-section">
+
+        <h2>
+            Understanding LRV and URV
+        </h2>
+
+
+        <p>
+
+            LRV and URV are sometimes confused with the physical limits of the
+            transmitter. They are actually the configured measurement range.
+
+        </p>
+
+
+        <p>
+
+            For example, a transmitter capable of measuring a much larger
+            pressure range could be configured for:
+
+        </p>
+
 
         <div class="formula">
-            0 + (0.50 × 100) = 50 PSI
+
+            LRV = 10 PSI
+            <br>
+            URV = 50 PSI
+
         </div>
 
+
         <p>
-            <strong>Result: 12 mA represents 50 PSI.</strong>
+            In that case:
         </p>
 
-    </div>
 
-    <h2>Gauge vs. Absolute Pressure</h2>
-
-    <p>
-        Pressure transmitters can be configured to measure different
-        pressure references. This matters when interpreting the value
-        reported by the transmitter.
-    </p>
-
-    <ul>
-        <li>
-            <strong>Gauge pressure:</strong> Measures pressure relative
-            to atmospheric pressure.
-        </li>
-        <li>
-            <strong>Absolute pressure:</strong> Measures pressure relative
-            to a vacuum reference.
-        </li>
-        <li>
-            <strong>Vacuum / negative gauge:</strong> Represents pressure
-            below atmospheric pressure using negative gauge values.
-        </li>
-    </ul>
-
-    <div class="note">
-        <strong>Important:</strong>
-        The 4–20 mA scaling formula does not inherently know whether a
-        pressure value is gauge or absolute. The LRV and URV must match
-        the transmitter's actual configured range and pressure reference.
-    </div>
-
-    <h2>Understanding LRV and URV</h2>
-
-    <p>
-        LRV and URV are sometimes confused with the physical limits of the
-        transmitter. They are actually the configured measurement range.
-    </p>
-
-    <p>
-        For example, a transmitter capable of measuring a much larger
-        pressure range could be configured for:
-    </p>
-
-    <div class="formula">
-        LRV = 10 PSI<br>
-        URV = 50 PSI
-    </div>
-
-    <p>
-        In that case:
-    </p>
-
-    <ul>
-        <li>4 mA = 10 PSI</li>
-        <li>12 mA = 30 PSI</li>
-        <li>20 mA = 50 PSI</li>
-    </ul>
-
-    <p>
-        The PLC must use the configured range, not the transmitter's
-        maximum possible pressure rating.
-    </p>
-
-    <h2>Field Application</h2>
-
-    <p>
-        This calculation is commonly used when commissioning or
-        troubleshooting pressure transmitters connected to PLCs,
-        DCS systems, building automation systems, and other control
-        systems.
-    </p>
-
-    <p>
-        A useful troubleshooting sequence is:
-    </p>
-
-    <ol>
-        <li>Verify the transmitter's configured LRV and URV.</li>
-        <li>Measure the actual loop current.</li>
-        <li>Calculate the expected pressure from the current.</li>
-        <li>Compare the calculated value with the controller display.</li>
-        <li>Check whether the PLC scaling uses the same range.</li>
-        <li>Verify the pressure reference: gauge or absolute.</li>
-    </ol>
-
-    <h2>Troubleshooting</h2>
-
-    <h3>Current is correct but the PLC pressure is wrong</h3>
-
-    <p>
-        If the measured loop current is correct but the displayed pressure
-        is incorrect, the problem may be in the controller's scaling.
-        Verify the PLC's analog input configuration and engineering-unit
-        range.
-    </p>
-
-    <h3>4 mA does not equal the expected pressure</h3>
-
-    <p>
-        Check the transmitter's configured LRV. Do not assume that 4 mA
-        always represents zero pressure.
-    </p>
-
-    <h3>20 mA does not equal the expected pressure</h3>
-
-    <p>
-        Check the transmitter's configured URV and verify that the PLC
-        uses the same upper range value.
-    </p>
-
-    <h3>Pressure is consistently offset</h3>
-
-    <p>
-        Check transmitter zero calibration, impulse lines, installation
-        conditions, and whether the expected pressure reference matches
-        the transmitter configuration.
-    </p>
-
-    <h3>The transmitter reads correctly but the PLC does not</h3>
-
-    <p>
-        Measure the loop current directly. If the current corresponds to
-        the expected pressure but the PLC display does not, investigate
-        analog input configuration, raw-count scaling, engineering-unit
-        conversion, and signal wiring.
-    </p>
-
-    <h2>Common Mistakes</h2>
-
-    <ul>
-        <li>Using the transmitter's maximum range instead of its configured URV.</li>
-        <li>Assuming 4 mA always means zero pressure.</li>
-        <li>Using gauge pressure values with an absolute-pressure transmitter.</li>
-        <li>Using the wrong pressure unit in the PLC.</li>
-        <li>Forgetting that a negative LRV is valid.</li>
-        <li>Scaling the PLC with different LRV/URV values than the transmitter.</li>
-        <li>Diagnosing a PLC scaling problem without first measuring the loop current.</li>
-    </ul>
-
-    <h2>Related Calculators</h2>
-
-    <div class="related">
         <ul>
-            <li>
-                <a href="4-20ma-scaling.html">
-                    4–20 mA Scaling Calculator
-                </a>
-            </li>
-            <li>
-                <a href="analog-scaling.html">
-                    Analog Signal Scaling Calculator
-                </a>
-            </li>
-            <li>
-                <a href="4-20ma-voltage.html">
-                    4–20 mA to Voltage Calculator
-                </a>
-            </li>
-            <li>
-                <a href="4-20ma-resistor.html">
-                    4–20 mA Loop Resistor Calculator
-                </a>
-            </li>
-        </ul>
-    </div>
 
-</div>
+            <li>
+                4 mA = 10 PSI
+            </li>
+
+            <li>
+                12 mA = 30 PSI
+            </li>
+
+            <li>
+                20 mA = 50 PSI
+            </li>
+
+        </ul>
+
+
+        <p>
+
+            The PLC must use the configured range, not the transmitter's
+            maximum possible pressure rating.
+
+        </p>
+
+    </section>
+
+
+    <!-- Field Application -->
+
+    <section class="content-section">
+
+        <h2>
+            Field Application
+        </h2>
+
+
+        <p>
+
+            This calculation is commonly used when commissioning or
+            troubleshooting pressure transmitters connected to PLCs,
+            DCS systems, building automation systems, and other control
+            systems.
+
+        </p>
+
+
+        <p>
+
+            A useful troubleshooting sequence is:
+
+        </p>
+
+
+        <ol>
+
+            <li>
+                Verify the transmitter's configured LRV and URV.
+            </li>
+
+            <li>
+                Measure the actual loop current.
+            </li>
+
+            <li>
+                Calculate the expected pressure from the current.
+            </li>
+
+            <li>
+                Compare the calculated value with the controller display.
+            </li>
+
+            <li>
+                Check whether the PLC scaling uses the same range.
+            </li>
+
+            <li>
+                Verify the pressure reference: gauge or absolute.
+            </li>
+
+        </ol>
+
+    </section>
+
+
+    <!-- Troubleshooting -->
+
+    <section class="content-section">
+
+        <h2>
+            Troubleshooting
+        </h2>
+
+
+        <h3>
+            Current is correct but the PLC pressure is wrong
+        </h3>
+
+        <p>
+
+            If the measured loop current is correct but the displayed pressure
+            is incorrect, the problem may be in the controller's scaling.
+            Verify the PLC's analog input configuration and engineering-unit
+            range.
+
+        </p>
+
+
+        <h3>
+            4 mA does not equal the expected pressure
+        </h3>
+
+        <p>
+
+            Check the transmitter's configured LRV. Do not assume that 4 mA
+            always represents zero pressure.
+
+        </p>
+
+
+        <h3>
+            20 mA does not equal the expected pressure
+        </h3>
+
+        <p>
+
+            Check the transmitter's configured URV and verify that the PLC
+            uses the same upper range value.
+
+        </p>
+
+
+        <h3>
+            Pressure is consistently offset
+        </h3>
+
+        <p>
+
+            Check transmitter zero calibration, impulse lines, installation
+            conditions, and whether the expected pressure reference matches
+            the transmitter configuration.
+
+        </p>
+
+
+        <h3>
+            The transmitter reads correctly but the PLC does not
+        </h3>
+
+        <p>
+
+            Measure the loop current directly. If the current corresponds to
+            the expected pressure but the PLC display does not, investigate
+            analog input configuration, raw-count scaling, engineering-unit
+            conversion, and signal wiring.
+
+        </p>
+
+    </section>
+
+
+    <!-- Common Mistakes -->
+
+    <section class="content-section">
+
+        <h2>
+            Common Mistakes
+        </h2>
+
+
+        <ul>
+
+            <li>
+                Using the transmitter's maximum range instead of its configured URV.
+            </li>
+
+            <li>
+                Assuming 4 mA always means zero pressure.
+            </li>
+
+            <li>
+                Using gauge pressure values with an absolute-pressure transmitter.
+            </li>
+
+            <li>
+                Using the wrong pressure unit in the PLC.
+            </li>
+
+            <li>
+                Forgetting that a negative LRV is valid.
+            </li>
+
+            <li>
+                Scaling the PLC with different LRV/URV values than the transmitter.
+            </li>
+
+            <li>
+                Diagnosing a PLC scaling problem without first measuring the loop current.
+            </li>
+
+        </ul>
+
+    </section>
+
+
+    <!-- Related -->
+
+    <section class="content-section">
+
+        <h2>
+            Related Calculators
+        </h2>
+
+
+        <div class="related">
+
+            <a href="4-20ma-scaling.html">
+                4–20 mA Scaling Calculator
+            </a>
+
+
+            <a href="analog-scaling.html">
+                Analog Signal Scaling Calculator
+            </a>
+
+
+            <a href="4-20ma-voltage.html">
+                4–20 mA to Voltage Calculator
+            </a>
+
+
+            <a href="4-20ma-resistor.html">
+                4–20 mA Loop Resistor Calculator
+            </a>
+
+        </div>
+
+    </section>
+
+
+</main>
+
+
+<footer>
+
+    ControlsCalc — Controls & Instrumentation Calculators
+
+</footer>
+
 
 <script>
-function formatNumber(value, decimals = 3) {
-    if (!Number.isFinite(value)) return "—";
+
+
+function formatNumber(
+    value,
+    decimals = 3
+) {
+
+    if (!Number.isFinite(value)) {
+        return "—";
+    }
+
 
     if (Math.abs(value) < 1e-9) {
         value = 0;
     }
 
-    return Number(value.toFixed(decimals)).toLocaleString();
+
+    return Number(
+        value.toFixed(decimals)
+    ).toLocaleString();
+
 }
+
 
 function calculate() {
 
-    const lrv = parseFloat(document.getElementById("lrv").value);
-    const urv = parseFloat(document.getElementById("urv").value);
-    const current = parseFloat(document.getElementById("current").value);
-    const unit = document.getElementById("unit").value;
-    const pressureType = document.getElementById("pressureType").value;
+    const lrv =
+        parseFloat(
+            document
+                .getElementById("lrv")
+                .value
+        );
 
-    const result = document.getElementById("result");
+
+    const urv =
+        parseFloat(
+            document
+                .getElementById("urv")
+                .value
+        );
+
+
+    const current =
+        parseFloat(
+            document
+                .getElementById("current")
+                .value
+        );
+
+
+    const unit =
+        document
+            .getElementById("unit")
+            .value;
+
+
+    const pressureType =
+        document
+            .getElementById("pressureType")
+            .value;
+
+
+    const result =
+        document
+            .getElementById("result");
+
+
+    const error =
+        document
+            .getElementById("error");
+
+
+    result.style.display = "none";
+
+    error.style.display = "none";
+
+
+    /* Validate inputs */
 
     if (
         !Number.isFinite(lrv) ||
         !Number.isFinite(urv) ||
         !Number.isFinite(current)
     ) {
-        result.style.display = "block";
-        result.innerHTML = `
-            <h2>Input Error</h2>
-            <p>Please enter valid numeric values for all inputs.</p>
+
+        error.innerHTML = `
+            <strong>Input Error</strong>
+            <br>
+            Please enter valid numeric values for all inputs.
         `;
+
+        error.style.display = "block";
+
         return;
+
     }
+
 
     if (urv === lrv) {
-        result.style.display = "block";
-        result.innerHTML = `
-            <h2>Input Error</h2>
-            <p>LRV and URV cannot be the same value.</p>
+
+        error.innerHTML = `
+            <strong>Input Error</strong>
+            <br>
+            LRV and URV cannot be the same value.
         `;
+
+        error.style.display = "block";
+
         return;
+
     }
 
-    if (current < 4 || current > 20) {
-        result.style.display = "block";
-        result.innerHTML = `
-            <h2>Signal Outside Normal Range</h2>
-            <p>
-                The entered signal is ${formatNumber(current, 3)} mA.
-                Normal 4–20 mA operation is between 4 and 20 mA.
-            </p>
-            <p>
-                The calculation will still be performed so that
-                diagnostic or fault-condition signals can be examined.
-            </p>
-        `;
-    }
 
-    const fraction = (current - 4) / 16;
-    const pressure = lrv + fraction * (urv - lrv);
+    /* Unit names */
 
     const unitNames = {
+
         psi: "PSI",
+
         kpa: "kPa",
+
         bar: "bar",
+
         inh2o: "inH₂O",
+
         inhg: "inHg",
+
         mpa: "MPa"
+
     };
+
 
     const pressureTypeNames = {
+
         gauge: "Gauge Pressure",
+
         absolute: "Absolute Pressure",
-        vacuum: "Vacuum / Negative Gauge Pressure"
+
+        vacuum:
+            "Vacuum / Negative Gauge Pressure"
+
     };
 
-    const unitName = unitNames[unit] || unit;
-    const typeName = pressureTypeNames[pressureType] || pressureType;
+
+    const unitName =
+        unitNames[unit] || unit;
+
+
+    const typeName =
+        pressureTypeNames[pressureType]
+        || pressureType;
+
+
+    /* Calculate span position */
+
+    const fraction =
+        (current - 4) / 16;
+
+
+    const pressure =
+        lrv +
+        fraction *
+        (urv - lrv);
+
+
+    /* Status message */
 
     let status = "";
 
+
     if (current < 4) {
+
         status = `
-            <div class="note">
-                <strong>Below 4 mA:</strong>
+
+            <div class="warning">
+
+                <strong>
+                    Below 4 mA:
+                </strong>
+
                 The signal is below the normal measurement span.
                 Depending on the transmitter configuration, this may
                 indicate an underrange or fault condition.
+
             </div>
+
         `;
-    } else if (current > 20) {
+
+    }
+
+
+    else if (current > 20) {
+
         status = `
-            <div class="note">
-                <strong>Above 20 mA:</strong>
+
+            <div class="warning">
+
+                <strong>
+                    Above 20 mA:
+                </strong>
+
                 The signal is above the normal measurement span.
                 Depending on the transmitter configuration, this may
                 indicate an overrange or fault condition.
+
             </div>
+
         `;
+
     }
+
+
+    /* Display result */
+
+    result.innerHTML = `
+
+        <h2>
+            Calculated Pressure
+        </h2>
+
+
+        <div class="result-value">
+
+            ${formatNumber(
+                pressure,
+                3
+            )}
+            ${unitName}
+
+        </div>
+
+
+        <p>
+
+            <strong>
+                Measured Current:
+            </strong>
+
+            ${formatNumber(
+                current,
+                3
+            )}
+            mA
+
+        </p>
+
+
+        <p>
+
+            <strong>
+                Transmitter Range:
+            </strong>
+
+            ${formatNumber(
+                lrv,
+                3
+            )}
+            to
+
+            ${formatNumber(
+                urv,
+                3
+            )}
+            ${unitName}
+
+        </p>
+
+
+        <p>
+
+            <strong>
+                Pressure Reference:
+            </strong>
+
+            ${typeName}
+
+        </p>
+
+
+        <p>
+
+            <strong>
+                Percent of Span:
+            </strong>
+
+            ${formatNumber(
+                fraction * 100,
+                2
+            )}%
+
+        </p>
+
+
+        ${status}
+
+    `;
+
 
     result.style.display = "block";
 
-    result.innerHTML = `
-        <h2>Calculated Pressure</h2>
-
-        <div class="result-value">
-            ${formatNumber(pressure, 3)} ${unitName}
-        </div>
-
-        <p>
-            <strong>Measured Current:</strong>
-            ${formatNumber(current, 3)} mA
-        </p>
-
-        <p>
-            <strong>Transmitter Range:</strong>
-            ${formatNumber(lrv, 3)} to ${formatNumber(urv, 3)} ${unitName}
-        </p>
-
-        <p>
-            <strong>Pressure Reference:</strong>
-            ${typeName}
-        </p>
-
-        <p>
-            <strong>Percent of Span:</strong>
-            ${formatNumber(fraction * 100, 2)}%
-        </p>
-
-        ${status}
-    `;
 }
+
+
 </script>
 
-</main>
-
-<footer>
-    <div class="container">
-        <p>
-            <strong>ControlsCalc</strong>
-        </p>
-
-        <p>
-            Engineering and controls calculators for technicians and engineers.
-        </p>
-    </div>
-</footer>
 
 </body>
+
 </html>
