@@ -1,0 +1,1797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>IEEE-754 Floating Point Converter | ControlsCalc</title>
+
+    <meta
+        name="description"
+        content="Convert decimal values, IEEE-754 floating point values, hexadecimal values, and PLC or Modbus 32-bit registers. Understand byte order and word swapping."
+    >
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #172033;
+            background: #f5f7fa;
+            line-height: 1.6;
+        }
+
+        a {
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            width: min(1000px, calc(100% - 40px));
+            margin: 0 auto;
+        }
+
+        /* Header */
+
+        header {
+            background: #ffffff;
+            border-bottom: 1px solid #e1e5eb;
+        }
+
+        .header-inner {
+            min-height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 800;
+            color: #172033;
+        }
+
+        nav {
+            display: flex;
+            gap: 24px;
+        }
+
+        nav a {
+            font-size: 15px;
+        }
+
+        /* Main */
+
+        main {
+            padding: 48px 0 70px;
+        }
+
+        .breadcrumbs {
+            margin-bottom: 24px;
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .intro {
+            margin-bottom: 32px;
+        }
+
+        .intro h1 {
+            margin: 0 0 16px;
+            font-size: clamp(32px, 5vw, 46px);
+            line-height: 1.1;
+            letter-spacing: -1px;
+        }
+
+        .intro p {
+            max-width: 800px;
+            margin: 8px 0;
+            color: #64748b;
+            font-size: 17px;
+        }
+
+        /* Calculator */
+
+        .calculator {
+            background: #ffffff;
+            border: 1px solid #dfe5ec;
+            border-radius: 14px;
+            padding: 32px;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 18px rgba(15, 23, 42, 0.04);
+        }
+
+        .calculator h2 {
+            margin: 0 0 24px;
+            font-size: 25px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 22px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .field label {
+            margin-bottom: 7px;
+            font-weight: 700;
+            font-size: 15px;
+        }
+
+        .field input,
+        .field select {
+            width: 100%;
+            padding: 13px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            background: #ffffff;
+            color: #172033;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .field input:focus,
+        .field select:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+        }
+
+        .field small {
+            margin-top: 6px;
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        .calculate-button {
+            width: 100%;
+            margin-top: 26px;
+            padding: 14px 18px;
+            border: none;
+            border-radius: 8px;
+            background: #2563eb;
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .calculate-button:hover {
+            background: #1d4ed8;
+        }
+
+        /* Result */
+
+        .result {
+            display: none;
+            margin-top: 24px;
+            padding: 24px;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 10px;
+        }
+
+        .result.show {
+            display: block;
+        }
+
+        .result h3 {
+            margin: 0 0 8px;
+            color: #1d4ed8;
+            font-size: 18px;
+        }
+
+        .result-value {
+            margin: 0;
+            font-size: 30px;
+            font-weight: 800;
+            color: #172033;
+            word-break: break-word;
+        }
+
+        .result-details {
+            margin: 10px 0 0;
+            color: #475569;
+        }
+
+        .result-block {
+            margin-top: 18px;
+        }
+
+        .result-label {
+            display: block;
+            margin-bottom: 6px;
+            color: #64748b;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .result-code {
+            padding: 14px;
+            background: #ffffff;
+            border: 1px solid #dbeafe;
+            border-radius: 8px;
+            font-family: "Courier New", monospace;
+            font-size: 15px;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        .secondary-results {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-top: 18px;
+        }
+
+        .secondary-result {
+            padding: 14px;
+            background: #ffffff;
+            border: 1px solid #dbeafe;
+            border-radius: 8px;
+        }
+
+        .secondary-result-label {
+            display: block;
+            margin-bottom: 4px;
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        .secondary-result-value {
+            font-size: 17px;
+            font-weight: 700;
+            color: #172033;
+            word-break: break-word;
+        }
+
+        /* Error */
+
+        .error {
+            display: none;
+            margin-top: 18px;
+            padding: 14px 16px;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+            color: #991b1b;
+        }
+
+        .error.show {
+            display: block;
+        }
+
+        /* Content */
+
+        .content-section {
+            background: #ffffff;
+            border: 1px solid #dfe5ec;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 24px;
+        }
+
+        .content-section h2 {
+            margin: 0 0 16px;
+            font-size: 23px;
+        }
+
+        .content-section h3 {
+            margin: 24px 0 10px;
+            font-size: 18px;
+        }
+
+        .content-section p {
+            margin: 10px 0;
+        }
+
+        .content-section ul,
+        .content-section ol {
+            padding-left: 24px;
+        }
+
+        .content-section li {
+            margin-bottom: 8px;
+        }
+
+        .formula {
+            margin: 18px 0;
+            padding: 18px;
+            background: #f5f7fa;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-family: "Courier New", monospace;
+            font-size: 16px;
+            overflow-x: auto;
+        }
+
+        /* Tables */
+
+        .reference-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .reference-table th,
+        .reference-table td {
+            padding: 12px 14px;
+            border: 1px solid #e2e8f0;
+            text-align: left;
+        }
+
+        .reference-table th {
+            background: #f8fafc;
+            font-size: 14px;
+        }
+
+        /* Related */
+
+        .related-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            padding: 0;
+            list-style: none;
+        }
+
+        .related-list li {
+            margin: 0;
+        }
+
+        .related-list a {
+            display: block;
+            padding: 12px 14px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+        }
+
+        .related-list a:hover {
+            background: #eff6ff;
+            text-decoration: none;
+        }
+
+        /* Footer */
+
+        footer {
+            padding: 32px 0;
+            background: #ffffff;
+            border-top: 1px solid #e1e5eb;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        footer p {
+            margin: 4px 0;
+        }
+
+        /* Mobile */
+
+        @media (max-width: 650px) {
+
+            .container {
+                width: min(100% - 28px, 1000px);
+            }
+
+            .header-inner {
+                min-height: 58px;
+            }
+
+            nav {
+                gap: 14px;
+            }
+
+            main {
+                padding-top: 32px;
+            }
+
+            .calculator {
+                padding: 22px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .secondary-results {
+                grid-template-columns: 1fr;
+            }
+
+            .related-list {
+                grid-template-columns: 1fr;
+            }
+
+            .result-value {
+                font-size: 25px;
+            }
+
+            .reference-table {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="container header-inner">
+
+        <a href="../index.html" class="logo">
+            ControlsCalc
+        </a>
+
+        <nav>
+            <a href="../index.html">Calculators</a>
+            <a href="../guides/index.html">Guides</a>
+        </nav>
+
+    </div>
+</header>
+
+
+<main>
+
+    <div class="container">
+
+        <div class="breadcrumbs">
+            <a href="../index.html">ControlsCalc</a>
+            &nbsp; / &nbsp;
+            IEEE-754 Floating Point
+        </div>
+
+
+        <section class="intro">
+
+            <h1>IEEE-754 Floating Point Converter</h1>
+
+            <p>
+                Convert decimal numbers, hexadecimal values, and IEEE-754
+                floating-point representations used by PLCs, Modbus devices,
+                FieldServer gateways, instrumentation, and automation systems.
+            </p>
+
+            <p>
+                This calculator focuses on the common 32-bit single-precision
+                format and shows the underlying sign, exponent, mantissa,
+                hexadecimal representation, and 16-bit register values.
+            </p>
+
+        </section>
+
+
+        <!-- Calculator -->
+
+        <section class="calculator">
+
+            <h2>Convert Floating Point Values</h2>
+
+            <div class="form-grid">
+
+                <div class="field">
+
+                    <label for="mode">
+                        Conversion
+                    </label>
+
+                    <select id="mode">
+
+                        <option value="decimal">
+                            Decimal → IEEE-754
+                        </option>
+
+                        <option value="hex">
+                            Hex → IEEE-754
+                        </option>
+
+                        <option value="binary">
+                            Binary → IEEE-754
+                        </option>
+
+                        <option value="ieee">
+                            IEEE-754 → Decimal
+                        </option>
+
+                        <option value="registers">
+                            16-bit Registers → IEEE-754
+                        </option>
+
+                    </select>
+
+                    <small>
+                        Select the representation you currently have.
+                    </small>
+
+                </div>
+
+
+                <div class="field">
+
+                    <label for="byteOrder">
+                        Register / Byte Order
+                    </label>
+
+                    <select id="byteOrder">
+
+                        <option value="ABCD">
+                            ABCD — Normal
+                        </option>
+
+                        <option value="BADC">
+                            BADC — Byte Swap
+                        </option>
+
+                        <option value="CDAB">
+                            CDAB — Word Swap
+                        </option>
+
+                        <option value="DCBA">
+                            DCBA — Byte + Word Swap
+                        </option>
+
+                    </select>
+
+                    <small>
+                        Used when converting hexadecimal or 16-bit registers.
+                    </small>
+
+                </div>
+
+
+                <div class="field" id="mainInputField">
+
+                    <label for="mainInput" id="mainInputLabel">
+                        Decimal Value
+                    </label>
+
+                    <input
+                        type="text"
+                        id="mainInput"
+                        placeholder="Example: 12.34"
+                    >
+
+                    <small id="mainInputHelp">
+                        Enter a decimal floating-point value.
+                    </small>
+
+                </div>
+
+
+                <div class="field" id="registerField" style="display: none;">
+
+                    <label for="register2">
+                        Second 16-bit Register
+                    </label>
+
+                    <input
+                        type="text"
+                        id="register2"
+                        placeholder="Example: 4145"
+                    >
+
+                    <small>
+                        Enter the second 16-bit register as decimal or hexadecimal.
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="calculate-button"
+                onclick="calculateFloat()"
+            >
+                Calculate
+            </button>
+
+
+            <div id="error" class="error"></div>
+
+
+            <div id="result" class="result">
+
+                <h3>Conversion Result</h3>
+
+                <p
+                    id="resultValue"
+                    class="result-value"
+                ></p>
+
+                <p
+                    id="resultDetails"
+                    class="result-details"
+                ></p>
+
+
+                <div class="result-block">
+
+                    <span class="result-label">
+                        IEEE-754 Binary
+                    </span>
+
+                    <div
+                        id="binaryResult"
+                        class="result-code"
+                    ></div>
+
+                </div>
+
+
+                <div class="result-block">
+
+                    <span class="result-label">
+                        Hexadecimal
+                    </span>
+
+                    <div
+                        id="hexResult"
+                        class="result-code"
+                    ></div>
+
+                </div>
+
+
+                <div class="secondary-results">
+
+                    <div class="secondary-result">
+
+                        <span class="secondary-result-label">
+                            Sign
+                        </span>
+
+                        <span
+                            id="signResult"
+                            class="secondary-result-value"
+                        ></span>
+
+                    </div>
+
+
+                    <div class="secondary-result">
+
+                        <span class="secondary-result-label">
+                            Exponent
+                        </span>
+
+                        <span
+                            id="exponentResult"
+                            class="secondary-result-value"
+                        ></span>
+
+                    </div>
+
+
+                    <div class="secondary-result">
+
+                        <span class="secondary-result-label">
+                            Mantissa
+                        </span>
+
+                        <span
+                            id="mantissaResult"
+                            class="secondary-result-value"
+                        ></span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="result-block">
+
+                    <span class="result-label">
+                        16-bit Registers
+                    </span>
+
+                    <div
+                        id="registerResult"
+                        class="result-code"
+                    ></div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- What Is IEEE -->
+
+        <section class="content-section">
+
+            <h2>What Is IEEE-754?</h2>
+
+            <p>
+                IEEE-754 is a standard used to represent floating-point
+                numbers in binary. It allows computers, PLCs, controllers,
+                and other digital systems to represent values containing
+                fractional components.
+            </p>
+
+            <p>
+                The most common format encountered in industrial automation
+                is the <strong>32-bit single-precision</strong> floating-point
+                format.
+            </p>
+
+            <div class="formula">
+                32 Bits = Sign + Exponent + Mantissa
+
+                <br><br>
+
+                1 bit + 8 bits + 23 bits
+            </div>
+
+        </section>
+
+
+        <!-- Structure -->
+
+        <section class="content-section">
+
+            <h2>32-Bit IEEE-754 Structure</h2>
+
+            <table class="reference-table">
+
+                <thead>
+
+                    <tr>
+                        <th>Field</th>
+                        <th>Bits</th>
+                        <th>Purpose</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr>
+                        <td>Sign</td>
+                        <td>1</td>
+                        <td>Positive or negative</td>
+                    </tr>
+
+                    <tr>
+                        <td>Exponent</td>
+                        <td>8</td>
+                        <td>Controls the binary scale</td>
+                    </tr>
+
+                    <tr>
+                        <td>Mantissa</td>
+                        <td>23</td>
+                        <td>Contains the significant digits</td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+            <div class="formula">
+                S | EEEEEEEE | MMMMMMMMMMMMMMMMMMMMMMM
+            </div>
+
+            <p>
+                The exponent uses a bias of 127 in the standard 32-bit
+                representation.
+            </p>
+
+        </section>
+
+
+        <!-- Example -->
+
+        <section class="content-section">
+
+            <h2>Worked Example</h2>
+
+            <p>
+                Consider the decimal value:
+            </p>
+
+            <div class="formula">
+                1.0
+            </div>
+
+            <p>
+                Its 32-bit IEEE-754 representation is:
+            </p>
+
+            <div class="formula">
+                Binary:
+                00111111100000000000000000000000
+
+                <br><br>
+
+                Hex:
+                0x3F800000
+            </div>
+
+            <p>
+                The first bit is zero because the number is positive. The
+                exponent represents the appropriate binary scale, while the
+                mantissa represents the significant portion of the value.
+            </p>
+
+        </section>
+
+
+        <!-- Modbus -->
+
+        <section class="content-section">
+
+            <h2>Floating Point Values in Modbus</h2>
+
+            <p>
+                Modbus registers are 16 bits wide, while a 32-bit floating-point
+                value requires two consecutive 16-bit registers.
+            </p>
+
+            <p>
+                For example, a 32-bit floating-point value might be represented
+                as:
+            </p>
+
+            <div class="formula">
+                Register 1 = upper 16 bits
+
+                <br>
+
+                Register 2 = lower 16 bits
+            </div>
+
+            <p>
+                However, the order in which the device presents the bytes and
+                words is not necessarily the same between manufacturers or
+                devices.
+            </p>
+
+        </section>
+
+
+        <!-- Byte Order -->
+
+        <section class="content-section">
+
+            <h2>Byte Order and Word Swapping</h2>
+
+            <p>
+                This is one of the most common reasons a valid floating-point
+                value appears as an unexpected number when reading industrial
+                data.
+            </p>
+
+            <p>
+                A 32-bit value contains four bytes:
+            </p>
+
+            <div class="formula">
+                A B C D
+            </div>
+
+            <p>
+                Common arrangements include:
+            </p>
+
+            <table class="reference-table">
+
+                <thead>
+
+                    <tr>
+                        <th>Format</th>
+                        <th>Order</th>
+                        <th>Description</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr>
+                        <td>ABCD</td>
+                        <td>A B C D</td>
+                        <td>Normal byte order</td>
+                    </tr>
+
+                    <tr>
+                        <td>BADC</td>
+                        <td>B A D C</td>
+                        <td>Bytes swapped within each word</td>
+                    </tr>
+
+                    <tr>
+                        <td>CDAB</td>
+                        <td>C D A B</td>
+                        <td>16-bit words swapped</td>
+                    </tr>
+
+                    <tr>
+                        <td>DCBA</td>
+                        <td>D C B A</td>
+                        <td>Bytes and words reversed</td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+            <p>
+                When troubleshooting a Modbus floating-point value, verify the
+                manufacturer's register map and the byte/word-order settings
+                of the receiving PLC, gateway, or FieldServer.
+            </p>
+
+        </section>
+
+
+        <!-- PLC FieldServer -->
+
+        <section class="content-section">
+
+            <h2>PLC and FieldServer Troubleshooting</h2>
+
+            <p>
+                Suppose a device documentation says that a process value is
+                stored as a 32-bit IEEE-754 floating point number across two
+                Modbus registers.
+            </p>
+
+            <p>
+                If the receiving system displays a value that is obviously
+                incorrect, do not immediately assume that the transmitter or
+                device is malfunctioning.
+            </p>
+
+            <p>
+                Check the data representation first:
+            </p>
+
+            <ol>
+
+                <li>
+                    Confirm that the device actually uses IEEE-754 floating
+                    point.
+                </li>
+
+                <li>
+                    Confirm whether the value is 32-bit or 64-bit.
+                </li>
+
+                <li>
+                    Confirm which two registers contain the value.
+                </li>
+
+                <li>
+                    Determine the manufacturer's byte and word order.
+                </li>
+
+                <li>
+                    Compare the raw register values with the expected
+                    floating-point value.
+                </li>
+
+                <li>
+                    Verify the receiving driver's configuration.
+                </li>
+
+            </ol>
+
+        </section>
+
+
+        <!-- Common Mistakes -->
+
+        <section class="content-section">
+
+            <h2>Common Floating-Point Mistakes</h2>
+
+            <ol>
+
+                <li>
+                    <strong>Reading a float as an integer.</strong>
+                    The same 32 bits can represent completely different
+                    numerical values depending on how they are interpreted.
+                </li>
+
+                <li>
+                    <strong>Using the wrong byte order.</strong>
+                    A correct IEEE-754 value can appear meaningless if the
+                    bytes are arranged incorrectly.
+                </li>
+
+                <li>
+                    <strong>Forgetting word swapping.</strong>
+                    Two 16-bit Modbus registers may need to be exchanged before
+                    interpreting the combined value.
+                </li>
+
+                <li>
+                    <strong>Assuming all Modbus devices use the same float order.</strong>
+                    Always verify the device documentation.
+                </li>
+
+                <li>
+                    <strong>Confusing 32-bit and 64-bit floating point.</strong>
+                    A 64-bit value requires four 16-bit registers rather than
+                    two.
+                </li>
+
+            </ol>
+
+        </section>
+
+
+        <!-- Practical Workflow -->
+
+        <section class="content-section">
+
+            <h2>Practical Field Workflow</h2>
+
+            <p>
+                When troubleshooting a floating-point value from an
+                instrumentation device:
+            </p>
+
+            <div class="formula">
+                Device
+                →
+                Modbus Registers
+                →
+                Byte / Word Order
+                →
+                IEEE-754 Conversion
+                →
+                PLC / Gateway
+                →
+                Engineering Value
+            </div>
+
+            <p>
+                Capture the raw register values before changing configuration.
+                This gives you a known reference that can be compared against
+                the device documentation and the receiving system.
+            </p>
+
+            <p>
+                If changing the byte or word order suddenly produces a
+                physically reasonable value, that is a strong indication that
+                the data representation was configured incorrectly. The device
+                documentation should still be used to confirm the correct
+                configuration.
+            </p>
+
+        </section>
+
+
+        <!-- Important Note -->
+
+        <section class="content-section">
+
+            <h2>Important Note About Register Values</h2>
+
+            <p>
+                A 16-bit Modbus register is normally represented as an unsigned
+                value from 0 through 65535. Two such registers can be combined
+                into a 32-bit value.
+            </p>
+
+            <div class="formula">
+                32-bit Value =
+                (Register 1 × 65536) + Register 2
+            </div>
+
+            <p>
+                The resulting 32-bit bit pattern is then interpreted according
+                to the IEEE-754 standard.
+            </p>
+
+            <p>
+                The exact register numbering, byte order, word order, and
+                floating-point format are device-specific. Always verify the
+                manufacturer's documentation before configuring a live control
+                system.
+            </p>
+
+        </section>
+
+
+        <!-- Related -->
+
+        <section class="content-section">
+
+            <h2>Related Calculators</h2>
+
+            <ul class="related-list">
+
+                <li>
+                    <a href="analog-scaling.html">
+                        Analog Signal Scaling
+                    </a>
+                </li>
+
+                <li>
+                    <a href="4-20ma-scaling.html">
+                        4–20 mA Scaling
+                    </a>
+                </li>
+
+                <li>
+                    <a href="ohms-law.html">
+                        Ohm’s Law
+                    </a>
+                </li>
+
+                <li>
+                    <a href="3-phase-motor-current.html">
+                        3-Phase Motor Current
+                    </a>
+                </li>
+
+            </ul>
+
+        </section>
+
+    </div>
+
+</main>
+
+
+<footer>
+
+    <div class="container">
+
+        <p>
+            <strong>ControlsCalc</strong>
+        </p>
+
+        <p>
+            Engineering and controls calculators for technicians and engineers.
+        </p>
+
+    </div>
+
+</footer>
+
+
+<script>
+
+/*
+ * IEEE-754 32-bit Floating Point Converter
+ *
+ * Byte order:
+ *
+ * ABCD = normal
+ * BADC = byte swap within each 16-bit word
+ * CDAB = word swap
+ * DCBA = byte + word swap
+ */
+
+
+const mode =
+    document.getElementById("mode");
+
+const mainInput =
+    document.getElementById("mainInput");
+
+const mainInputLabel =
+    document.getElementById("mainInputLabel");
+
+const mainInputHelp =
+    document.getElementById("mainInputHelp");
+
+const registerField =
+    document.getElementById("registerField");
+
+const byteOrder =
+    document.getElementById("byteOrder");
+
+
+mode.addEventListener("change", updateForm);
+
+
+function updateForm() {
+
+    const selectedMode = mode.value;
+
+    registerField.style.display = "none";
+
+
+    if (selectedMode === "decimal") {
+
+        mainInputLabel.textContent =
+            "Decimal Value";
+
+        mainInput.placeholder =
+            "Example: 12.34";
+
+        mainInputHelp.textContent =
+            "Enter a decimal floating-point value.";
+
+    }
+
+
+    else if (selectedMode === "hex") {
+
+        mainInputLabel.textContent =
+            "Hexadecimal Value";
+
+        mainInput.placeholder =
+            "Example: 414570A4";
+
+        mainInputHelp.textContent =
+            "Enter the 32-bit IEEE-754 hexadecimal value.";
+
+    }
+
+
+    else if (selectedMode === "binary") {
+
+        mainInputLabel.textContent =
+            "Binary Value";
+
+        mainInput.placeholder =
+            "Example: 01000001010001000101000111101100";
+
+        mainInputHelp.textContent =
+            "Enter exactly 32 binary bits.";
+
+    }
+
+
+    else if (selectedMode === "ieee") {
+
+        mainInputLabel.textContent =
+            "IEEE-754 Value";
+
+        mainInput.placeholder =
+            "Example: 414570A4";
+
+        mainInputHelp.textContent =
+            "Enter the 32-bit IEEE-754 value as hexadecimal.";
+
+    }
+
+
+    else if (selectedMode === "registers") {
+
+        mainInputLabel.textContent =
+            "First 16-bit Register";
+
+        mainInput.placeholder =
+            "Example: 4145";
+
+        mainInputHelp.textContent =
+            "Enter the first 16-bit register as decimal or hexadecimal.";
+
+        registerField.style.display =
+            "flex";
+
+    }
+
+}
+
+
+function showError(message) {
+
+    const error =
+        document.getElementById("error");
+
+    const result =
+        document.getElementById("result");
+
+    error.textContent =
+        message;
+
+    error.classList.add("show");
+
+    result.classList.remove("show");
+}
+
+
+function clearError() {
+
+    document
+        .getElementById("error")
+        .classList.remove("show");
+
+}
+
+
+function hexToBytes(hex) {
+
+    hex = hex
+        .replace(/^0x/i, "")
+        .replace(/\s+/g, "");
+
+    if (!/^[0-9a-fA-F]+$/.test(hex)) {
+        throw new Error(
+            "Hexadecimal input contains invalid characters."
+        );
+    }
+
+    if (hex.length !== 8) {
+        throw new Error(
+            "A 32-bit floating-point value requires exactly 8 hexadecimal digits."
+        );
+    }
+
+    const bytes = [];
+
+    for (let i = 0; i < 8; i += 2) {
+
+        bytes.push(
+            parseInt(hex.substring(i, i + 2), 16)
+        );
+
+    }
+
+    return bytes;
+}
+
+
+function binaryToBytes(binary) {
+
+    binary =
+        binary.replace(/\s+/g, "");
+
+    if (!/^[01]+$/.test(binary)) {
+        throw new Error(
+            "Binary input may contain only 0 and 1."
+        );
+    }
+
+    if (binary.length !== 32) {
+        throw new Error(
+            "A 32-bit floating-point value requires exactly 32 binary bits."
+        );
+    }
+
+    const bytes = [];
+
+    for (let i = 0; i < 32; i += 8) {
+
+        bytes.push(
+            parseInt(
+                binary.substring(i, i + 8),
+                2
+            )
+        );
+
+    }
+
+    return bytes;
+}
+
+
+function bytesToHex(bytes) {
+
+    return bytes
+        .map(
+            byte =>
+                byte
+                    .toString(16)
+                    .padStart(2, "0")
+                    .toUpperCase()
+        )
+        .join("");
+
+}
+
+
+function bytesToBinary(bytes) {
+
+    return bytes
+        .map(
+            byte =>
+                byte
+                    .toString(2)
+                    .padStart(8, "0")
+        )
+        .join("");
+
+}
+
+
+function applyByteOrder(bytes, order) {
+
+    const map = {
+        ABCD: [0, 1, 2, 3],
+        BADC: [1, 0, 3, 2],
+        CDAB: [2, 3, 0, 1],
+        DCBA: [3, 2, 1, 0]
+    };
+
+    return map[order].map(
+        index => bytes[index]
+    );
+
+}
+
+
+function bytesToFloat(bytes) {
+
+    const buffer =
+        new ArrayBuffer(4);
+
+    const view =
+        new DataView(buffer);
+
+    for (let i = 0; i < 4; i++) {
+
+        view.setUint8(
+            i,
+            bytes[i]
+        );
+
+    }
+
+    return view.getFloat32(0, false);
+}
+
+
+function floatToBytes(value) {
+
+    const buffer =
+        new ArrayBuffer(4);
+
+    const view =
+        new DataView(buffer);
+
+    view.setFloat32(
+        0,
+        value,
+        false
+    );
+
+    return [
+        view.getUint8(0),
+        view.getUint8(1),
+        view.getUint8(2),
+        view.getUint8(3)
+    ];
+
+}
+
+
+function parseRegister(value) {
+
+    value =
+        value.trim();
+
+    if (/^0x/i.test(value)) {
+
+        const parsed =
+            parseInt(value, 16);
+
+        if (
+            !Number.isInteger(parsed) ||
+            parsed < 0 ||
+            parsed > 65535
+        ) {
+            throw new Error(
+                "A 16-bit register must be between 0x0000 and 0xFFFF."
+            );
+        }
+
+        return parsed;
+    }
+
+
+    if (/^[0-9]+$/.test(value)) {
+
+        const parsed =
+            Number(value);
+
+        if (
+            !Number.isInteger(parsed) ||
+            parsed < 0 ||
+            parsed > 65535
+        ) {
+            throw new Error(
+                "A 16-bit register must be between 0 and 65535."
+            );
+        }
+
+        return parsed;
+    }
+
+
+    throw new Error(
+        "Enter the register as a decimal value or hexadecimal value such as 0x4145."
+    );
+
+}
+
+
+function registersToBytes(reg1, reg2) {
+
+    return [
+        (reg1 >> 8) & 0xFF,
+        reg1 & 0xFF,
+        (reg2 >> 8) & 0xFF,
+        reg2 & 0xFF
+    ];
+
+}
+
+
+function formatFloat(value) {
+
+    if (Object.is(value, -0)) {
+        return "0";
+    }
+
+    if (!Number.isFinite(value)) {
+
+        if (Number.isNaN(value)) {
+            return "NaN";
+        }
+
+        if (value === Infinity) {
+            return "+Infinity";
+        }
+
+        return "-Infinity";
+    }
+
+    return value.toPrecision(9)
+        .replace(/\.?0+$/, "");
+
+}
+
+
+function calculateFloat() {
+
+    clearError();
+
+    const selectedMode =
+        mode.value;
+
+    const selectedOrder =
+        byteOrder.value;
+
+    let bytes;
+
+
+    try {
+
+        /*
+         * Decimal → float
+         */
+
+        if (selectedMode === "decimal") {
+
+            const value =
+                Number(mainInput.value.trim());
+
+            if (!Number.isFinite(value)) {
+
+                throw new Error(
+                    "Enter a valid finite decimal floating-point value."
+                );
+
+            }
+
+            bytes =
+                floatToBytes(value);
+
+        }
+
+
+        /*
+         * Hex → float
+         */
+
+        else if (
+            selectedMode === "hex" ||
+            selectedMode === "ieee"
+        ) {
+
+            bytes =
+                hexToBytes(mainInput.value);
+
+            bytes =
+                applyByteOrder(
+                    bytes,
+                    selectedOrder
+                );
+
+        }
+
+
+        /*
+         * Binary → float
+         */
+
+        else if (selectedMode === "binary") {
+
+            bytes =
+                binaryToBytes(mainInput.value);
+
+            bytes =
+                applyByteOrder(
+                    bytes,
+                    selectedOrder
+                );
+
+        }
+
+
+        /*
+         * Two 16-bit registers → float
+         */
+
+        else if (selectedMode === "registers") {
+
+            const register1 =
+                parseRegister(
+                    mainInput.value
+                );
+
+            const register2 =
+                parseRegister(
+                    document
+                        .getElementById("register2")
+                        .value
+                );
+
+            bytes =
+                registersToBytes(
+                    register1,
+                    register2
+                );
+
+            bytes =
+                applyByteOrder(
+                    bytes,
+                    selectedOrder
+                );
+
+        }
+
+
+        else {
+
+            throw new Error(
+                "Unknown conversion mode."
+            );
+
+        }
+
+
+        const value =
+            bytesToFloat(bytes);
+
+
+        const binary =
+            bytesToBinary(bytes);
+
+        const hex =
+            bytesToHex(bytes);
+
+
+        const sign =
+            binary.substring(0, 1);
+
+        const exponent =
+            binary.substring(1, 9);
+
+        const mantissa =
+            binary.substring(9, 32);
+
+
+        const register1 =
+            ((bytes[0] << 8) | bytes[1]) >>> 0;
+
+        const register2 =
+            ((bytes[2] << 8) | bytes[3]) >>> 0;
+
+
+        document.getElementById(
+            "resultValue"
+        ).textContent =
+            formatFloat(value);
+
+
+        document.getElementById(
+            "resultDetails"
+        ).textContent =
+            "32-bit single-precision IEEE-754 floating point";
+
+
+        document.getElementById(
+            "binaryResult"
+        ).textContent =
+            binary.substring(0, 1) +
+            " | " +
+            binary.substring(1, 9) +
+            " | " +
+            binary.substring(9, 32);
+
+
+        document.getElementById(
+            "hexResult"
+        ).textContent =
+            "0x" + hex;
+
+
+        document.getElementById(
+            "signResult"
+        ).textContent =
+            sign === "0"
+                ? "0 — Positive"
+                : "1 — Negative";
+
+
+        document.getElementById(
+            "exponentResult"
+        ).textContent =
+            exponent;
+
+
+        document.getElementById(
+            "mantissaResult"
+        ).textContent =
+            mantissa;
+
+
+        document.getElementById(
+            "registerResult"
+        ).textContent =
+            "Register 1: " +
+            register1 +
+            " (0x" +
+            register1
+                .toString(16)
+                .padStart(4, "0")
+                .toUpperCase() +
+            ")" +
+            "   |   " +
+            "Register 2: " +
+            register2 +
+            " (0x" +
+            register2
+                .toString(16)
+                .padStart(4, "0")
+                .toUpperCase() +
+            ")";
+
+
+        document
+            .getElementById("result")
+            .classList.add("show");
+
+    }
+
+
+    catch (error) {
+
+        showError(
+            error.message
+        );
+
+    }
+
+}
+
+
+updateForm();
+
+</script>
+
+</body>
+</html>
