@@ -1,1 +1,881 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>4–20 mA to Voltage | ControlsCalc</title><meta name="description" content="Calculate voltage across a loop resistor."><link rel="stylesheet" href="../style.css"></head><body><header><nav class="wrap"><a class="brand" href="../index.html">ControlsCalc</a><div class="links"><a href="../index.html">Calculators</a><a href="../guides/index.html">Guides</a></div></nav></header><main class="wrap calc"><span class="tag">ControlsCalc</span><h1>4–20 mA to Voltage</h1><p class="muted">Calculate voltage across a loop resistor.</p><div class="panel" data-calc="420volt"></div><div class="panel"><h2>Field note</h2><p>Use this as a practical reference. Verify transmitter ranges, wiring, scaling, device documentation, and applicable project standards before making control changes.</p></div></main><footer><div class="wrap">ControlsCalc — practical controls and instrumentation calculators.</div></footer><script src="../script.js"></script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>4–20 mA to Voltage Calculator | ControlsCalc</title>
+
+    <meta
+        name="description"
+        content="Free 4–20 mA to voltage calculator. Calculate the voltage produced across a loop resistor from a measured 4–20 mA signal. Includes field examples and troubleshooting guidance."
+    >
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #172033;
+            background: #f5f7fa;
+            line-height: 1.6;
+        }
+
+        a {
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            width: min(1000px, calc(100% - 40px));
+            margin: 0 auto;
+        }
+
+        /* Header */
+
+        header {
+            background: #ffffff;
+            border-bottom: 1px solid #e1e5eb;
+        }
+
+        .header-inner {
+            min-height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 800;
+            color: #172033;
+        }
+
+        nav {
+            display: flex;
+            gap: 24px;
+        }
+
+        nav a {
+            font-size: 15px;
+        }
+
+        /* Main */
+
+        main {
+            padding: 48px 0 70px;
+        }
+
+        .breadcrumbs {
+            margin-bottom: 24px;
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .intro {
+            margin-bottom: 32px;
+        }
+
+        .intro h1 {
+            margin: 0 0 16px;
+            font-size: clamp(32px, 5vw, 46px);
+            line-height: 1.1;
+            letter-spacing: -1px;
+        }
+
+        .intro p {
+            max-width: 800px;
+            margin: 8px 0;
+            color: #64748b;
+            font-size: 17px;
+        }
+
+        /* Calculator */
+
+        .calculator {
+            background: #ffffff;
+            border: 1px solid #dfe5ec;
+            border-radius: 14px;
+            padding: 32px;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 18px rgba(15, 23, 42, 0.04);
+        }
+
+        .calculator h2 {
+            margin: 0 0 24px;
+            font-size: 25px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 22px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .field label {
+            margin-bottom: 7px;
+            font-weight: 700;
+            font-size: 15px;
+        }
+
+        .field input {
+            width: 100%;
+            padding: 13px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            background: #ffffff;
+            color: #172033;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .field input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+        }
+
+        .field small {
+            margin-top: 6px;
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        .calculate-button {
+            width: 100%;
+            margin-top: 26px;
+            padding: 14px 20px;
+            border: 0;
+            border-radius: 8px;
+            background: #2563eb;
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .calculate-button:hover {
+            background: #1d4ed8;
+        }
+
+        /* Result */
+
+        .result {
+            display: none;
+            margin-top: 28px;
+            padding: 24px;
+            border-radius: 10px;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            text-align: center;
+        }
+
+        .result.show {
+            display: block;
+        }
+
+        .result h3 {
+            margin: 0 0 10px;
+            font-size: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #2563eb;
+        }
+
+        .result-value {
+            margin: 0;
+            font-size: 38px;
+            font-weight: 800;
+            color: #172033;
+        }
+
+        .result-details {
+            margin: 8px 0 0;
+            color: #475569;
+        }
+
+        .error {
+            display: none;
+            margin-top: 20px;
+            padding: 14px;
+            border-radius: 8px;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+        }
+
+        .error.show {
+            display: block;
+        }
+
+        /* Content */
+
+        .content-section {
+            background: #ffffff;
+            border: 1px solid #dfe5ec;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 24px;
+        }
+
+        .content-section h2 {
+            margin: 0 0 16px;
+            font-size: 24px;
+        }
+
+        .content-section h3 {
+            margin: 24px 0 8px;
+            font-size: 18px;
+        }
+
+        .content-section p {
+            color: #475569;
+        }
+
+        .content-section li {
+            margin-bottom: 10px;
+            color: #475569;
+        }
+
+        .formula {
+            margin: 20px 0;
+            padding: 18px;
+            background: #f5f7fa;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: 700;
+            overflow-x: auto;
+        }
+
+        .example-result {
+            display: inline-block;
+            margin: 10px 0;
+            padding: 12px 18px;
+            border-radius: 8px;
+            background: #f1f5f9;
+            font-weight: 700;
+        }
+
+        /* Related calculators */
+
+        .related-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            padding: 0;
+            list-style: none;
+        }
+
+        .related-list li {
+            margin: 0;
+        }
+
+        .related-list a {
+            display: block;
+            padding: 12px 14px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+        }
+
+        .related-list a:hover {
+            background: #eff6ff;
+            text-decoration: none;
+        }
+
+        /* Footer */
+
+        footer {
+            padding: 32px 0;
+            background: #ffffff;
+            border-top: 1px solid #e1e5eb;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        footer p {
+            margin: 4px 0;
+        }
+
+        /* Mobile */
+
+        @media (max-width: 650px) {
+
+            .container {
+                width: min(100% - 28px, 1000px);
+            }
+
+            .header-inner {
+                min-height: 58px;
+            }
+
+            nav {
+                gap: 14px;
+            }
+
+            main {
+                padding-top: 32px;
+            }
+
+            .calculator {
+                padding: 22px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .related-list {
+                grid-template-columns: 1fr;
+            }
+
+            .result-value {
+                font-size: 30px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="container header-inner">
+
+        <a href="../index.html" class="logo">
+            ControlsCalc
+        </a>
+
+        <nav>
+            <a href="../index.html">Calculators</a>
+            <a href="../guides/index.html">Guides</a>
+        </nav>
+
+    </div>
+</header>
+
+
+<main>
+
+    <div class="container">
+
+        <div class="breadcrumbs">
+            <a href="../index.html">ControlsCalc</a>
+            &nbsp; / &nbsp;
+            4–20 mA to Voltage
+        </div>
+
+
+        <section class="intro">
+
+            <h1>4–20 mA to Voltage Calculator</h1>
+
+            <p>
+                Calculate the voltage produced across a resistor by a
+                4–20 mA current signal.
+            </p>
+
+            <p>
+                This is useful when working with analog inputs, signal
+                converters, loop-powered instrumentation, and control systems
+                that use a resistor to convert current into voltage.
+            </p>
+
+        </section>
+
+
+        <!-- Calculator -->
+
+        <section class="calculator">
+
+            <h2>Calculate Loop Voltage</h2>
+
+            <div class="form-grid">
+
+                <div class="field">
+
+                    <label for="current">
+                        Current (mA)
+                    </label>
+
+                    <input
+                        type="number"
+                        id="current"
+                        placeholder="Example: 12"
+                        step="any"
+                        min="0"
+                    >
+
+                    <small>
+                        Enter the measured or expected loop current.
+                    </small>
+
+                </div>
+
+
+                <div class="field">
+
+                    <label for="resistance">
+                        Resistance (Ω)
+                    </label>
+
+                    <input
+                        type="number"
+                        id="resistance"
+                        placeholder="Example: 250"
+                        step="any"
+                        min="0"
+                    >
+
+                    <small>
+                        Enter the resistance across which the voltage is measured.
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="calculate-button"
+                onclick="calculateVoltage()"
+            >
+                Calculate Voltage
+            </button>
+
+
+            <div id="error" class="error"></div>
+
+
+            <div id="result" class="result">
+
+                <h3>Result</h3>
+
+                <p id="resultValue" class="result-value"></p>
+
+                <p id="resultDetails" class="result-details"></p>
+
+            </div>
+
+        </section>
+
+
+        <!-- Formula -->
+
+        <section class="content-section">
+
+            <h2>4–20 mA to Voltage Formula</h2>
+
+            <p>
+                The voltage across a resistor is calculated using Ohm's Law:
+            </p>
+
+            <div class="formula">
+                V = I × R
+            </div>
+
+            <p>
+                Because the input current is entered in milliamps, the current
+                must be converted to amps before calculating voltage:
+            </p>
+
+            <div class="formula">
+                Voltage = (mA ÷ 1000) × Resistance
+            </div>
+
+            <p>
+                Where:
+            </p>
+
+            <ul>
+                <li><strong>V</strong> = voltage in volts</li>
+                <li><strong>I</strong> = current in amps</li>
+                <li><strong>R</strong> = resistance in ohms</li>
+            </ul>
+
+        </section>
+
+
+        <!-- Worked Example -->
+
+        <section class="content-section">
+
+            <h2>Worked Example: 12 mA Through a 250 Ω Resistor</h2>
+
+            <p>
+                A very common instrumentation application uses a
+                <strong>250 Ω</strong> resistor to convert a 4–20 mA signal
+                into a nominal 1–5 V signal.
+            </p>
+
+            <p>
+                At 12 mA:
+            </p>
+
+            <div class="formula">
+                V = (12 ÷ 1000) × 250
+            </div>
+
+            <p>
+                Therefore:
+            </p>
+
+            <div class="example-result">
+                12 mA × 250 Ω = 3.00 V
+            </div>
+
+            <p>
+                The complete 4–20 mA signal becomes:
+            </p>
+
+            <ul>
+                <li><strong>4 mA → 1 V</strong></li>
+                <li><strong>8 mA → 2 V</strong></li>
+                <li><strong>12 mA → 3 V</strong></li>
+                <li><strong>16 mA → 4 V</strong></li>
+                <li><strong>20 mA → 5 V</strong></li>
+            </ul>
+
+        </section>
+
+
+        <!-- Field Application -->
+
+        <section class="content-section">
+
+            <h2>Why 250 Ω Is Common in Instrumentation</h2>
+
+            <p>
+                A 250 Ω resistor produces a 1–5 V signal from a 4–20 mA loop:
+            </p>
+
+            <div class="formula">
+                4 mA × 250 Ω = 1 V
+                <br>
+                20 mA × 250 Ω = 5 V
+            </div>
+
+            <p>
+                This makes it possible for equipment designed to accept a
+                voltage signal to interpret a standard 4–20 mA instrument
+                signal.
+            </p>
+
+            <p>
+                This arrangement is commonly encountered with analog input
+                modules, signal converters, data acquisition equipment, and
+                other instrumentation.
+            </p>
+
+        </section>
+
+
+        <!-- Troubleshooting -->
+
+        <section class="content-section">
+
+            <h2>Using This Calculation for Troubleshooting</h2>
+
+            <p>
+                If a device receives a 4–20 mA signal through a known resistor,
+                you can calculate the voltage that should be present across the
+                resistor.
+            </p>
+
+            <p>
+                For example, if you measure <strong>16 mA</strong> through a
+                <strong>250 Ω</strong> resistor:
+            </p>
+
+            <div class="formula">
+                V = 0.016 × 250 = 4 V
+            </div>
+
+            <p>
+                If you measure substantially less than 4 V, possible areas to
+                investigate include the actual loop current, resistor value,
+                wiring connections, or the measurement point.
+            </p>
+
+            <p>
+                Always verify the circuit design before making changes to an
+                operating control loop.
+            </p>
+
+        </section>
+
+
+        <!-- Power -->
+
+        <section class="content-section">
+
+            <h2>Resistor Power Considerations</h2>
+
+            <p>
+                The resistor also dissipates power. This can be calculated using:
+            </p>
+
+            <div class="formula">
+                P = I² × R
+            </div>
+
+            <p>
+                For a 250 Ω resistor at 20 mA:
+            </p>
+
+            <div class="formula">
+                P = (0.020)² × 250
+                <br>
+                P = 0.10 W
+            </div>
+
+            <p>
+                A resistor with an appropriate power rating should be selected
+                for the application. The loop's voltage budget and the
+                specifications of the connected devices must also be considered.
+            </p>
+
+        </section>
+
+
+        <!-- Common Mistakes -->
+
+        <section class="content-section">
+
+            <h2>Common Mistakes</h2>
+
+            <ol>
+
+                <li>
+                    <strong>Forgetting to convert mA to A.</strong>
+                    12 mA is 0.012 A, not 12 A.
+                </li>
+
+                <li>
+                    <strong>Assuming every 4–20 mA loop produces 1–5 V.</strong>
+                    That only occurs when the resistor is 250 Ω.
+                </li>
+
+                <li>
+                    <strong>Measuring voltage at the wrong location.</strong>
+                    Voltage depends on the resistance between the two
+                    measurement points.
+                </li>
+
+                <li>
+                    <strong>Ignoring resistor power dissipation.</strong>
+                    Verify the resistor's power rating for the application.
+                </li>
+
+                <li>
+                    <strong>Adding resistance without checking loop voltage.</strong>
+                    Additional resistance increases the voltage required from
+                    the loop power supply.
+                </li>
+
+            </ol>
+
+        </section>
+
+
+        <!-- Related -->
+
+        <section class="content-section">
+
+            <h2>Related Calculators</h2>
+
+            <ul class="related-list">
+
+                <li>
+                    <a href="4-20ma-scaling.html">
+                        4–20 mA Scaling
+                    </a>
+                </li>
+
+                <li>
+                    <a href="4-20ma-resistor.html">
+                        4–20 mA Loop Resistor
+                    </a>
+                </li>
+
+                <li>
+                    <a href="ohms-law.html">
+                        Ohm's Law
+                    </a>
+                </li>
+
+                <li>
+                    <a href="voltage-divider.html">
+                        Voltage Divider
+                    </a>
+                </li>
+
+                <li>
+                    <a href="../guides/4-20ma.html">
+                        4–20 mA Guide
+                    </a>
+                </li>
+
+            </ul>
+
+        </section>
+
+
+        <!-- Engineering Note -->
+
+        <section class="content-section">
+
+            <h2>Engineering Note</h2>
+
+            <p>
+                This calculator uses Ohm's Law and assumes the entered resistance
+                is the resistance across which the voltage is being calculated.
+                In an actual 4–20 mA loop, verify the complete loop voltage budget,
+                device specifications, wiring resistance, and manufacturer's
+                documentation before modifying the circuit.
+            </p>
+
+        </section>
+
+    </div>
+
+</main>
+
+
+<footer>
+
+    <div class="container">
+
+        <p>
+            <strong>ControlsCalc</strong>
+        </p>
+
+        <p>
+            Engineering and controls calculators for technicians and engineers.
+        </p>
+
+    </div>
+
+</footer>
+
+
+<script>
+
+function calculateVoltage() {
+
+    const current =
+        parseFloat(document.getElementById("current").value);
+
+    const resistance =
+        parseFloat(document.getElementById("resistance").value);
+
+    const error =
+        document.getElementById("error");
+
+    const result =
+        document.getElementById("result");
+
+    const resultValue =
+        document.getElementById("resultValue");
+
+    const resultDetails =
+        document.getElementById("resultDetails");
+
+
+    error.classList.remove("show");
+    result.classList.remove("show");
+
+
+    if (
+        Number.isNaN(current) ||
+        Number.isNaN(resistance)
+    ) {
+
+        error.textContent =
+            "Please enter both the current and resistance.";
+
+        error.classList.add("show");
+
+        return;
+    }
+
+
+    if (current < 0) {
+
+        error.textContent =
+            "Current cannot be negative.";
+
+        error.classList.add("show");
+
+        return;
+    }
+
+
+    if (resistance <= 0) {
+
+        error.textContent =
+            "Resistance must be greater than zero.";
+
+        error.classList.add("show");
+
+        return;
+    }
+
+
+    if (current > 20) {
+
+        error.textContent =
+            "The entered current is above the normal 4–20 mA range.";
+
+        error.classList.add("show");
+
+        return;
+    }
+
+
+    const currentAmps =
+        current / 1000;
+
+
+    const voltage =
+        currentAmps * resistance;
+
+
+    const power =
+        currentAmps * currentAmps * resistance;
+
+
+    resultValue.textContent =
+        voltage.toFixed(3) + " V";
+
+
+    resultDetails.textContent =
+        current + " mA × " +
+        resistance + " Ω = " +
+        voltage.toFixed(3) +
+        " V  |  Resistor power: " +
+        power.toFixed(3) +
+        " W";
+
+
+    result.classList.add("show");
+
+}
+
+</script>
+
+</body>
+</html>
