@@ -1,3 +1,3 @@
 User-agent: *
 Allow: /
-Sitemap: https://YOUR-DOMAIN.com/sitemap.xml
+Sitemap: https://controlscalc.jeffers6356.workers.dev/sitemap.xml
