@@ -1,1 +1,1282 @@
-<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><title>How 4–20 mA Signals Work | ControlsCalc</title><link rel="stylesheet" href="../style.css"></head><body><main class="wrap calc"><h1>How 4–20 mA Signals Work</h1><p>A 4–20 mA loop commonly represents a process variable using current. 4 mA is the live-zero endpoint and 20 mA is the upper range endpoint.</p><h2>Basic scaling</h2><p>Fraction of span = (mA − 4) ÷ 16.</p><p><a href="../calculators/4-20ma-scaling.html">Use the calculator →</a></p></main></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>4–20 mA Explained: Complete Guide for Controls & Instrumentation | ControlsCalc</title>
+
+    <meta
+        name="description"
+        content="A practical guide to 4–20 mA instrumentation signals. Learn how current loops work, LRV and URV, scaling, loop power, voltage burden, measuring current, troubleshooting, and PLC scaling."
+    >
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #172033;
+            background: #f5f7fa;
+            line-height: 1.7;
+        }
+
+        a {
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            width: min(1050px, calc(100% - 40px));
+            margin: 0 auto;
+        }
+
+        /* Header */
+
+        header {
+            background: #ffffff;
+            border-bottom: 1px solid #e1e5eb;
+        }
+
+        .header-inner {
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 800;
+            color: #172033;
+            text-decoration: none;
+        }
+
+        nav {
+            display: flex;
+            gap: 24px;
+        }
+
+        nav a {
+            color: #2563eb;
+            text-decoration: none;
+            font-size: 15px;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        /* Hero */
+
+        .hero {
+            background: #ffffff;
+            padding: 58px 0 48px;
+        }
+
+        .eyebrow {
+            margin-bottom: 10px;
+            color: #64748b;
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+        }
+
+        .hero h1 {
+            max-width: 850px;
+            margin: 0 0 18px;
+            font-size: clamp(36px, 5vw, 54px);
+            line-height: 1.08;
+            letter-spacing: -1.4px;
+        }
+
+        .hero p {
+            max-width: 800px;
+            margin: 0;
+            color: #64748b;
+            font-size: 18px;
+        }
+
+        /* Main layout */
+
+        main {
+            padding: 48px 0 80px;
+        }
+
+        .content-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 250px;
+            gap: 44px;
+            align-items: start;
+        }
+
+        article {
+            min-width: 0;
+        }
+
+        /* Table of contents */
+
+        .toc {
+            position: sticky;
+            top: 24px;
+            padding: 20px;
+            background: #ffffff;
+            border: 1px solid #dfe5ec;
+            border-radius: 10px;
+        }
+
+        .toc h2 {
+            margin: 0 0 12px;
+            font-size: 16px;
+        }
+
+        .toc a {
+            display: block;
+            padding: 5px 0;
+            color: #64748b;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .toc a:hover {
+            color: #2563eb;
+        }
+
+        /* Article */
+
+        article h2 {
+            margin: 48px 0 14px;
+            font-size: 28px;
+            line-height: 1.25;
+        }
+
+        article h3 {
+            margin: 30px 0 10px;
+            font-size: 20px;
+            line-height: 1.3;
+        }
+
+        article p {
+            margin: 0 0 17px;
+        }
+
+        article ul,
+        article ol {
+            margin: 0 0 20px;
+            padding-left: 25px;
+        }
+
+        article li {
+            margin-bottom: 7px;
+        }
+
+        /* Formula */
+
+        .formula {
+            margin: 22px 0;
+            padding: 20px;
+            background: #f7f9fc;
+            border: 1px solid #dce3ec;
+            border-radius: 9px;
+            font-family: "Courier New", monospace;
+            font-size: 16px;
+            overflow-x: auto;
+        }
+
+        /* Callouts */
+
+        .callout {
+            margin: 24px 0;
+            padding: 20px 22px;
+            background: #ffffff;
+            border: 1px solid #dfe5ec;
+            border-left: 4px solid #2563eb;
+            border-radius: 8px;
+        }
+
+        .callout strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .warning {
+            border-left-color: #d39a00;
+            background: #fffaf0;
+        }
+
+        /* Example */
+
+        .example {
+            margin: 24px 0;
+            padding: 24px;
+            background: #ffffff;
+            border: 1px solid #dfe5ec;
+            border-radius: 10px;
+        }
+
+        .example h3 {
+            margin-top: 0;
+        }
+
+        /* Tables */
+
+        table {
+            width: 100%;
+            margin: 22px 0 28px;
+            border-collapse: collapse;
+            background: #ffffff;
+        }
+
+        th,
+        td {
+            padding: 11px 13px;
+            border: 1px solid #d7dee8;
+            text-align: left;
+        }
+
+        th {
+            background: #eef2f7;
+            font-weight: 700;
+        }
+
+        /* Code / signal chain */
+
+        .signal-chain {
+            margin: 25px 0;
+            padding: 22px;
+            background: #f7f9fc;
+            border: 1px solid #dce3ec;
+            border-radius: 9px;
+            font-family: "Courier New", monospace;
+            text-align: center;
+            line-height: 2;
+        }
+
+        /* Calculator links */
+
+        .tool-card {
+            display: block;
+            margin-top: 18px;
+            padding: 20px;
+            background: #ffffff;
+            border: 1px solid #dfe5ec;
+            border-radius: 10px;
+        }
+
+        .tool-card strong {
+            display: block;
+            margin-bottom: 4px;
+            font-size: 17px;
+        }
+
+        .tool-card span {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        /* Footer */
+
+        footer {
+            padding: 36px 0;
+            background: #ffffff;
+            border-top: 1px solid #e1e5eb;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        footer p {
+            margin: 4px 0;
+        }
+
+        /* Mobile */
+
+        @media (max-width: 800px) {
+
+            .content-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .toc {
+                position: static;
+                order: -1;
+            }
+        }
+
+        @media (max-width: 600px) {
+
+            .container {
+                width: min(100% - 28px, 1050px);
+            }
+
+            .header-inner {
+                height: 58px;
+            }
+
+            nav {
+                gap: 14px;
+            }
+
+            .hero {
+                padding: 44px 0 38px;
+            }
+
+            article h2 {
+                font-size: 24px;
+            }
+
+            table {
+                font-size: 14px;
+            }
+
+            th,
+            td {
+                padding: 9px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="container header-inner">
+
+        <a href="../" class="logo">
+            ControlsCalc
+        </a>
+
+        <nav>
+            <a href="../#calculators">Calculators</a>
+            <a href="index.html">Guides</a>
+        </nav>
+
+    </div>
+</header>
+
+
+<section class="hero">
+
+    <div class="container">
+
+        <div class="eyebrow">
+            Controls &amp; Instrumentation Guide
+        </div>
+
+        <h1>
+            4–20 mA Explained
+        </h1>
+
+        <p>
+            A practical guide to understanding, calculating, measuring,
+            scaling, and troubleshooting 4–20 mA instrumentation signals.
+        </p>
+
+    </div>
+
+</section>
+
+
+<main>
+
+    <div class="container content-layout">
+
+        <article>
+
+            <!-- Introduction -->
+
+            <h2 id="what-is">
+                What Is a 4–20 mA Signal?
+            </h2>
+
+            <p>
+                A 4–20 mA signal is an analog electrical signal commonly used
+                to transmit a measurement from a field instrument to a control
+                system.
+            </p>
+
+            <p>
+                A transmitter measures something physical—such as pressure,
+                temperature, flow, or level—and represents that measurement
+                as a current between 4 mA and 20 mA.
+            </p>
+
+            <div class="signal-chain">
+                Physical Process
+                → Sensor
+                → Transmitter
+                → 4–20 mA Loop
+                → PLC / DCS / Controller
+                → Engineering Units
+            </div>
+
+            <p>
+                For example, a pressure transmitter configured for
+                0–100 PSI might produce:
+            </p>
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Pressure</th>
+                        <th>Transmitter Output</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td>0 PSI</td>
+                        <td>4 mA</td>
+                    </tr>
+                    <tr>
+                        <td>25 PSI</td>
+                        <td>8 mA</td>
+                    </tr>
+                    <tr>
+                        <td>50 PSI</td>
+                        <td>12 mA</td>
+                    </tr>
+                    <tr>
+                        <td>75 PSI</td>
+                        <td>16 mA</td>
+                    </tr>
+                    <tr>
+                        <td>100 PSI</td>
+                        <td>20 mA</td>
+                    </tr>
+                </tbody>
+
+            </table>
+
+
+            <!-- Why 4 mA -->
+
+            <h2 id="why-four">
+                Why Does the Signal Start at 4 mA?
+            </h2>
+
+            <p>
+                One of the defining characteristics of the standard 4–20 mA
+                signal is that zero percent of the measurement range is
+                represented by 4 mA rather than 0 mA.
+            </p>
+
+            <p>
+                This creates what is often called a
+                <strong>live zero</strong>.
+            </p>
+
+            <p>
+                A live zero makes it possible to distinguish a normal
+                measurement at the bottom of the range from certain loop
+                faults.
+            </p>
+
+            <p>
+                For example, in a 0–100 PSI application:
+            </p>
+
+            <ul>
+                <li>4 mA can represent a normal reading of 0 PSI.</li>
+                <li>A signal significantly below 4 mA can indicate an abnormal condition.</li>
+                <li>12 mA represents the midpoint of the measurement range.</li>
+                <li>20 mA represents the top of the configured range.</li>
+            </ul>
+
+            <div class="callout">
+                <strong>The important idea</strong>
+
+                4 mA does not mean "4 percent." It represents
+                <strong>0% of the measurement span</strong>.
+            </div>
+
+
+            <!-- LRV URV -->
+
+            <h2 id="lrv-urv">
+                LRV, URV, Zero, and Span
+            </h2>
+
+            <p>
+                Two terms you'll encounter constantly when working with
+                transmitters are <strong>LRV</strong> and
+                <strong>URV</strong>.
+            </p>
+
+            <ul>
+                <li>
+                    <strong>LRV — Lower Range Value:</strong>
+                    the process value represented by 4 mA.
+                </li>
+
+                <li>
+                    <strong>URV — Upper Range Value:</strong>
+                    the process value represented by 20 mA.
+                </li>
+            </ul>
+
+            <p>
+                The difference between the URV and LRV is the configured
+                measurement span.
+            </p>
+
+            <div class="formula">
+                Span = URV − LRV
+            </div>
+
+            <p>
+                The LRV does not have to be zero.
+            </p>
+
+            <p>
+                For example, a transmitter could be configured for
+                10–50 PSI:
+            </p>
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Current</th>
+                        <th>Pressure</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td>4 mA</td>
+                        <td>10 PSI</td>
+                    </tr>
+                    <tr>
+                        <td>12 mA</td>
+                        <td>30 PSI</td>
+                    </tr>
+                    <tr>
+                        <td>20 mA</td>
+                        <td>50 PSI</td>
+                    </tr>
+                </tbody>
+
+            </table>
+
+            <p>
+                This distinction is extremely important when troubleshooting
+                a transmitter or PLC. Always use the transmitter's
+                <strong>configured</strong> range rather than assuming
+                that 4 mA equals zero engineering units.
+            </p>
+
+
+            <!-- Formula -->
+
+            <h2 id="formula">
+                The 4–20 mA Scaling Formula
+            </h2>
+
+            <p>
+                To convert a measured current into an engineering value,
+                calculate how far the current has progressed through its
+                16 mA signal span.
+            </p>
+
+            <div class="formula">
+                Engineering Value =
+                LRV + ((mA − 4) ÷ 16) × (URV − LRV)
+            </div>
+
+            <p>
+                Another way to think about the formula is:
+            </p>
+
+            <div class="formula">
+                Percent of Span = (mA − 4) ÷ 16
+            </div>
+
+            <p>
+                Once the percentage of span is known, apply it to the
+                engineering range.
+            </p>
+
+
+            <!-- Example -->
+
+            <h2 id="example">
+                Worked Example: 0–100 PSI
+            </h2>
+
+            <div class="example">
+
+                <h3>
+                    Given
+                </h3>
+
+                <ul>
+                    <li>LRV = 0 PSI</li>
+                    <li>URV = 100 PSI</li>
+                    <li>Measured current = 12 mA</li>
+                </ul>
+
+                <p>
+                    First determine the percentage of the 4–20 mA span:
+                </p>
+
+                <div class="formula">
+                    (12 − 4) ÷ 16 = 0.50
+                </div>
+
+                <p>
+                    The signal is at 50% of its range.
+                </p>
+
+                <div class="formula">
+                    0 + (0.50 × 100) = 50 PSI
+                </div>
+
+                <p>
+                    Therefore:
+                </p>
+
+                <p>
+                    <strong>12 mA = 50 PSI</strong>
+                </p>
+
+            </div>
+
+
+            <!-- Current reference -->
+
+            <h2 id="reference">
+                4–20 mA Reference Table
+            </h2>
+
+            <p>
+                For a linear 4–20 mA signal, these values are useful
+                reference points to memorize.
+            </p>
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Current</th>
+                        <th>% of Span</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td>4 mA</td>
+                        <td>0%</td>
+                    </tr>
+                    <tr>
+                        <td>8 mA</td>
+                        <td>25%</td>
+                    </tr>
+                    <tr>
+                        <td>12 mA</td>
+                        <td>50%</td>
+                    </tr>
+                    <tr>
+                        <td>16 mA</td>
+                        <td>75%</td>
+                    </tr>
+                    <tr>
+                        <td>20 mA</td>
+                        <td>100%</td>
+                    </tr>
+                </tbody>
+
+            </table>
+
+            <p>
+                These percentages apply regardless of the engineering range.
+                Whether the transmitter measures 0–100 PSI, 0–500°F,
+                or 10–50 PSI, 12 mA is still 50% of span.
+            </p>
+
+
+            <!-- Physical loop -->
+
+            <h2 id="loop">
+                How the 4–20 mA Loop Works
+            </h2>
+
+            <p>
+                A 4–20 mA signal is not simply a voltage coming from the
+                transmitter. The transmitter regulates the current flowing
+                through the entire loop.
+            </p>
+
+            <p>
+                A typical loop contains:
+            </p>
+
+            <ul>
+                <li>DC power supply</li>
+                <li>Transmitter</li>
+                <li>Control-system analog input</li>
+                <li>Wiring and terminal connections</li>
+                <li>Potentially additional loop devices</li>
+            </ul>
+
+            <div class="signal-chain">
+                +24 VDC
+                → Transmitter
+                → PLC Analog Input
+                → 0 VDC
+            </div>
+
+            <p>
+                The current flowing through the loop is controlled by the
+                transmitter according to the measured process value.
+            </p>
+
+
+            <!-- Current vs voltage -->
+
+            <h2 id="current-vs-voltage">
+                Why Use Current Instead of Voltage?
+            </h2>
+
+            <p>
+                A major advantage of a current signal is that the same current
+                flows through the series components of the loop.
+            </p>
+
+            <p>
+                Cable resistance therefore primarily creates a voltage drop
+                rather than directly changing the signal current.
+            </p>
+
+            <p>
+                This makes current transmission practical over relatively
+                long cable runs and in electrically noisy industrial
+                environments.
+            </p>
+
+            <div class="callout">
+                <strong>Important distinction</strong>
+
+                A voltage signal is affected directly by voltage drop in
+                the wiring. A properly operating current loop maintains
+                its commanded current while using whatever voltage is
+                necessary within the available loop voltage and device
+                limits.
+            </div>
+
+
+            <!-- Loop voltage -->
+
+            <h2 id="voltage">
+                Loop Voltage and Voltage Burden
+            </h2>
+
+            <p>
+                Although the signal is a current, the loop still requires
+                enough voltage to operate all of its components.
+            </p>
+
+            <p>
+                Every component in the loop consumes some voltage.
+                This is commonly described as its <strong>voltage burden</strong>.
+            </p>
+
+            <p>
+                A simplified loop might look like:
+            </p>
+
+            <div class="formula">
+                Supply Voltage =
+                Transmitter Requirement
+                + Input Burden
+                + Wiring Drop
+                + Other Device Burdens
+            </div>
+
+            <p>
+                If the available supply voltage is too low, the transmitter
+                may not be able to maintain the desired loop current.
+            </p>
+
+            <p>
+                This is one reason that loop troubleshooting should include
+                checking both the current and the available voltage.
+            </p>
+
+
+            <!-- 250 ohm -->
+
+            <h2 id="resistor">
+                Why Is a 250 Ω Resistor So Common?
+            </h2>
+
+            <p>
+                A 250 Ω resistor converts the 4–20 mA current into a
+                convenient 1–5 V signal.
+            </p>
+
+            <div class="formula">
+                V = I × R
+            </div>
+
+            <p>
+                At 4 mA:
+            </p>
+
+            <div class="formula">
+                V = 0.004 × 250 = 1 V
+            </div>
+
+            <p>
+                At 20 mA:
+            </p>
+
+            <div class="formula">
+                V = 0.020 × 250 = 5 V
+            </div>
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Current</th>
+                        <th>Voltage across 250 Ω</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td>4 mA</td>
+                        <td>1 V</td>
+                    </tr>
+                    <tr>
+                        <td>8 mA</td>
+                        <td>2 V</td>
+                    </tr>
+                    <tr>
+                        <td>12 mA</td>
+                        <td>3 V</td>
+                    </tr>
+                    <tr>
+                        <td>16 mA</td>
+                        <td>4 V</td>
+                    </tr>
+                    <tr>
+                        <td>20 mA</td>
+                        <td>5 V</td>
+                    </tr>
+                </tbody>
+
+            </table>
+
+
+            <!-- Measuring -->
+
+            <h2 id="measure">
+                How to Measure a 4–20 mA Signal
+            </h2>
+
+            <p>
+                One of the most useful skills for an instrumentation
+                technician is being able to measure the actual loop current.
+            </p>
+
+            <p>
+                When measuring current with a conventional multimeter,
+                the meter must become part of the current path.
+            </p>
+
+            <div class="callout warning">
+
+                <strong>Important safety note</strong>
+
+                Do not connect a meter configured for current measurement
+                directly across a power supply or other voltage source.
+                The meter's current input is designed to be placed in
+                series with the circuit. Incorrect connections can cause
+                a short circuit, blow the meter fuse, or damage equipment.
+            </div>
+
+            <p>
+                A clamp-style process meter or a dedicated loop calibrator
+                can provide other ways of measuring loop current without
+                opening the loop, depending on the instrument and
+                measurement method.
+            </p>
+
+
+            <!-- Troubleshooting -->
+
+            <h2 id="troubleshooting">
+                Troubleshooting a 4–20 mA Loop
+            </h2>
+
+            <p>
+                When the controller is displaying an unexpected engineering
+                value, avoid immediately changing the PLC scaling.
+                First determine what the field signal is actually doing.
+            </p>
+
+            <h3>
+                Step 1: Check the transmitter configuration
+            </h3>
+
+            <p>
+                Verify the configured LRV and URV. A transmitter configured
+                for 10–50 PSI will not behave like one configured for
+                0–100 PSI.
+            </p>
+
+            <h3>
+                Step 2: Measure the actual loop current
+            </h3>
+
+            <p>
+                Determine whether the field device is actually producing
+                the current you expect.
+            </p>
+
+            <h3>
+                Step 3: Calculate the expected engineering value
+            </h3>
+
+            <p>
+                Use the measured current and the transmitter's actual range.
+            </p>
+
+            <h3>
+                Step 4: Compare the calculated value with the PLC
+            </h3>
+
+            <p>
+                If the current and transmitter configuration are correct
+                but the PLC value is wrong, investigate the analog input
+                configuration and scaling.
+            </p>
+
+            <h3>
+                Step 5: Check the loop electrically
+            </h3>
+
+            <p>
+                Check supply voltage, wiring, terminal connections,
+                grounding, loop resistance, and voltage available at
+                the transmitter.
+            </p>
+
+
+            <!-- Faults -->
+
+            <h2 id="faults">
+                Common 4–20 mA Problems
+            </h2>
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Observed Condition</th>
+                        <th>Possible Areas to Investigate</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td>Approximately 0 mA</td>
+                        <td>Open loop, wiring, power, fuse, transmitter, input circuit</td>
+                    </tr>
+
+                    <tr>
+                        <td>Below 4 mA</td>
+                        <td>Underrange, transmitter fault signal, wiring, configuration</td>
+                    </tr>
+
+                    <tr>
+                        <td>4 mA but wrong displayed value</td>
+                        <td>LRV mismatch, PLC scaling, input configuration</td>
+                    </tr>
+
+                    <tr>
+                        <td>Correct current but wrong PLC value</td>
+                        <td>PLC raw-count scaling or engineering-unit configuration</td>
+                    </tr>
+
+                    <tr>
+                        <td>20 mA but wrong displayed value</td>
+                        <td>URV mismatch or PLC scaling</td>
+                    </tr>
+
+                    <tr>
+                        <td>Current changes but is unstable</td>
+                        <td>Process instability, wiring, grounding, transmitter, signal filtering</td>
+                    </tr>
+                </tbody>
+
+            </table>
+
+
+            <!-- PLC -->
+
+            <h2 id="plc">
+                4–20 mA and PLC Scaling
+            </h2>
+
+            <p>
+                In a PLC application, there are usually several different
+                representations of the same measurement.
+            </p>
+
+            <div class="signal-chain">
+                Process
+                → Transmitter
+                → 4–20 mA
+                → Analog Input
+                → Raw Counts
+                → Engineering Units
+                → HMI
+            </div>
+
+            <p>
+                The transmitter converts the physical measurement into
+                current. The analog input converts that electrical signal
+                into a digital value. The PLC program then converts that
+                digital value into engineering units.
+            </p>
+
+            <p>
+                This distinction is important because a problem can occur
+                at any stage.
+            </p>
+
+            <p>
+                If the loop current is correct but the HMI value is wrong,
+                the transmitter may not be the problem at all.
+            </p>
+
+
+            <!-- Common mistakes -->
+
+            <h2 id="mistakes">
+                Common Mistakes
+            </h2>
+
+            <ul>
+                <li>
+                    Assuming 4 mA always represents zero engineering units.
+                </li>
+
+                <li>
+                    Using the transmitter's maximum range instead of its
+                    configured LRV and URV.
+                </li>
+
+                <li>
+                    Forgetting that the signal span is 16 mA, not 20 mA.
+                </li>
+
+                <li>
+                    Scaling the PLC differently from the transmitter.
+                </li>
+
+                <li>
+                    Measuring voltage when the real question is what the
+                    loop current is.
+                </li>
+
+                <li>
+                    Putting a current meter across a voltage source instead
+                    of placing it in series.
+                </li>
+
+                <li>
+                    Replacing a transmitter before checking power,
+                    wiring, and the actual loop current.
+                </li>
+            </ul>
+
+
+            <!-- Practical workflow -->
+
+            <h2 id="workflow">
+                A Practical Field Workflow
+            </h2>
+
+            <p>
+                When troubleshooting a 4–20 mA instrument, a useful mental
+                sequence is:
+            </p>
+
+            <ol>
+                <li>
+                    What should the transmitter be measuring?
+                </li>
+
+                <li>
+                    What are its configured LRV and URV?
+                </li>
+
+                <li>
+                    What current is actually present in the loop?
+                </li>
+
+                <li>
+                    What engineering value does that current represent?
+                </li>
+
+                <li>
+                    What raw value is the PLC receiving?
+                </li>
+
+                <li>
+                    What engineering value is the PLC calculating?
+                </li>
+
+                <li>
+                    What value is the HMI displaying?
+                </li>
+            </ol>
+
+            <p>
+                Following the signal through those stages helps isolate
+                whether the problem is in the process, transmitter,
+                wiring, analog input, PLC scaling, or HMI.
+            </p>
+
+
+            <!-- Tools -->
+
+            <h2 id="tools">
+                4–20 mA Calculators
+            </h2>
+
+            <p>
+                Use the ControlsCalc tools to perform the calculations
+                discussed in this guide.
+            </p>
+
+            <a class="tool-card" href="../calculators/4-20ma-scaling.html">
+
+                <strong>
+                    4–20 mA Scaling Calculator
+                </strong>
+
+                <span>
+                    Convert a measured 4–20 mA signal into engineering units.
+                </span>
+
+            </a>
+
+            <a class="tool-card" href="../calculators/4-20ma-voltage.html">
+
+                <strong>
+                    4–20 mA to Voltage Calculator
+                </strong>
+
+                <span>
+                    Calculate the voltage produced across a loop resistor.
+                </span>
+
+            </a>
+
+            <a class="tool-card" href="../calculators/4-20ma-resistor.html">
+
+                <strong>
+                    4–20 mA Loop Resistor Calculator
+                </strong>
+
+                <span>
+                    Calculate the resistor required to produce a desired
+                    voltage from a current signal.
+                </span>
+
+            </a>
+
+            <a class="tool-card" href="../calculators/analog-scaling.html">
+
+                <strong>
+                    Analog Signal Scaling Calculator
+                </strong>
+
+                <span>
+                    Apply linear scaling to 4–20 mA, 0–10 V, raw counts,
+                    and other proportional signals.
+                </span>
+
+            </a>
+
+            <a class="tool-card" href="plc-scaling.html">
+
+                <strong>
+                    PLC Analog Scaling Guide
+                </strong>
+
+                <span>
+                    Learn how a PLC converts an analog input into
+                    engineering units.
+                </span>
+
+            </a>
+
+        </article>
+
+
+        <!-- Table of contents -->
+
+        <aside class="toc">
+
+            <h2>
+                On This Page
+            </h2>
+
+            <a href="#what-is">What Is 4–20 mA?</a>
+            <a href="#why-four">Why 4 mA?</a>
+            <a href="#lrv-urv">LRV, URV, Zero &amp; Span</a>
+            <a href="#formula">Scaling Formula</a>
+            <a href="#example">Worked Example</a>
+            <a href="#reference">Reference Table</a>
+            <a href="#loop">How the Loop Works</a>
+            <a href="#current-vs-voltage">Current vs. Voltage</a>
+            <a href="#voltage">Loop Voltage</a>
+            <a href="#resistor">250 Ω Resistor</a>
+            <a href="#measure">Measuring Current</a>
+            <a href="#troubleshooting">Troubleshooting</a>
+            <a href="#faults">Common Problems</a>
+            <a href="#plc">PLC Scaling</a>
+            <a href="#mistakes">Common Mistakes</a>
+            <a href="#workflow">Field Workflow</a>
+            <a href="#tools">Calculators</a>
+
+        </aside>
+
+    </div>
+
+</main>
+
+
+<footer>
+
+    <div class="container">
+
+        <p>
+            <strong>ControlsCalc</strong>
+        </p>
+
+        <p>
+            Engineering and controls calculators and reference material
+            for technicians and engineers.
+        </p>
+
+    </div>
+
+</footer>
+
+</body>
+</html>
