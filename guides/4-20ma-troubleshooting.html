@@ -1,0 +1,1892 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        How to Troubleshoot a 4–20 mA Signal | ControlsCalc
+    </title>
+
+    <meta
+        name="description"
+        content="A practical field guide to troubleshooting 4–20 mA signals. Learn how to check transmitters, loop current, loop voltage, analog inputs, PLC scaling, and HMI values."
+    >
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f5f7fa;
+            color: #172033;
+            line-height: 1.65;
+        }
+
+        a {
+            color: #2563eb;
+        }
+
+        /* Header */
+
+        header {
+            background: #ffffff;
+            border-bottom: 1px solid #dfe5ec;
+        }
+
+        .header-inner {
+            width: min(1000px, calc(100% - 40px));
+            margin: 0 auto;
+
+            min-height: 68px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 20px;
+        }
+
+        .logo {
+            color: #172033;
+            text-decoration: none;
+
+            font-size: 1.45rem;
+            font-weight: 700;
+        }
+
+        nav {
+            display: flex;
+            gap: 20px;
+        }
+
+        nav a {
+            color: #475569;
+            text-decoration: none;
+
+            font-size: 0.95rem;
+        }
+
+        nav a:hover {
+            color: #2563eb;
+        }
+
+        /* Main */
+
+        main {
+            width: min(1000px, calc(100% - 40px));
+
+            margin: 0 auto;
+
+            padding: 34px 0 60px;
+        }
+
+        /* Hero */
+
+        .hero {
+            margin-bottom: 32px;
+        }
+
+        .breadcrumb {
+            font-size: 0.9rem;
+
+            margin-bottom: 18px;
+
+            color: #64748b;
+        }
+
+        .breadcrumb a {
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        h1 {
+            margin: 0 0 14px;
+
+            font-size: 2.5rem;
+            line-height: 1.2;
+
+            color: #172033;
+        }
+
+        .hero p {
+            max-width: 850px;
+
+            margin: 0;
+
+            font-size: 1.1rem;
+
+            color: #475569;
+        }
+
+        /* Layout */
+
+        .layout {
+            display: grid;
+
+            grid-template-columns:
+                minmax(0, 1fr)
+                250px;
+
+            gap: 30px;
+
+            align-items: start;
+        }
+
+        /* Article */
+
+        article {
+            min-width: 0;
+        }
+
+        .section {
+            background: #ffffff;
+
+            border: 1px solid #dfe5ec;
+
+            border-radius: 12px;
+
+            padding: 30px;
+
+            margin-bottom: 24px;
+        }
+
+        h2 {
+            margin-top: 0;
+
+            margin-bottom: 16px;
+
+            font-size: 1.65rem;
+
+            line-height: 1.3;
+
+            color: #172033;
+        }
+
+        h3 {
+            margin-top: 28px;
+
+            margin-bottom: 10px;
+
+            color: #172033;
+
+            font-size: 1.15rem;
+        }
+
+        p {
+            margin-top: 0;
+        }
+
+        ul,
+        ol {
+            padding-left: 25px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        /* Signal Path */
+
+        .signal-path {
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            flex-wrap: wrap;
+
+            gap: 8px;
+
+            margin: 24px 0;
+        }
+
+        .signal-step {
+            background: #f8fafc;
+
+            border: 1px solid #e2e8f0;
+
+            border-radius: 8px;
+
+            padding: 12px 14px;
+
+            font-weight: 700;
+
+            text-align: center;
+        }
+
+        .signal-arrow {
+            color: #64748b;
+
+            font-size: 1.2rem;
+
+            font-weight: 700;
+        }
+
+        /* Formula */
+
+        .formula {
+            background: #f5f7fa;
+
+            border: 1px solid #e2e8f0;
+
+            border-radius: 8px;
+
+            padding: 18px 20px;
+
+            margin: 18px 0;
+
+            font-family: "Courier New", monospace;
+
+            overflow-x: auto;
+        }
+
+        /* Tables */
+
+        table {
+            width: 100%;
+
+            border-collapse: collapse;
+
+            margin: 20px 0;
+
+            background: #ffffff;
+        }
+
+        th,
+        td {
+            border: 1px solid #cbd5e1;
+
+            padding: 11px 13px;
+
+            text-align: left;
+        }
+
+        th {
+            background: #f1f5f9;
+
+            color: #172033;
+        }
+
+        /* Notes */
+
+        .note {
+            background: #fff7ed;
+
+            border: 1px solid #fed7aa;
+
+            border-left: 5px solid #f97316;
+
+            border-radius: 8px;
+
+            padding: 18px 20px;
+
+            margin: 20px 0;
+        }
+
+        .tip {
+            background: #eff6ff;
+
+            border: 1px solid #bfdbfe;
+
+            border-left: 5px solid #2563eb;
+
+            border-radius: 8px;
+
+            padding: 18px 20px;
+
+            margin: 20px 0;
+        }
+
+        /* Troubleshooting Cards */
+
+        .troubleshooting-card {
+            background: #f8fafc;
+
+            border: 1px solid #e2e8f0;
+
+            border-radius: 10px;
+
+            padding: 20px;
+
+            margin: 18px 0;
+        }
+
+        .troubleshooting-card h3 {
+            margin-top: 0;
+        }
+
+        /* Related */
+
+        .related {
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+
+            gap: 14px;
+
+            margin-top: 20px;
+        }
+
+        .related a {
+            display: block;
+
+            padding: 15px;
+
+            background: #f8fafc;
+
+            border: 1px solid #e2e8f0;
+
+            border-radius: 8px;
+
+            text-decoration: none;
+
+            color: #2563eb;
+
+            font-weight: 700;
+        }
+
+        .related a:hover {
+            background: #eff6ff;
+
+            border-color: #bfdbfe;
+        }
+
+        /* Table of Contents */
+
+        .toc {
+            position: sticky;
+
+            top: 20px;
+
+            background: #ffffff;
+
+            border: 1px solid #dfe5ec;
+
+            border-radius: 12px;
+
+            padding: 20px;
+        }
+
+        .toc h3 {
+            margin-top: 0;
+
+            margin-bottom: 12px;
+
+            font-size: 1rem;
+        }
+
+        .toc a {
+            display: block;
+
+            padding: 5px 0;
+
+            color: #475569;
+
+            text-decoration: none;
+
+            font-size: 0.92rem;
+
+            line-height: 1.4;
+        }
+
+        .toc a:hover {
+            color: #2563eb;
+        }
+
+        /* Footer */
+
+        footer {
+            background: #ffffff;
+
+            border-top: 1px solid #dfe5ec;
+
+            color: #64748b;
+
+            text-align: center;
+
+            padding: 25px;
+
+            font-size: 0.9rem;
+        }
+
+        /* Mobile */
+
+        @media (max-width: 800px) {
+
+            .layout {
+                grid-template-columns: 1fr;
+            }
+
+            .toc {
+                position: static;
+
+                order: -1;
+            }
+
+        }
+
+        @media (max-width: 650px) {
+
+            .header-inner {
+                min-height: auto;
+
+                padding: 16px 0;
+
+                flex-direction: column;
+
+                align-items: flex-start;
+            }
+
+            nav {
+                gap: 16px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .section {
+                padding: 22px;
+            }
+
+            .signal-path {
+                flex-direction: column;
+            }
+
+            .signal-arrow {
+                transform: rotate(90deg);
+            }
+
+            .related {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<header>
+
+    <div class="header-inner">
+
+        <a href="../" class="logo">
+            ControlsCalc
+        </a>
+
+        <nav>
+
+            <a href="../#calculators">
+                Calculators
+            </a>
+
+            <a href="index.html">
+                Guides
+            </a>
+
+        </nav>
+
+    </div>
+
+</header>
+
+
+<main>
+
+
+    <section class="hero">
+
+        <div class="breadcrumb">
+
+            <a href="index.html">
+                Guides
+            </a>
+
+            → 4–20 mA Troubleshooting
+
+        </div>
+
+
+        <h1>
+            How to Troubleshoot a 4–20 mA Signal
+        </h1>
+
+
+        <p>
+
+            A practical field guide for troubleshooting 4–20 mA
+            instrumentation loops. Follow the signal from the transmitter
+            through the loop, analog input, PLC scaling, and HMI to find
+            where the problem is occurring.
+
+        </p>
+
+    </section>
+
+
+    <div class="layout">
+
+
+        <article>
+
+
+            <!-- Introduction -->
+
+            <section
+                class="section"
+                id="signal-path"
+            >
+
+                <h2>
+                    Start With the Signal Path
+                </h2>
+
+
+                <p>
+
+                    When a 4–20 mA value is wrong, the most useful approach is
+                    to follow the signal through the entire control system
+                    rather than immediately changing PLC scaling or replacing
+                    the transmitter.
+
+                </p>
+
+
+                <div class="signal-path">
+
+                    <div class="signal-step">
+                        Process
+                    </div>
+
+                    <div class="signal-arrow">
+                        →
+                    </div>
+
+                    <div class="signal-step">
+                        Transmitter
+                    </div>
+
+                    <div class="signal-arrow">
+                        →
+                    </div>
+
+                    <div class="signal-step">
+                        Current Loop
+                    </div>
+
+                    <div class="signal-arrow">
+                        →
+                    </div>
+
+                    <div class="signal-step">
+                        Analog Input
+                    </div>
+
+                    <div class="signal-arrow">
+                        →
+                    </div>
+
+                    <div class="signal-step">
+                        PLC
+                    </div>
+
+                    <div class="signal-arrow">
+                        →
+                    </div>
+
+                    <div class="signal-step">
+                        HMI
+                    </div>
+
+                </div>
+
+
+                <div class="tip">
+
+                    <strong>
+                        Field rule:
+                    </strong>
+
+                    Find the first point in the signal path where the value
+                    becomes incorrect. Everything before that point is
+                    probably worth investigating; everything after it may
+                    simply be reporting the bad value.
+
+                </div>
+
+            </section>
+
+
+            <!-- Reference -->
+
+            <section
+                class="section"
+                id="reference"
+            >
+
+                <h2>
+                    Know What the Current Should Mean
+                </h2>
+
+
+                <p>
+
+                    For a standard linear 4–20 mA signal, 4 mA represents
+                    0% of the configured span, 12 mA represents 50%, and
+                    20 mA represents 100%.
+
+                </p>
+
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Current
+                            </th>
+
+                            <th>
+                                Signal Level
+                            </th>
+
+                            <th>
+                                Example: 0–100 PSI
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        <tr>
+
+                            <td>
+                                4 mA
+                            </td>
+
+                            <td>
+                                0%
+                            </td>
+
+                            <td>
+                                0 PSI
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                8 mA
+                            </td>
+
+                            <td>
+                                25%
+                            </td>
+
+                            <td>
+                                25 PSI
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                12 mA
+                            </td>
+
+                            <td>
+                                50%
+                            </td>
+
+                            <td>
+                                50 PSI
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                16 mA
+                            </td>
+
+                            <td>
+                                75%
+                            </td>
+
+                            <td>
+                                75 PSI
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                20 mA
+                            </td>
+
+                            <td>
+                                100%
+                            </td>
+
+                            <td>
+                                100 PSI
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+
+                <p>
+
+                    The actual engineering value depends on the transmitter's
+                    configured LRV and URV.
+
+                </p>
+
+
+                <div class="formula">
+
+                    Engineering Value =
+                    LRV +
+                    ((mA − 4) ÷ 16)
+                    ×
+                    (URV − LRV)
+
+                </div>
+
+            </section>
+
+
+            <!-- Step 1 -->
+
+            <section
+                class="section"
+                id="transmitter"
+            >
+
+                <h2>
+                    Step 1 — Check the Transmitter
+                </h2>
+
+
+                <p>
+
+                    Before troubleshooting the PLC, make sure the transmitter
+                    itself is configured correctly and is actually measuring
+                    the process you expect.
+
+                </p>
+
+
+                <h3>
+                    Verify LRV and URV
+                </h3>
+
+
+                <p>
+
+                    Check the transmitter's configured Lower Range Value and
+                    Upper Range Value.
+
+                </p>
+
+
+                <p>
+
+                    Do not assume that 4 mA means zero and 20 mA means the
+                    transmitter's maximum physical measurement range.
+
+                </p>
+
+
+                <h3>
+                    Verify the process condition
+                </h3>
+
+
+                <p>
+
+                    Compare the transmitter's indicated process value with
+                    an independent measurement when practical.
+
+                </p>
+
+
+                <p>
+
+                    For example, if a pressure transmitter is reporting a
+                    pressure that appears incorrect, verify the actual
+                    pressure rather than immediately assuming the 4–20 mA
+                    signal is faulty.
+
+                </p>
+
+
+                <h3>
+                    Check transmitter status
+
+                </h3>
+
+
+                <p>
+
+                    Many modern transmitters provide diagnostic information
+                    for sensor faults, configuration problems, underrange,
+                    overrange, or other conditions.
+
+                </p>
+
+            </section>
+
+
+            <!-- Step 2 -->
+
+            <section
+                class="section"
+                id="current"
+            >
+
+                <h2>
+                    Step 2 — Measure the Loop Current
+                </h2>
+
+
+                <p>
+
+                    Measuring the actual loop current is one of the most
+                    useful troubleshooting steps because it separates the
+                    field instrument from the controller-side problem.
+
+                </p>
+
+
+                <h3>
+                    What to look for
+                </h3>
+
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Measured Signal
+                            </th>
+
+                            <th>
+                                What to Investigate
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        <tr>
+
+                            <td>
+                                Approximately 0 mA
+                            </td>
+
+                            <td>
+                                Open loop, loss of power, wiring problem,
+                                transmitter problem, or input configuration.
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                Below 4 mA
+                            </td>
+
+                            <td>
+                                Underrange, fault condition, configuration,
+                                or transmitter-specific diagnostic behavior.
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                4–20 mA
+                            </td>
+
+                            <td>
+                                Normal measurement span. Continue downstream
+                                if the controller value is wrong.
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                Above 20 mA
+                            </td>
+
+                            <td>
+                                Overrange, fault condition, configuration,
+                                or transmitter-specific behavior.
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+
+                <div class="note">
+
+                    <strong>
+                        Safety:
+                    </strong>
+
+                    When measuring current with a multimeter, the meter must
+                    be connected in the correct configuration and location
+                    for the circuit. Never place a current meter directly
+                    across a voltage source. Follow the meter manufacturer's
+                    instructions and applicable site electrical procedures.
+
+                </div>
+
+            </section>
+
+
+            <!-- Step 3 -->
+
+            <section
+                class="section"
+                id="voltage"
+            >
+
+                <h2>
+                    Step 3 — Check Loop Voltage
+                </h2>
+
+
+                <p>
+
+                    A 4–20 mA loop needs enough available voltage for every
+                    component in the loop.
+
+                </p>
+
+
+                <p>
+
+                    The transmitter, analog input, loop resistance, and wiring
+                    all contribute to the loop's voltage requirements.
+
+                </p>
+
+
+                <h3>
+                    Why this matters
+                </h3>
+
+
+                <p>
+
+                    A loop can have the correct power supply voltage while
+                    still having insufficient voltage available at the
+                    transmitter because of voltage drops elsewhere in the
+                    circuit.
+
+                </p>
+
+
+                <p>
+
+                    Long cable runs, high input resistance, additional
+                    instruments, and loop resistors can increase the total
+                    voltage burden.
+
+                </p>
+
+
+                <div class="formula">
+
+                    V = I × R
+
+                </div>
+
+
+                <p>
+
+                    For example, a 250 Ω resistor produces:
+
+                </p>
+
+
+                <div class="formula">
+
+                    4 mA × 250 Ω = 1 V
+
+                    <br><br>
+
+                    20 mA × 250 Ω = 5 V
+
+                </div>
+
+
+                <p>
+
+                    This is why a 250 Ω resistor is commonly used to convert
+                    a 4–20 mA signal into a nominal 1–5 V signal.
+
+                </p>
+
+            </section>
+
+
+            <!-- Step 4 -->
+
+            <section
+                class="section"
+                id="analog-input"
+            >
+
+                <h2>
+                    Step 4 — Check the Analog Input
+                </h2>
+
+
+                <p>
+
+                    If the loop current is correct but the PLC value is wrong,
+                    investigate the analog input before changing the PLC
+                    scaling logic.
+
+                </p>
+
+
+                <h3>
+                    Verify the input configuration
+                </h3>
+
+
+                <ul>
+
+                    <li>
+                        Confirm the channel is configured for current input.
+                    </li>
+
+                    <li>
+                        Verify the expected 4–20 mA range.
+                    </li>
+
+                    <li>
+                        Check whether the input uses engineering-unit scaling
+                        internally.
+                    </li>
+
+                    <li>
+                        Verify the channel wiring.
+                    </li>
+
+                    <li>
+                        Check for diagnostic or fault status.
+                    </li>
+
+                </ul>
+
+
+                <h3>
+                    Check raw input data
+                </h3>
+
+
+                <p>
+
+                    Many PLC analog modules convert the electrical signal into
+                    a numerical raw value.
+
+                </p>
+
+
+                <p>
+
+                    The exact raw-count range depends on the PLC family,
+                    analog module, resolution, configuration, and data format.
+
+                </p>
+
+
+                <div class="note">
+
+                    <strong>
+                        Important:
+                    </strong>
+
+                    A raw-count range such as 3277–16384 is an example, not a
+                    universal standard. Always verify the actual analog module
+                    documentation.
+
+                </div>
+
+            </section>
+
+
+            <!-- Step 5 -->
+
+            <section
+                class="section"
+                id="plc-scaling"
+            >
+
+                <h2>
+                    Step 5 — Check PLC Scaling
+                </h2>
+
+
+                <p>
+
+                    Once you know the analog input is receiving the correct
+                    signal, verify that the PLC converts that signal into the
+                    correct engineering units.
+
+                </p>
+
+
+                <h3>
+                    Verify the transmitter range
+                </h3>
+
+
+                <p>
+
+                    The PLC should generally use the same configured LRV and
+                    URV as the transmitter when performing a linear conversion.
+
+                </p>
+
+
+                <p>
+
+                    For example, if the transmitter is configured:
+
+                </p>
+
+
+                <div class="formula">
+
+                    4 mA = 0 PSI
+
+                    <br>
+
+                    20 mA = 100 PSI
+
+                </div>
+
+
+                <p>
+
+                    But the PLC is configured:
+
+                </p>
+
+
+                <div class="formula">
+
+                    4 mA = 0 PSI
+
+                    <br>
+
+                    20 mA = 150 PSI
+
+                </div>
+
+
+                <p>
+
+                    Then a perfectly good 12 mA signal will produce the wrong
+                    engineering value in the PLC.
+
+                </p>
+
+
+                <h3>
+                    Check data types
+                </h3>
+
+
+                <p>
+
+                    Scaling calculations can also be affected by integer
+                    division, data type conversion, rounding, or truncation.
+
+                </p>
+
+
+                <p>
+
+                    If the calculation requires fractional values, make sure
+                    the PLC logic uses an appropriate numeric data type.
+
+                </p>
+
+            </section>
+
+
+            <!-- Step 6 -->
+
+            <section
+                class="section"
+                id="hmi"
+            >
+
+                <h2>
+                    Step 6 — Check the HMI
+                </h2>
+
+
+                <p>
+
+                    If the PLC's engineering value is correct but the HMI
+                    displays the wrong number, the problem may be downstream
+                    of the PLC scaling.
+
+                </p>
+
+
+                <p>
+
+                    Check:
+
+                </p>
+
+
+                <ul>
+
+                    <li>
+                        HMI tag address
+                    </li>
+
+                    <li>
+                        PLC tag mapping
+                    </li>
+
+                    <li>
+                        Engineering-unit conversion
+                    </li>
+
+                    <li>
+                        Display scaling
+                    </li>
+
+                    <li>
+                        Decimal formatting
+                    </li>
+
+                    <li>
+                        HMI communication status
+                    </li>
+
+                </ul>
+
+
+                <div class="tip">
+
+                    <strong>
+                        Don't forget the signal chain:
+                    </strong>
+
+                    If the PLC value is correct but the HMI is wrong,
+                    troubleshooting the transmitter will not solve the
+                    problem.
+
+                </div>
+
+            </section>
+
+
+            <!-- Troubleshooting by Symptom -->
+
+            <section
+                class="section"
+                id="symptoms"
+            >
+
+                <h2>
+                    Troubleshooting by Symptom
+                </h2>
+
+
+                <div class="troubleshooting-card">
+
+                    <h3>
+                        The HMI reads zero, but the process is not zero
+                    </h3>
+
+                    <p>
+
+                        First measure the actual loop current.
+
+                        If the loop is around 4 mA, check the transmitter range
+                        and PLC scaling.
+
+                        If the loop current is near 0 mA, investigate power,
+                        wiring, and the transmitter.
+
+                    </p>
+
+                </div>
+
+
+                <div class="troubleshooting-card">
+
+                    <h3>
+                        The transmitter display looks correct, but the PLC is wrong
+                    </h3>
+
+                    <p>
+
+                        Measure the actual loop current.
+
+                        If the current matches the expected transmitter value,
+                        investigate the analog input configuration, raw counts,
+                        and PLC scaling.
+
+                    </p>
+
+                </div>
+
+
+                <div class="troubleshooting-card">
+
+                    <h3>
+                        The PLC value is correct, but the HMI is wrong
+                    </h3>
+
+                    <p>
+
+                        Check the HMI tag, scaling, engineering units,
+                        communication, and display configuration.
+
+                    </p>
+
+                </div>
+
+
+                <div class="troubleshooting-card">
+
+                    <h3>
+                        The signal is stuck near 4 mA
+                    </h3>
+
+                    <p>
+
+                        Verify the actual process condition, transmitter
+                        configuration, sensor input, and whether the
+                        transmitter is reporting a fault or underrange
+                        condition.
+
+                    </p>
+
+                </div>
+
+
+                <div class="troubleshooting-card">
+
+                    <h3>
+                        The signal is stuck near 20 mA
+                    </h3>
+
+                    <p>
+
+                        Verify the actual process condition, transmitter
+                        configuration, sensor input, and whether the
+                        transmitter is reporting an overrange condition.
+
+                    </p>
+
+                </div>
+
+
+                <div class="troubleshooting-card">
+
+                    <h3>
+                        The signal changes, but the displayed value is wrong
+                    </h3>
+
+                    <p>
+
+                        Compare the measured current with the calculated
+                        engineering value. Then compare that value with the
+                        PLC and HMI values to determine where the discrepancy
+                        begins.
+
+                    </p>
+
+                </div>
+
+            </section>
+
+
+            <!-- Worked Example -->
+
+            <section
+                class="section"
+                id="example"
+            >
+
+                <h2>
+                    Worked Troubleshooting Example
+                </h2>
+
+
+                <p>
+
+                    Suppose a pressure transmitter is configured for:
+
+                </p>
+
+
+                <ul>
+
+                    <li>
+                        LRV = 0 PSI
+                    </li>
+
+                    <li>
+                        URV = 100 PSI
+                    </li>
+
+                    <li>
+                        Expected pressure = 50 PSI
+                    </li>
+
+                </ul>
+
+
+                <p>
+
+                    The technician measures the loop and gets:
+
+                </p>
+
+
+                <div class="formula">
+
+                    12.0 mA
+
+                </div>
+
+
+                <p>
+
+                    Calculate the expected pressure:
+
+                </p>
+
+
+                <div class="formula">
+
+                    Pressure =
+                    0 +
+                    ((12 − 4) ÷ 16)
+                    ×
+                    (100 − 0)
+
+                    <br><br>
+
+                    Pressure = 50 PSI
+
+                </div>
+
+
+                <p>
+
+                    Therefore the transmitter's current signal is consistent
+                    with 50 PSI.
+
+                </p>
+
+
+                <p>
+
+                    If the PLC displays 37.5 PSI, the next investigation should
+                    focus on the PLC input configuration or scaling rather than
+                    immediately replacing the transmitter.
+
+                </p>
+
+            </section>
+
+
+            <!-- Practical Workflow -->
+
+            <section
+                class="section"
+                id="workflow"
+            >
+
+                <h2>
+                    A Practical Field Workflow
+                </h2>
+
+
+                <ol>
+
+                    <li>
+
+                        <strong>
+                            Verify the process.
+                        </strong>
+
+                        Determine what the process should actually be doing.
+
+                    </li>
+
+
+                    <li>
+
+                        <strong>
+                            Verify transmitter configuration.
+                        </strong>
+
+                        Check LRV, URV, units, sensor configuration, and
+                        diagnostic status.
+
+                    </li>
+
+
+                    <li>
+
+                        <strong>
+                            Measure loop current.
+                        </strong>
+
+                        Determine what signal the transmitter is actually
+                        sending.
+
+                    </li>
+
+
+                    <li>
+
+                        <strong>
+                            Calculate expected engineering value.
+                        </strong>
+
+                        Use the transmitter's actual configured range.
+
+                    </li>
+
+
+                    <li>
+
+                        <strong>
+                            Check the analog input.
+                        </strong>
+
+                        Verify channel configuration and raw data.
+
+                    </li>
+
+
+                    <li>
+
+                        <strong>
+                            Check PLC scaling.
+                        </strong>
+
+                        Confirm the PLC uses the correct range and data types.
+
+                    </li>
+
+
+                    <li>
+
+                        <strong>
+                            Check the HMI.
+                        </strong>
+
+                        Confirm the displayed value matches the PLC value.
+
+                    </li>
+
+                </ol>
+
+
+                <div class="tip">
+
+                    <strong>
+                        The goal is not to guess which component failed.
+                    </strong>
+
+                    The goal is to locate the first point in the signal chain
+                    where the measured value no longer matches the expected
+                    value.
+
+                </div>
+
+            </section>
+
+
+            <!-- Common Mistakes -->
+
+            <section
+                class="section"
+                id="mistakes"
+            >
+
+                <h2>
+                    Common Troubleshooting Mistakes
+                </h2>
+
+
+                <ul>
+
+                    <li>
+
+                        Replacing the transmitter before measuring the actual
+                        loop current.
+
+                    </li>
+
+
+                    <li>
+
+                        Assuming 4 mA always means zero engineering units.
+
+                    </li>
+
+
+                    <li>
+
+                        Assuming 20 mA always represents the transmitter's
+                        maximum possible measurement.
+
+                    </li>
+
+
+                    <li>
+
+                        Changing PLC scaling without checking the transmitter
+                        configuration.
+
+                    </li>
+
+
+                    <li>
+
+                        Assuming a raw-count range is universal across PLC
+                        platforms.
+
+                    </li>
+
+
+                    <li>
+
+                        Troubleshooting the HMI before checking the PLC value.
+
+                    </li>
+
+
+                    <li>
+
+                        Measuring current incorrectly with a multimeter.
+
+                    </li>
+
+
+                    <li>
+
+                        Ignoring loop voltage and voltage burden.
+
+                    </li>
+
+                </ul>
+
+            </section>
+
+
+            <!-- Related -->
+
+            <section
+                class="section"
+                id="related"
+            >
+
+                <h2>
+                    Related ControlsCalc Tools
+                </h2>
+
+
+                <div class="related">
+
+                    <a href="../calculators/4-20ma-scaling.html">
+
+                        4–20 mA Scaling Calculator
+
+                    </a>
+
+
+                    <a href="../calculators/4-20ma-voltage.html">
+
+                        4–20 mA → Voltage Calculator
+
+                    </a>
+
+
+                    <a href="../calculators/4-20ma-resistor.html">
+
+                        4–20 mA Loop Resistor Calculator
+
+                    </a>
+
+
+                    <a href="../calculators/analog-scaling.html">
+
+                        Analog Signal Scaling Calculator
+
+                    </a>
+
+
+                    <a href="../calculators/pressure-transmitter.html">
+
+                        Pressure Transmitter Scaling Calculator
+
+                    </a>
+
+
+                    <a href="4-20ma.html">
+
+                        4–20 mA Fundamentals Guide
+
+                    </a>
+
+
+                    <a href="plc-scaling.html">
+
+                        PLC Analog Scaling Guide
+
+                    </a>
+
+                </div>
+
+            </section>
+
+
+        </article>
+
+
+        <!-- Table of Contents -->
+
+        <aside class="toc">
+
+            <h3>
+                On This Page
+            </h3>
+
+
+            <a href="#signal-path">
+                Signal Path
+            </a>
+
+            <a href="#reference">
+                Current Reference
+            </a>
+
+            <a href="#transmitter">
+                1. Check Transmitter
+            </a>
+
+            <a href="#current">
+                2. Measure Current
+            </a>
+
+            <a href="#voltage">
+                3. Check Loop Voltage
+            </a>
+
+            <a href="#analog-input">
+                4. Check Analog Input
+            </a>
+
+            <a href="#plc-scaling">
+                5. Check PLC Scaling
+            </a>
+
+            <a href="#hmi">
+                6. Check HMI
+            </a>
+
+            <a href="#symptoms">
+                Troubleshooting by Symptom
+            </a>
+
+            <a href="#example">
+                Worked Example
+            </a>
+
+            <a href="#workflow">
+                Field Workflow
+            </a>
+
+            <a href="#mistakes">
+                Common Mistakes
+            </a>
+
+            <a href="#related">
+                Related Tools
+            </a>
+
+        </aside>
+
+
+    </div>
+
+
+</main>
+
+
+<footer>
+
+    ControlsCalc — Controls & Instrumentation Calculators
+
+</footer>
+
+
+</body>
+
+</html>
