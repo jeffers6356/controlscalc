@@ -1,1 +1,1026 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PT100 Resistance | ControlsCalc</title><meta name="description" content="Estimate PT100 resistance from temperature."><link rel="stylesheet" href="../style.css"></head><body><header><nav class="wrap"><a class="brand" href="../index.html">ControlsCalc</a><div class="links"><a href="../index.html">Calculators</a><a href="../guides/index.html">Guides</a></div></nav></header><main class="wrap calc"><span class="tag">ControlsCalc</span><h1>PT100 Resistance</h1><p class="muted">Estimate PT100 resistance from temperature.</p><div class="panel" data-calc="pt100"></div><div class="panel"><h2>Field note</h2><p>Use this as a practical reference. Verify transmitter ranges, wiring, scaling, device documentation, and applicable project standards before making control changes.</p></div></main><footer><div class="wrap">ControlsCalc — practical controls and instrumentation calculators.</div></footer><script src="../script.js"></script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>RTD & Temperature Sensor Resistance Calculator | ControlsCalc</title>
+
+<meta name="description" content="Calculate resistance from temperature for PT100, PT1000, Ni1000, and 10k Type II temperature sensors. Includes formulas, sensor characteristics, examples, and field troubleshooting.">
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        background: #f4f7fa;
+        color: #1f2937;
+        line-height: 1.6;
+    }
+
+    header {
+        background: #0f172a;
+        color: white;
+        padding: 18px 24px;
+    }
+
+    .header-inner {
+        max-width: 1050px;
+        margin: auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .logo {
+        font-size: 1.45rem;
+        font-weight: bold;
+    }
+
+    nav a {
+        color: #dbeafe;
+        text-decoration: none;
+        margin-left: 18px;
+        font-size: 0.95rem;
+    }
+
+    nav a:hover {
+        text-decoration: underline;
+    }
+
+    main {
+        max-width: 1050px;
+        margin: 0 auto;
+        padding: 32px 20px 60px;
+    }
+
+    .breadcrumb {
+        font-size: 0.9rem;
+        margin-bottom: 20px;
+        color: #64748b;
+    }
+
+    .breadcrumb a {
+        color: #2563eb;
+        text-decoration: none;
+    }
+
+    h1 {
+        font-size: 2.3rem;
+        margin-bottom: 10px;
+        color: #0f172a;
+    }
+
+    h2 {
+        color: #0f172a;
+        margin-top: 38px;
+    }
+
+    h3 {
+        color: #1e293b;
+        margin-top: 26px;
+    }
+
+    .intro {
+        font-size: 1.08rem;
+        max-width: 850px;
+        color: #475569;
+    }
+
+    .calculator {
+        background: white;
+        border-radius: 12px;
+        padding: 28px;
+        margin-top: 28px;
+        box-shadow: 0 3px 12px rgba(15, 23, 42, 0.08);
+        border: 1px solid #e2e8f0;
+    }
+
+    .calculator h2 {
+        margin-top: 0;
+    }
+
+    .input-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+        margin-top: 20px;
+    }
+
+    label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 6px;
+        color: #334155;
+    }
+
+    input,
+    select {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #cbd5e1;
+        border-radius: 7px;
+        font-size: 1rem;
+        background: white;
+    }
+
+    input:focus,
+    select:focus {
+        outline: 2px solid #93c5fd;
+        border-color: #2563eb;
+    }
+
+    .button-row {
+        margin-top: 22px;
+    }
+
+    button {
+        background: #2563eb;
+        color: white;
+        border: none;
+        border-radius: 7px;
+        padding: 12px 22px;
+        font-size: 1rem;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background: #1d4ed8;
+    }
+
+    .result {
+        display: none;
+        margin-top: 22px;
+        padding: 20px;
+        border-radius: 8px;
+        background: #eff6ff;
+        border-left: 5px solid #2563eb;
+    }
+
+    .result strong {
+        font-size: 1.35rem;
+        color: #0f172a;
+    }
+
+    .error {
+        display: none;
+        margin-top: 18px;
+        padding: 14px;
+        border-radius: 7px;
+        background: #fef2f2;
+        border-left: 5px solid #dc2626;
+        color: #991b1b;
+    }
+
+    .sensor-info {
+        display: none;
+        margin-top: 20px;
+        padding: 18px;
+        border-radius: 8px;
+        background: #f8fafc;
+        border: 1px solid #dbe3ec;
+    }
+
+    .formula {
+        background: #0f172a;
+        color: white;
+        padding: 20px;
+        border-radius: 8px;
+        font-family: "Courier New", monospace;
+        font-size: 1.02rem;
+        margin: 18px 0;
+        overflow-x: auto;
+    }
+
+    .info-box {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 9px;
+        padding: 20px;
+        margin: 20px 0;
+    }
+
+    .example {
+        background: #f8fafc;
+        border-left: 5px solid #64748b;
+        padding: 18px 20px;
+        margin: 18px 0;
+        border-radius: 5px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+        background: white;
+    }
+
+    th,
+    td {
+        border: 1px solid #cbd5e1;
+        padding: 11px 13px;
+        text-align: left;
+    }
+
+    th {
+        background: #e2e8f0;
+        color: #0f172a;
+    }
+
+    ul,
+    ol {
+        padding-left: 25px;
+    }
+
+    .related {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px;
+        margin-top: 20px;
+    }
+
+    .related a {
+        display: block;
+        padding: 15px;
+        background: white;
+        border: 1px solid #dbe3ec;
+        border-radius: 8px;
+        text-decoration: none;
+        color: #1d4ed8;
+        font-weight: bold;
+    }
+
+    .related a:hover {
+        border-color: #2563eb;
+        background: #eff6ff;
+    }
+
+    .note {
+        background: #fff7ed;
+        border-left: 5px solid #f97316;
+        padding: 18px 20px;
+        border-radius: 5px;
+        margin-top: 24px;
+    }
+
+    footer {
+        background: #0f172a;
+        color: #cbd5e1;
+        text-align: center;
+        padding: 25px;
+        font-size: 0.9rem;
+    }
+
+    @media (max-width: 700px) {
+
+        .header-inner {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        nav a {
+            margin-left: 0;
+            margin-right: 15px;
+        }
+
+        .input-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .related {
+            grid-template-columns: 1fr;
+        }
+
+        h1 {
+            font-size: 1.9rem;
+        }
+    }
+</style>
+</head>
+
+<body>
+
+<header>
+
+    <div class="header-inner">
+
+        <div class="logo">ControlsCalc</div>
+
+        <nav>
+            <a href="../index.html">Calculators</a>
+            <a href="../guides/index.html">Guides</a>
+        </nav>
+
+    </div>
+
+</header>
+
+<main>
+
+    <div class="breadcrumb">
+        <a href="../index.html">Calculators</a> → RTD & Temperature Sensor Resistance
+    </div>
+
+    <h1>RTD & Temperature Sensor Resistance Calculator</h1>
+
+    <p class="intro">
+        Calculate the expected resistance of common industrial and HVAC
+        temperature sensors from their temperature. Select the sensor type
+        to use the appropriate resistance-temperature characteristic.
+    </p>
+
+    <section class="calculator">
+
+        <h2>Calculate Resistance</h2>
+
+        <div class="input-grid">
+
+            <div>
+                <label for="sensorType">Sensor Type</label>
+
+                <select id="sensorType" onchange="updateSensorInfo()">
+
+                    <option value="pt100">
+                        PT100 — Platinum, IEC 60751
+                    </option>
+
+                    <option value="pt1000">
+                        PT1000 — Platinum, IEC 60751
+                    </option>
+
+                    <option value="ni1000">
+                        Ni1000 — Nickel, DIN 43760
+                    </option>
+
+                    <option value="ntc10k2">
+                        10k Type II — NTC Thermistor
+                    </option>
+
+                </select>
+            </div>
+
+            <div>
+                <label for="temperature">Temperature (°C)</label>
+
+                <input
+                    type="number"
+                    id="temperature"
+                    step="any"
+                    placeholder="Example: 25"
+                    value="25">
+            </div>
+
+        </div>
+
+        <div id="sensorInfo" class="sensor-info"></div>
+
+        <div class="button-row">
+            <button onclick="calculateResistance()">
+                Calculate
+            </button>
+        </div>
+
+        <div id="error" class="error"></div>
+
+        <div id="result" class="result"></div>
+
+    </section>
+
+    <h2>Why Sensor Type Matters</h2>
+
+    <p>
+        Temperature sensors do not all follow the same resistance curve.
+        Selecting the correct sensor characteristic is therefore just as
+        important as entering the correct temperature.
+    </p>
+
+    <div class="info-box">
+
+        <h3>Platinum RTDs</h3>
+
+        <p>
+            PT100 and PT1000 sensors use the standardized IEC 60751 platinum
+            characteristic. Their curves have the same shape; the primary
+            difference here is the nominal resistance at 0 °C:
+        </p>
+
+        <ul>
+            <li>PT100 → 100 Ω at 0 °C</li>
+            <li>PT1000 → 1000 Ω at 0 °C</li>
+        </ul>
+
+        <p>
+            The same IEC 60751 coefficients are used for both. :contentReference[oaicite:2]{index=2}
+        </p>
+
+    </div>
+
+    <div class="info-box">
+
+        <h3>Ni1000</h3>
+
+        <p>
+            A Ni1000 is a nickel RTD with a nominal resistance of 1000 Ω at
+            0 °C. Nickel sensors have a substantially different resistance
+            curve from platinum RTDs.
+        </p>
+
+        <p>
+            The calculator uses the DIN 43760 nickel characteristic for the
+            selected Ni1000 sensor. DIN 43760 nickel sensors are commonly
+            identified by their relatively high temperature coefficient
+            compared with platinum RTDs. :contentReference[oaicite:3]{index=3}
+        </p>
+
+    </div>
+
+    <div class="info-box">
+
+        <h3>10k Type II</h3>
+
+        <p>
+            A 10k Type II sensor is an <strong>NTC thermistor</strong>, not a
+            platinum or nickel RTD.
+        </p>
+
+        <p>
+            Its resistance decreases as temperature increases. For this
+            calculator, the assumed characteristic is:
+        </p>
+
+        <ul>
+            <li>10,000 Ω at 25 °C</li>
+            <li>B = 3975 K</li>
+        </ul>
+
+        <p>
+            Those parameters correspond to the Type II characteristic
+            documented by Honeywell for its 10k Type II sensor family.
+            Always verify the manufacturer's curve when working with an
+            unidentified 10k sensor. :contentReference[oaicite:4]{index=4}
+        </p>
+
+    </div>
+
+    <h2>PT100 and PT1000</h2>
+
+    <p>
+        Standard IEC 60751 platinum RTDs use the Callendar–Van Dusen equation.
+        For temperatures at or above 0 °C:
+    </p>
+
+    <div class="formula">
+        R(t) = R0 × [1 + A×t + B×t²]
+    </div>
+
+    <p>
+        Where:
+    </p>
+
+    <ul>
+        <li>R(t) = resistance at temperature t</li>
+        <li>R0 = resistance at 0 °C</li>
+        <li>A = 3.9083 × 10⁻³</li>
+        <li>B = −5.775 × 10⁻⁷</li>
+    </ul>
+
+    <p>
+        For temperatures below 0 °C, the IEC 60751 equation includes an
+        additional cubic correction term. :contentReference[oaicite:5]{index=5}
+    </p>
+
+    <div class="example">
+
+        <h3>PT100 at 100 °C</h3>
+
+        <div class="formula">
+            R0 = 100 Ω<br>
+            t = 100 °C<br><br>
+
+            R ≈ 138.505 Ω
+        </div>
+
+    </div>
+
+    <div class="example">
+
+        <h3>PT1000 at 100 °C</h3>
+
+        <div class="formula">
+            R0 = 1000 Ω<br>
+            t = 100 °C<br><br>
+
+            R ≈ 1385.055 Ω
+        </div>
+
+        <p>
+            The PT1000 is essentially the same normalized platinum curve
+            multiplied by ten. :contentReference[oaicite:6]{index=6}
+        </p>
+
+    </div>
+
+    <h2>Ni1000</h2>
+
+    <p>
+        The Ni1000 calculation uses a polynomial characteristic associated
+        with the DIN 43760 nickel sensor family.
+    </p>
+
+    <div class="formula">
+        R(T) = R0 × [1 + A×T + B×T² + C×T⁴ + D×T⁶]
+    </div>
+
+    <p>
+        For the characteristic implemented here:
+    </p>
+
+    <div class="formula">
+        R0 = 1000 Ω<br>
+        A = 5.485 × 10⁻³<br>
+        B = 6.650 × 10⁻⁶<br>
+        C = 2.805 × 10⁻¹¹<br>
+        D = −2.000 × 10⁻¹⁷
+    </div>
+
+    <p>
+        These coefficients produce a substantially steeper resistance change
+        than a PT100 over typical HVAC/control temperatures. :contentReference[oaicite:7]{index=7}
+    </p>
+
+    <h2>10k Type II Thermistor</h2>
+
+    <p>
+        The 10k Type II calculation uses the Beta model:
+    </p>
+
+    <div class="formula">
+        R = R25 × exp[B × (1/T − 1/T25)]
+    </div>
+
+    <p>
+        Temperatures in this equation are absolute temperatures in Kelvin.
+    </p>
+
+    <ul>
+        <li>R25 = 10,000 Ω</li>
+        <li>B = 3975 K</li>
+        <li>T25 = 298.15 K</li>
+        <li>T = measured temperature in Kelvin</li>
+    </ul>
+
+    <p>
+        Because this is an NTC thermistor, the resistance <strong>falls</strong>
+        as temperature rises. Honeywell's published Type II table, for example,
+        lists approximately 32.19 kΩ at 0 °C, 12.46 kΩ at 20 °C, and 5.83 kΩ
+        at 37.8 °C. :contentReference[oaicite:8]{index=8}
+    </p>
+
+    <h2>Quick Comparison</h2>
+
+    <table>
+
+        <tr>
+            <th>Sensor</th>
+            <th>Nominal Reference</th>
+            <th>Resistance Behavior</th>
+            <th>Typical Application</th>
+        </tr>
+
+        <tr>
+            <td>PT100</td>
+            <td>100 Ω @ 0 °C</td>
+            <td>Resistance increases with temperature</td>
+            <td>Industrial instrumentation</td>
+        </tr>
+
+        <tr>
+            <td>PT1000</td>
+            <td>1000 Ω @ 0 °C</td>
+            <td>Resistance increases with temperature</td>
+            <td>HVAC / BAS / instrumentation</td>
+        </tr>
+
+        <tr>
+            <td>Ni1000</td>
+            <td>1000 Ω @ 0 °C</td>
+            <td>Resistance increases with temperature</td>
+            <td>HVAC / building automation</td>
+        </tr>
+
+        <tr>
+            <td>10k Type II</td>
+            <td>10,000 Ω @ 25 °C</td>
+            <td>Resistance decreases with temperature</td>
+            <td>HVAC / room and duct sensors</td>
+        </tr>
+
+    </table>
+
+    <h2>Field Troubleshooting</h2>
+
+    <p>
+        This is where knowing the sensor characteristic becomes particularly
+        useful.
+    </p>
+
+    <h3>Step 1 — Identify the sensor</h3>
+
+    <p>
+        Before interpreting a resistance measurement, determine what sensor
+        you actually have. Look at:
+    </p>
+
+    <ul>
+        <li>Sensor label</li>
+        <li>Part number</li>
+        <li>Transmitter configuration</li>
+        <li>Controller input configuration</li>
+        <li>Manufacturer documentation</li>
+        <li>Wiring drawings</li>
+    </ul>
+
+    <h3>Step 2 — Estimate the actual temperature</h3>
+
+    <p>
+        Use the surrounding conditions to establish a reasonable expectation.
+        A room sensor sitting in a normal occupied space should not suddenly
+        measure a resistance corresponding to several hundred degrees.
+    </p>
+
+    <h3>Step 3 — Measure resistance</h3>
+
+    <p>
+        Compare the measured resistance with the expected resistance for the
+        identified sensor.
+    </p>
+
+    <h3>Step 4 — Check the wiring</h3>
+
+    <p>
+        Remember that the resistance measured at the controller may include
+        wire resistance, terminal resistance, and connection problems.
+    </p>
+
+    <h2>Important Difference: RTD vs. Thermistor</h2>
+
+    <div class="note">
+
+        <strong>Don't assume every resistance temperature sensor is an RTD.</strong>
+
+        <br><br>
+
+        A PT100, PT1000, and Ni1000 are RTD technologies. A 10k Type II is
+        typically an NTC thermistor. Their curves are fundamentally different.
+
+        <br><br>
+
+        If you select the wrong sensor type, you can get a mathematically
+        precise answer that is completely wrong for the actual sensor.
+
+    </div>
+
+    <h2>Common Mistakes</h2>
+
+    <ul>
+
+        <li>
+            <strong>Assuming every 1k sensor is a PT1000:</strong>
+            A Ni1000 and PT1000 both have a nominal 1000 Ω reference value but
+            have different resistance-temperature curves.
+        </li>
+
+        <li>
+            <strong>Assuming every 10k sensor is identical:</strong>
+            Manufacturer-specific thermistor curves can differ.
+        </li>
+
+        <li>
+            <strong>Confusing RTDs and thermistors:</strong>
+            They are different sensor technologies.
+        </li>
+
+        <li>
+            <strong>Ignoring lead resistance:</strong>
+            Particularly important with lower-resistance sensors and long runs.
+        </li>
+
+        <li>
+            <strong>Using a nominal value as an exact value:</strong>
+            Real sensors have manufacturing tolerances.
+        </li>
+
+        <li>
+            <strong>Skipping the controller configuration:</strong>
+            The sensor and receiving device must use compatible characteristics.
+        </li>
+
+    </ul>
+
+    <h2>Related Calculators</h2>
+
+    <div class="related">
+
+        <a href="rtd-temperature.html">
+            RTD Temperature Calculator
+        </a>
+
+        <a href="ohms-law.html">
+            Ohm's Law
+        </a>
+
+        <a href="4-20ma-scaling.html">
+            4–20 mA Scaling
+        </a>
+
+        <a href="4-20ma-voltage.html">
+            4–20 mA → Voltage
+        </a>
+
+        <a href="analog-scaling.html">
+            Analog Signal Scaling
+        </a>
+
+        <a href="0-10v-scaling.html">
+            0–10 V Scaling
+        </a>
+
+    </div>
+
+    <h2>Engineering Note</h2>
+
+    <p>
+        The sensor models on this page represent specific assumed
+        characteristics. For field calibration or troubleshooting, always
+        verify the actual sensor's manufacturer, part number, standard, and
+        resistance-temperature curve before treating the calculated value as
+        a calibration reference.
+    </p>
+
+</main>
+
+<footer>
+    ControlsCalc — Controls & Instrumentation Calculators
+</footer>
+
+<script>
+
+function updateSensorInfo() {
+
+    const type = document.getElementById("sensorType").value;
+    const info = document.getElementById("sensorInfo");
+
+    let html = "";
+
+    if (type === "pt100") {
+
+        html = `
+            <strong>PT100 — IEC 60751</strong><br>
+            Platinum RTD. Nominally 100 Ω at 0 °C.
+            Uses the IEC 60751 Callendar–Van Dusen characteristic.
+        `;
+
+    } else if (type === "pt1000") {
+
+        html = `
+            <strong>PT1000 — IEC 60751</strong><br>
+            Platinum RTD. Nominally 1000 Ω at 0 °C.
+            Uses the same normalized IEC 60751 curve as PT100.
+        `;
+
+    } else if (type === "ni1000") {
+
+        html = `
+            <strong>Ni1000 — DIN 43760</strong><br>
+            Nickel RTD. Nominally 1000 Ω at 0 °C.
+            Uses the nickel polynomial characteristic implemented on this page.
+        `;
+
+    } else if (type === "ntc10k2") {
+
+        html = `
+            <strong>10k Type II — NTC Thermistor</strong><br>
+            Nominally 10,000 Ω at 25 °C.
+            Assumes B = 3975 K. Verify the manufacturer's curve before using
+            this for calibration.
+        `;
+    }
+
+    info.innerHTML = html;
+    info.style.display = "block";
+}
+
+
+function calculateResistance() {
+
+    const type = document.getElementById("sensorType").value;
+
+    const tC = parseFloat(
+        document.getElementById("temperature").value
+    );
+
+    const result = document.getElementById("result");
+    const error = document.getElementById("error");
+
+    result.style.display = "none";
+    error.style.display = "none";
+
+    if (!isFinite(tC)) {
+
+        error.textContent = "Please enter a valid temperature.";
+
+        error.style.display = "block";
+
+        return;
+    }
+
+    let resistance;
+    let sensorName;
+    let formulaDescription;
+
+    /*
+        PT100 / PT1000
+        IEC 60751 Callendar–Van Dusen
+    */
+
+    if (type === "pt100" || type === "pt1000") {
+
+        const R0 = type === "pt100" ? 100 : 1000;
+
+        const A = 3.9083e-3;
+        const B = -5.775e-7;
+        const C = -4.183e-12;
+
+        if (tC >= 0) {
+
+            resistance =
+                R0 *
+                (
+                    1 +
+                    A * tC +
+                    B * Math.pow(tC, 2)
+                );
+
+        } else {
+
+            resistance =
+                R0 *
+                (
+                    1 +
+                    A * tC +
+                    B * Math.pow(tC, 2) +
+                    C *
+                    (tC - 100) *
+                    Math.pow(tC, 3)
+                );
+        }
+
+        sensorName =
+            type === "pt100"
+                ? "PT100 — IEC 60751"
+                : "PT1000 — IEC 60751";
+
+        formulaDescription =
+            "Callendar–Van Dusen";
+
+    }
+
+    /*
+        Ni1000
+        DIN 43760 characteristic
+    */
+
+    else if (type === "ni1000") {
+
+        const R0 = 1000;
+
+        const A = 5.485e-3;
+        const B = 6.650e-6;
+        const C = 2.805e-11;
+        const D = -2.000e-17;
+
+        resistance =
+            R0 *
+            (
+                1 +
+                A * tC +
+                B * Math.pow(tC, 2) +
+                C * Math.pow(tC, 4) +
+                D * Math.pow(tC, 6)
+            );
+
+        sensorName = "Ni1000 — DIN 43760";
+
+        formulaDescription =
+            "Nickel DIN 43760 polynomial";
+
+    }
+
+    /*
+        10k Type II
+        NTC Beta model
+    */
+
+    else if (type === "ntc10k2") {
+
+        const R25 = 10000;
+
+        const BETA = 3975;
+
+        const T25 = 25 + 273.15;
+
+        const T = tC + 273.15;
+
+        if (T <= 0) {
+
+            error.textContent =
+                "The calculated absolute temperature is invalid.";
+
+            error.style.display = "block";
+
+            return;
+        }
+
+        resistance =
+            R25 *
+            Math.exp(
+                BETA *
+                (
+                    (1 / T) -
+                    (1 / T25)
+                )
+            );
+
+        sensorName =
+            "10k Type II — NTC Thermistor";
+
+        formulaDescription =
+            "Beta thermistor model";
+
+    }
+
+    if (!isFinite(resistance) || resistance <= 0) {
+
+        error.textContent =
+            "The calculation produced an invalid resistance.";
+
+        error.style.display = "block";
+
+        return;
+    }
+
+    result.innerHTML = `
+
+        <strong>${sensorName}</strong>
+
+        <br><br>
+
+        Temperature:
+        <strong>${formatNumber(tC)} °C</strong>
+
+        <br><br>
+
+        Expected Resistance:
+        <strong>${formatNumber(resistance)} Ω</strong>
+
+        <br><br>
+
+        Calculation:
+        ${formulaDescription}
+
+    `;
+
+    result.style.display = "block";
+}
+
+
+function formatNumber(value) {
+
+    if (
+        Math.abs(value) >= 100000 ||
+        (Math.abs(value) > 0 && Math.abs(value) < 0.001)
+    ) {
+
+        return value.toExponential(5);
+
+    }
+
+    return Number(value.toFixed(4)).toString();
+}
+
+
+/*
+    Initialize the sensor information box.
+*/
+
+updateSensorInfo();
+
+</script>
+
+</body>
+</html>
