@@ -1,1 +1,794 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Controls Guides | ControlsCalc</title><link rel="stylesheet" href="../style.css"></head><body><header><nav class="wrap"><a class="brand" href="../index.html">ControlsCalc</a></nav></header><main class="wrap calc"><h1>Controls & Instrumentation Guides</h1><div class="grid"><a class="card" href="4-20ma.html"><h3>How 4–20 mA Signals Work</h3><p class="muted">Basics of live-zero analog signals and scaling.</p></a><a class="card" href="plc-scaling.html"><h3>PLC Analog Scaling</h3><p class="muted">Mapping raw input values to engineering units.</p></a></div></main></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Controls & Instrumentation Guides | ControlsCalc</title>
+
+    <meta
+        name="description"
+        content="Practical controls and instrumentation guides covering 4–20 mA signals, analog scaling, electrical fundamentals, temperature sensors, pressure transmitters, and PLC scaling."
+    >
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #172033;
+            background: #f5f7fa;
+            line-height: 1.6;
+        }
+
+        a {
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            width: min(1100px, calc(100% - 40px));
+            margin: 0 auto;
+        }
+
+        /* Header */
+
+        header {
+            background: #ffffff;
+            border-bottom: 1px solid #e1e5eb;
+        }
+
+        .header-inner {
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 800;
+            color: #172033;
+        }
+
+        nav {
+            display: flex;
+            gap: 24px;
+        }
+
+        nav a {
+            font-size: 15px;
+        }
+
+        /* Hero */
+
+        .hero {
+            background: #ffffff;
+            padding: 64px 0 58px;
+        }
+
+        .hero h1 {
+            max-width: 780px;
+            margin: 0 0 18px;
+            font-size: clamp(38px, 6vw, 56px);
+            line-height: 1.05;
+            letter-spacing: -1.5px;
+        }
+
+        .hero p {
+            max-width: 760px;
+            margin: 0;
+            color: #64748b;
+            font-size: 18px;
+        }
+
+        /* Main */
+
+        main {
+            padding: 52px 0 80px;
+        }
+
+        .section {
+            margin-bottom: 56px;
+        }
+
+        .section-heading {
+            margin-bottom: 22px;
+        }
+
+        .section-heading h2 {
+            margin: 0 0 7px;
+            font-size: 27px;
+        }
+
+        .section-heading p {
+            margin: 0;
+            color: #64748b;
+        }
+
+        /* Guide cards */
+
+        .guide-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+        }
+
+        .guide-card {
+            display: block;
+            padding: 26px;
+            background: #ffffff;
+            border: 1px solid #dfe5ec;
+            border-radius: 12px;
+            color: inherit;
+            transition:
+                transform 0.15s ease,
+                box-shadow 0.15s ease,
+                border-color 0.15s ease;
+        }
+
+        .guide-card:hover {
+            text-decoration: none;
+            transform: translateY(-2px);
+            border-color: #b8c5d6;
+            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.07);
+        }
+
+        .guide-label {
+            margin-bottom: 8px;
+            color: #64748b;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .guide-card h3 {
+            margin: 0 0 9px;
+            color: #172033;
+            font-size: 21px;
+            line-height: 1.25;
+        }
+
+        .guide-card p {
+            margin: 0;
+            color: #64748b;
+            font-size: 15px;
+        }
+
+        .guide-tools {
+            margin-top: 16px;
+            padding-top: 14px;
+            border-top: 1px solid #e7ebf0;
+            color: #2563eb;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        /* Learning path */
+
+        .learning-path {
+            padding: 28px;
+            background: #ffffff;
+            border: 1px solid #dfe5ec;
+            border-radius: 12px;
+        }
+
+        .learning-path h2 {
+            margin: 0 0 10px;
+            font-size: 24px;
+        }
+
+        .learning-path > p {
+            margin: 0 0 24px;
+            color: #64748b;
+        }
+
+        .path {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+        }
+
+        .path-step {
+            padding: 18px;
+            background: #f7f9fc;
+            border-radius: 9px;
+        }
+
+        .path-number {
+            margin-bottom: 8px;
+            color: #2563eb;
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .path-step strong {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 15px;
+        }
+
+        .path-step span {
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        /* Toolkit */
+
+        .toolkit {
+            padding: 30px;
+            background: #ffffff;
+            border: 1px solid #dfe5ec;
+            border-radius: 12px;
+        }
+
+        .toolkit h2 {
+            margin: 0 0 8px;
+            font-size: 24px;
+        }
+
+        .toolkit p {
+            max-width: 750px;
+            margin: 0;
+            color: #64748b;
+        }
+
+        .toolkit-link {
+            display: inline-block;
+            margin-top: 16px;
+            font-weight: 700;
+        }
+
+        /* Footer */
+
+        footer {
+            padding: 36px 0;
+            background: #ffffff;
+            border-top: 1px solid #e1e5eb;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        footer p {
+            margin: 4px 0;
+        }
+
+        /* Mobile */
+
+        @media (max-width: 850px) {
+            .path {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 650px) {
+            .container {
+                width: min(100% - 28px, 1100px);
+            }
+
+            .header-inner {
+                height: 58px;
+            }
+
+            nav {
+                gap: 14px;
+            }
+
+            .hero {
+                padding: 46px 0 42px;
+            }
+
+            .guide-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .path {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="container header-inner">
+
+        <a href="/" class="logo">
+            ControlsCalc
+        </a>
+
+        <nav>
+            <a href="/">Calculators</a>
+            <a href="index.html">Guides</a>
+        </nav>
+
+    </div>
+</header>
+
+
+<main>
+
+    <!-- Hero -->
+
+    <section class="hero">
+
+        <div class="container">
+
+            <h1>
+                Controls &amp; Instrumentation Guides
+            </h1>
+
+            <p>
+                Practical explanations of the concepts behind the calculations.
+                Learn how the signals, instruments, electrical circuits, and
+                control systems actually work—and how to troubleshoot them
+                in the field.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <div class="container">
+
+        <!-- Learning Path -->
+
+        <section class="section">
+
+            <div class="learning-path">
+
+                <h2>
+                    A Practical Learning Path
+                </h2>
+
+                <p>
+                    If you're learning controls or instrumentation, work
+                    through these subjects in roughly this order.
+                </p>
+
+                <div class="path">
+
+                    <div class="path-step">
+                        <div class="path-number">01</div>
+                        <strong>Signals</strong>
+                        <span>
+                            Understand 4–20 mA, voltage signals, and signal ranges.
+                        </span>
+                    </div>
+
+                    <div class="path-step">
+                        <div class="path-number">02</div>
+                        <strong>Scaling</strong>
+                        <span>
+                            Convert electrical signals into engineering units.
+                        </span>
+                    </div>
+
+                    <div class="path-step">
+                        <div class="path-number">03</div>
+                        <strong>Electrical</strong>
+                        <span>
+                            Build the Ohm's Law and circuit fundamentals behind the signals.
+                        </span>
+                    </div>
+
+                    <div class="path-step">
+                        <div class="path-number">04</div>
+                        <strong>Instruments</strong>
+                        <span>
+                            Understand pressure, temperature, and other field sensors.
+                        </span>
+                    </div>
+
+                    <div class="path-step">
+                        <div class="path-number">05</div>
+                        <strong>PLC &amp; Controls</strong>
+                        <span>
+                            Follow signals from the field device into the PLC and HMI.
+                        </span>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- Getting Started -->
+
+        <section class="section">
+
+            <div class="section-heading">
+
+                <h2>
+                    Getting Started
+                </h2>
+
+                <p>
+                    Start here if you're new to controls and instrumentation.
+                </p>
+
+            </div>
+
+            <div class="guide-grid">
+
+                <a class="guide-card" href="4-20ma.html">
+
+                    <div class="guide-label">
+                        Start Here
+                    </div>
+
+                    <h3>
+                        Understanding 4–20 mA
+                    </h3>
+
+                    <p>
+                        Learn what a 4–20 mA signal represents, why current
+                        is used, how LRV and URV work, and how to interpret
+                        a transmitter signal in the field.
+                    </p>
+
+                    <div class="guide-tools">
+                        Read the guide →
+                    </div>
+
+                </a>
+
+                <a class="guide-card" href="plc-scaling.html">
+
+                    <div class="guide-label">
+                        Controls Fundamentals
+                    </div>
+
+                    <h3>
+                        PLC Analog Scaling
+                    </h3>
+
+                    <p>
+                        Follow a real analog signal from the transmitter,
+                        through the PLC input, from raw counts to engineering
+                        units and finally to the HMI.
+                    </p>
+
+                    <div class="guide-tools">
+                        Read the guide →
+                    </div>
+
+                </a>
+
+            </div>
+
+        </section>
+
+
+        <!-- 4-20 mA -->
+
+        <section class="section">
+
+            <div class="section-heading">
+
+                <h2>
+                    4–20 mA &amp; Instrumentation
+                </h2>
+
+                <p>
+                    Understand the signal that connects many field instruments
+                    to control systems.
+                </p>
+
+            </div>
+
+            <div class="guide-grid">
+
+                <a class="guide-card" href="4-20ma.html">
+
+                    <div class="guide-label">
+                        Core Concept
+                    </div>
+
+                    <h3>
+                        4–20 mA Explained
+                    </h3>
+
+                    <p>
+                        Understand the complete 4–20 mA signal, including
+                        current levels, transmitter ranges, loop power,
+                        voltage burden, and measurement.
+                    </p>
+
+                    <div class="guide-tools">
+                        Read the guide →
+                    </div>
+
+                </a>
+
+                <a class="guide-card" href="4-20ma.html">
+
+                    <div class="guide-label">
+                        Field Reference
+                    </div>
+
+                    <h3>
+                        Troubleshooting a 4–20 mA Loop
+                    </h3>
+
+                    <p>
+                        A practical approach to diagnosing abnormal current,
+                        wiring problems, loop resistance, power issues,
+                        and incorrect controller readings.
+                    </p>
+
+                    <div class="guide-tools">
+                        Covered in the 4–20 mA guide →
+                    </div>
+
+                </a>
+
+            </div>
+
+        </section>
+
+
+        <!-- Electrical -->
+
+        <section class="section">
+
+            <div class="section-heading">
+
+                <h2>
+                    Electrical Fundamentals
+                </h2>
+
+                <p>
+                    The electrical concepts that show up repeatedly in
+                    controls and instrumentation work.
+                </p>
+
+            </div>
+
+            <div class="guide-grid">
+
+                <a class="guide-card" href="../calculators/ohms-law.html">
+
+                    <div class="guide-label">
+                        Foundation
+                    </div>
+
+                    <h3>
+                        Ohm's Law
+                    </h3>
+
+                    <p>
+                        Understand the relationship between voltage, current,
+                        resistance, and power—and how those relationships
+                        apply to control circuits.
+                    </p>
+
+                    <div class="guide-tools">
+                        Open calculator →
+                    </div>
+
+                </a>
+
+                <a class="guide-card" href="../calculators/voltage-divider.html">
+
+                    <div class="guide-label">
+                        Circuit Fundamentals
+                    </div>
+
+                    <h3>
+                        Voltage Dividers
+                    </h3>
+
+                    <p>
+                        Learn how resistor networks produce predictable
+                        voltages and where voltage dividers appear in
+                        control and instrumentation circuits.
+                    </p>
+
+                    <div class="guide-tools">
+                        Open calculator →
+                    </div>
+
+                </a>
+
+            </div>
+
+        </section>
+
+
+        <!-- Temperature -->
+
+        <section class="section">
+
+            <div class="section-heading">
+
+                <h2>
+                    Temperature &amp; Sensors
+                </h2>
+
+                <p>
+                    Learn how RTDs and thermistors convert temperature into
+                    measurable electrical characteristics.
+                </p>
+
+            </div>
+
+            <div class="guide-grid">
+
+                <a class="guide-card" href="../calculators/pt100-resistance.html">
+
+                    <div class="guide-label">
+                        Temperature
+                    </div>
+
+                    <h3>
+                        RTD &amp; Temperature Sensors
+                    </h3>
+
+                    <p>
+                        Explore PT100, PT1000, Ni1000, and 10k Type II sensors,
+                        including resistance-temperature relationships and
+                        the differences between sensor technologies.
+                    </p>
+
+                    <div class="guide-tools">
+                        Open temperature calculator →
+                    </div>
+
+                </a>
+
+                <a class="guide-card" href="../calculators/pt100-resistance.html">
+
+                    <div class="guide-label">
+                        Field Wiring
+                    </div>
+
+                    <h3>
+                        2-Wire, 3-Wire &amp; 4-Wire RTDs
+                    </h3>
+
+                    <p>
+                        Understand why lead resistance matters and how
+                        different RTD wiring configurations affect
+                        measurement accuracy.
+                    </p>
+
+                    <div class="guide-tools">
+                        Temperature reference →
+                    </div>
+
+                </a>
+
+            </div>
+
+        </section>
+
+
+        <!-- PLC & Controls -->
+
+        <section class="section">
+
+            <div class="section-heading">
+
+                <h2>
+                    PLC &amp; Controls
+                </h2>
+
+                <p>
+                    Connect field instrumentation to the control system
+                    and understand what happens to the signal along the way.
+                </p>
+
+            </div>
+
+            <div class="guide-grid">
+
+                <a class="guide-card" href="plc-scaling.html">
+
+                    <div class="guide-label">
+                        PLC Fundamentals
+                    </div>
+
+                    <h3>
+                        PLC Analog Scaling
+                    </h3>
+
+                    <p>
+                        Understand raw analog input counts, signal ranges,
+                        engineering-unit scaling, and the relationship
+                        between transmitter and PLC configuration.
+                    </p>
+
+                    <div class="guide-tools">
+                        Read the guide →
+                    </div>
+
+                </a>
+
+                <a class="guide-card" href="../calculators/analog-scaling.html">
+
+                    <div class="guide-label">
+                        Practical Tool
+                    </div>
+
+                    <h3>
+                        Analog Signal Scaling
+                    </h3>
+
+                    <p>
+                        Apply linear scaling to 4–20 mA, 0–10 V, raw PLC
+                        counts, and other proportional signals.
+                    </p>
+
+                    <div class="guide-tools">
+                        Open calculator →
+                    </div>
+
+                </a>
+
+            </div>
+
+        </section>
+
+
+        <!-- Technician Toolkit -->
+
+        <section class="section">
+
+            <div class="toolkit">
+
+                <h2>
+                    Technician Toolkit
+                </h2>
+
+                <p>
+                    We're building a collection of downloadable field tools,
+                    reference sheets, PLC scaling worksheets, calibration
+                    forms, and other resources designed to be useful at
+                    the panel, in the field, or at the engineering desk.
+                </p>
+
+                <a class="toolkit-link" href="../">
+                    Explore the calculators →
+                </a>
+
+            </div>
+
+        </section>
+
+    </div>
+
+</main>
+
+
+<footer>
+
+    <div class="container">
+
+        <p>
+            <strong>ControlsCalc</strong>
+        </p>
+
+        <p>
+            Engineering and controls calculators and reference material
+            for technicians and engineers.
+        </p>
+
+    </div>
+
+</footer>
+
+</body>
+</html>
