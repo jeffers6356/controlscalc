@@ -6,389 +6,606 @@
 
 <title>Voltage Divider Calculator | ControlsCalc</title>
 
-<meta name="description" content="Calculate voltage divider output, resistor values, and input/output voltage relationships. Includes formulas, worked examples, 0–10 V controls applications, troubleshooting, and common mistakes.">
+<meta
+    name="description"
+    content="Calculate voltage divider output, resistor values, and input/output voltage relationships. Includes formulas, worked examples, 0–10 V controls applications, troubleshooting, and common mistakes."
+>
 
 <style>
-    * {
-        box-sizing: border-box;
-    }
 
-    body {
-        margin: 0;
-        font-family: Arial, Helvetica, sans-serif;
-        background: #f4f7fa;
-        color: #1f2937;
-        line-height: 1.6;
-    }
+* {
+    box-sizing: border-box;
+}
 
-    header {
-        background: #0f172a;
-        color: white;
-        padding: 18px 24px;
-    }
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f5f7fa;
+    color: #172033;
+    line-height: 1.6;
+}
+
+a {
+    color: #2563eb;
+}
+
+/* Header */
+
+header {
+    background: #ffffff;
+    border-bottom: 1px solid #dfe5ec;
+}
+
+.header-inner {
+    width: min(1000px, calc(100% - 40px));
+    margin: 0 auto;
+    min-height: 68px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+}
+
+.logo {
+    color: #172033;
+    text-decoration: none;
+    font-size: 1.45rem;
+    font-weight: 700;
+}
+
+nav {
+    display: flex;
+    gap: 20px;
+}
+
+nav a {
+    color: #475569;
+    text-decoration: none;
+    font-size: 0.95rem;
+}
+
+nav a:hover {
+    color: #2563eb;
+}
+
+/* Main */
+
+main {
+    width: min(1000px, calc(100% - 40px));
+    margin: 0 auto;
+    padding: 34px 0 60px;
+}
+
+/* Breadcrumb */
+
+.breadcrumb {
+    font-size: 0.9rem;
+    margin-bottom: 18px;
+    color: #64748b;
+}
+
+.breadcrumb a {
+    color: #2563eb;
+    text-decoration: none;
+}
+
+/* Typography */
+
+h1 {
+    font-size: 2.35rem;
+    line-height: 1.2;
+    margin: 0 0 12px;
+    color: #172033;
+}
+
+h2 {
+    color: #172033;
+    margin-top: 38px;
+    line-height: 1.3;
+}
+
+h3 {
+    color: #172033;
+    margin-top: 26px;
+}
+
+.intro {
+    font-size: 1.08rem;
+    max-width: 850px;
+    color: #475569;
+    margin-bottom: 0;
+}
+
+/* Calculator */
+
+.calculator {
+    background: #ffffff;
+    border: 1px solid #dfe5ec;
+    border-radius: 14px;
+
+    padding: 32px;
+    margin-top: 28px;
+
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
+}
+
+.calculator h2 {
+    margin-top: 0;
+}
+
+.input-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 18px;
+    margin-top: 22px;
+}
+
+/* Inputs */
+
+label {
+    display: block;
+    font-weight: 700;
+    margin-bottom: 7px;
+    color: #334155;
+}
+
+input,
+select {
+    width: 100%;
+
+    padding: 12px;
+
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+
+    font-size: 1rem;
+
+    background: #ffffff;
+    color: #172033;
+}
+
+input:focus,
+select:focus {
+    outline: 2px solid #bfdbfe;
+    border-color: #2563eb;
+}
+
+/* Button */
+
+.button-row {
+    margin-top: 22px;
+}
+
+button {
+    width: 100%;
+
+    background: #2563eb;
+    color: #ffffff;
+
+    border: none;
+    border-radius: 8px;
+
+    padding: 13px 18px;
+
+    font-size: 1rem;
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+button:hover {
+    background: #1d4ed8;
+}
+
+/* Result */
+
+.result {
+    display: none;
+
+    margin-top: 22px;
+    padding: 20px;
+
+    border-radius: 10px;
+
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+
+    border-left: 5px solid #2563eb;
+}
+
+.result strong {
+    color: #1d4ed8;
+}
+
+/* Error */
+
+.error {
+    display: none;
+
+    margin-top: 18px;
+    padding: 14px;
+
+    border-radius: 8px;
+
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+
+    color: #991b1b;
+}
+
+/* Formula */
+
+.formula {
+    background: #f5f7fa;
+    color: #172033;
+
+    padding: 18px 20px;
+
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+
+    font-family: "Courier New", monospace;
+    font-size: 1.05rem;
+
+    margin: 18px 0;
+
+    overflow-x: auto;
+}
+
+/* Circuit */
+
+.circuit {
+    max-width: 420px;
+
+    margin: 25px auto;
+    padding: 25px;
+
+    background: #f8fafc;
+
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+
+    text-align: center;
+
+    font-family: "Courier New", monospace;
+}
+
+.circuit-line {
+    margin: 8px auto;
+    font-size: 1.15rem;
+}
+
+.resistor {
+    display: inline-block;
+
+    border: 2px solid #334155;
+
+    padding: 7px 18px;
+
+    background: #ffffff;
+
+    font-weight: bold;
+}
+
+.arrow {
+    font-size: 1.2rem;
+    color: #64748b;
+}
+
+/* Information / Examples */
+
+.info-box,
+.example {
+    background: #ffffff;
+
+    border: 1px solid #dfe5ec;
+    border-radius: 12px;
+
+    padding: 24px;
+
+    margin: 20px 0;
+}
+
+.example {
+    background: #f8fafc;
+    border-color: #e2e8f0;
+}
+
+/* Tables */
+
+table {
+    width: 100%;
+
+    border-collapse: collapse;
+
+    margin: 20px 0;
+
+    background: #ffffff;
+}
+
+th,
+td {
+    border: 1px solid #cbd5e1;
+
+    padding: 11px 13px;
+
+    text-align: left;
+}
+
+th {
+    background: #f1f5f9;
+    color: #172033;
+}
+
+/* Lists */
+
+ul,
+ol {
+    padding-left: 25px;
+}
+
+/* Related calculators */
+
+.related {
+    display: grid;
+
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 14px;
+
+    margin-top: 20px;
+}
+
+.related a {
+    display: block;
+
+    padding: 15px;
+
+    background: #f8fafc;
+
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+
+    text-decoration: none;
+
+    color: #2563eb;
+
+    font-weight: 700;
+}
+
+.related a:hover {
+    border-color: #bfdbfe;
+    background: #eff6ff;
+}
+
+/* Field note */
+
+.note {
+    background: #fff7ed;
+
+    border: 1px solid #fed7aa;
+    border-left: 5px solid #f97316;
+
+    padding: 18px 20px;
+
+    border-radius: 8px;
+
+    margin-top: 24px;
+}
+
+/* Footer */
+
+footer {
+    background: #ffffff;
+
+    color: #64748b;
+
+    text-align: center;
+
+    padding: 25px;
+
+    font-size: 0.9rem;
+
+    border-top: 1px solid #dfe5ec;
+}
+
+/* Mobile */
+
+@media (max-width: 650px) {
 
     .header-inner {
-        max-width: 1050px;
-        margin: auto;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 20px;
+        min-height: auto;
+
+        padding: 16px 0;
+
+        flex-direction: column;
+        align-items: flex-start;
     }
 
-    .logo {
-        font-size: 1.45rem;
-        font-weight: bold;
+    nav {
+        gap: 16px;
     }
 
-    nav a {
-        color: #dbeafe;
-        text-decoration: none;
-        margin-left: 18px;
-        font-size: 0.95rem;
+    .input-grid,
+    .related {
+        grid-template-columns: 1fr;
     }
 
-    nav a:hover {
-        text-decoration: underline;
-    }
-
-    main {
-        max-width: 1050px;
-        margin: 0 auto;
-        padding: 32px 20px 60px;
-    }
-
-    .breadcrumb {
-        font-size: 0.9rem;
-        margin-bottom: 20px;
-        color: #64748b;
-    }
-
-    .breadcrumb a {
-        color: #2563eb;
-        text-decoration: none;
+    .calculator,
+    .info-box,
+    .example {
+        padding: 22px;
     }
 
     h1 {
-        font-size: 2.3rem;
-        margin-bottom: 10px;
-        color: #0f172a;
+        font-size: 1.9rem;
     }
 
-    h2 {
-        color: #0f172a;
-        margin-top: 38px;
-    }
+}
 
-    h3 {
-        color: #1e293b;
-        margin-top: 26px;
-    }
-
-    .intro {
-        font-size: 1.08rem;
-        max-width: 850px;
-        color: #475569;
-    }
-
-    .calculator {
-        background: white;
-        border-radius: 12px;
-        padding: 28px;
-        margin-top: 28px;
-        box-shadow: 0 3px 12px rgba(15, 23, 42, 0.08);
-        border: 1px solid #e2e8f0;
-    }
-
-    .calculator h2 {
-        margin-top: 0;
-    }
-
-    .input-grid {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 18px;
-        margin-top: 20px;
-    }
-
-    label {
-        display: block;
-        font-weight: bold;
-        margin-bottom: 6px;
-        color: #334155;
-    }
-
-    input {
-        width: 100%;
-        padding: 12px;
-        border: 1px solid #cbd5e1;
-        border-radius: 7px;
-        font-size: 1rem;
-    }
-
-    input:focus {
-        outline: 2px solid #93c5fd;
-        border-color: #2563eb;
-    }
-
-    .button-row {
-        margin-top: 22px;
-    }
-
-    button {
-        background: #2563eb;
-        color: white;
-        border: none;
-        border-radius: 7px;
-        padding: 12px 22px;
-        font-size: 1rem;
-        font-weight: bold;
-        cursor: pointer;
-    }
-
-    button:hover {
-        background: #1d4ed8;
-    }
-
-    .result {
-        display: none;
-        margin-top: 22px;
-        padding: 20px;
-        border-radius: 8px;
-        background: #eff6ff;
-        border-left: 5px solid #2563eb;
-    }
-
-    .result strong {
-        font-size: 1.35rem;
-        color: #0f172a;
-    }
-
-    .error {
-        display: none;
-        margin-top: 18px;
-        padding: 14px;
-        border-radius: 7px;
-        background: #fef2f2;
-        border-left: 5px solid #dc2626;
-        color: #991b1b;
-    }
-
-    .formula {
-        background: #0f172a;
-        color: white;
-        padding: 20px;
-        border-radius: 8px;
-        font-family: "Courier New", monospace;
-        font-size: 1.1rem;
-        margin: 18px 0;
-        overflow-x: auto;
-    }
-
-    .circuit {
-        max-width: 420px;
-        margin: 25px auto;
-        padding: 25px;
-        background: #f8fafc;
-        border: 1px solid #cbd5e1;
-        border-radius: 8px;
-        text-align: center;
-        font-family: "Courier New", monospace;
-    }
-
-    .circuit-line {
-        margin: 8px auto;
-        font-size: 1.15rem;
-    }
-
-    .resistor {
-        display: inline-block;
-        border: 2px solid #334155;
-        padding: 7px 18px;
-        background: white;
-        font-weight: bold;
-    }
-
-    .arrow {
-        font-size: 1.2rem;
-        color: #64748b;
-    }
-
-    .info-box {
-        background: white;
-        border: 1px solid #e2e8f0;
-        border-radius: 9px;
-        padding: 20px;
-        margin: 20px 0;
-    }
-
-    .example {
-        background: #f8fafc;
-        border-left: 5px solid #64748b;
-        padding: 18px 20px;
-        margin: 18px 0;
-        border-radius: 5px;
-    }
-
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin: 20px 0;
-        background: white;
-    }
-
-    th, td {
-        border: 1px solid #cbd5e1;
-        padding: 11px 13px;
-        text-align: left;
-    }
-
-    th {
-        background: #e2e8f0;
-        color: #0f172a;
-    }
-
-    ul, ol {
-        padding-left: 25px;
-    }
-
-    .related {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 14px;
-        margin-top: 20px;
-    }
-
-    .related a {
-        display: block;
-        padding: 15px;
-        background: white;
-        border: 1px solid #dbe3ec;
-        border-radius: 8px;
-        text-decoration: none;
-        color: #1d4ed8;
-        font-weight: bold;
-    }
-
-    .related a:hover {
-        border-color: #2563eb;
-        background: #eff6ff;
-    }
-
-    .note {
-        background: #fff7ed;
-        border-left: 5px solid #f97316;
-        padding: 18px 20px;
-        border-radius: 5px;
-        margin-top: 24px;
-    }
-
-    footer {
-        background: #0f172a;
-        color: #cbd5e1;
-        text-align: center;
-        padding: 25px;
-        font-size: 0.9rem;
-    }
-
-    @media (max-width: 700px) {
-
-        .header-inner {
-            flex-direction: column;
-            align-items: flex-start;
-        }
-
-        nav a {
-            margin-left: 0;
-            margin-right: 15px;
-        }
-
-        .input-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .related {
-            grid-template-columns: 1fr;
-        }
-
-        h1 {
-            font-size: 1.9rem;
-        }
-    }
 </style>
 </head>
 
+
 <body>
 
+
 <header>
+
     <div class="header-inner">
-        <div class="logo">ControlsCalc</div>
+
+        <a href="../" class="logo">
+            ControlsCalc
+        </a>
 
         <nav>
-            <a href="../index.html">Calculators</a>
-            <a href="../guides/index.html">Guides</a>
+
+            <a href="../">
+                Calculators
+            </a>
+
+            <a href="../guides/index.html">
+                Guides
+            </a>
+
         </nav>
+
     </div>
+
 </header>
+
 
 <main>
 
+
     <div class="breadcrumb">
-        <a href="../index.html">Calculators</a> → Voltage Divider
+
+        <a href="../">
+            Calculators
+        </a>
+
+        → Voltage Divider
+
     </div>
 
-    <h1>Voltage Divider Calculator</h1>
+
+    <h1>
+        Voltage Divider Calculator
+    </h1>
+
 
     <p class="intro">
+
         Calculate the output voltage of a two-resistor voltage divider.
         Voltage dividers are commonly used with sensors, analog inputs,
         reference circuits, test equipment, and control-system electronics.
+
     </p>
+
+
+    <!-- Calculator -->
 
     <section class="calculator">
 
-        <h2>Calculate Voltage Divider Output</h2>
+        <h2>
+            Calculate Voltage Divider Output
+        </h2>
+
 
         <p>
+
             Enter the input voltage and the two resistor values. The calculator
             will determine the voltage appearing across the lower resistor.
+
         </p>
+
 
         <div class="input-grid">
 
-            <div>
-                <label for="inputVoltage">Input Voltage (V)</label>
-                <input type="number" id="inputVoltage" step="any" placeholder="Example: 24">
-            </div>
 
             <div>
-                <label for="r1">R1 — Upper Resistor (Ω)</label>
-                <input type="number" id="r1" step="any" placeholder="Example: 10000">
+
+                <label for="inputVoltage">
+                    Input Voltage (V)
+                </label>
+
+                <input
+                    type="number"
+                    id="inputVoltage"
+                    step="any"
+                    placeholder="Example: 24"
+                >
+
             </div>
 
+
             <div>
-                <label for="r2">R2 — Lower Resistor (Ω)</label>
-                <input type="number" id="r2" step="any" placeholder="Example: 10000">
+
+                <label for="r1">
+                    R1 — Upper Resistor (Ω)
+                </label>
+
+                <input
+                    type="number"
+                    id="r1"
+                    step="any"
+                    placeholder="Example: 10000"
+                >
+
             </div>
+
+
+            <div>
+
+                <label for="r2">
+                    R2 — Lower Resistor (Ω)
+                </label>
+
+                <input
+                    type="number"
+                    id="r2"
+                    step="any"
+                    placeholder="Example: 10000"
+                >
+
+            </div>
+
 
         </div>
+
 
         <div class="button-row">
-            <button onclick="calculateDivider()">Calculate</button>
+
+            <button onclick="calculateDivider()">
+                Calculate
+            </button>
+
         </div>
 
+
         <div id="error" class="error"></div>
+
 
         <div id="result" class="result"></div>
 
     </section>
 
-    <h2>How a Voltage Divider Works</h2>
+
+    <h2>
+        How a Voltage Divider Works
+    </h2>
+
 
     <p>
+
         A voltage divider uses two resistors in series to produce a lower
         voltage from a higher voltage.
+
     </p>
+
 
     <div class="circuit">
 
@@ -396,25 +613,33 @@
             Vin
         </div>
 
-        <div class="arrow">↓</div>
+        <div class="arrow">
+            ↓
+        </div>
 
         <div class="resistor">
             R1
         </div>
 
-        <div class="arrow">↓</div>
+        <div class="arrow">
+            ↓
+        </div>
 
         <div class="circuit-line">
             Vout ●
         </div>
 
-        <div class="arrow">↓</div>
+        <div class="arrow">
+            ↓
+        </div>
 
         <div class="resistor">
             R2
         </div>
 
-        <div class="arrow">↓</div>
+        <div class="arrow">
+            ↓
+        </div>
 
         <div class="circuit-line">
             0 V / Common
@@ -422,182 +647,372 @@
 
     </div>
 
+
     <p>
+
         The output voltage is measured between the junction of R1 and R2
         and the circuit common.
+
     </p>
 
+
     <div class="formula">
+
         Vout = Vin × R2 ÷ (R1 + R2)
+
     </div>
 
+
     <p>
+
         The important detail is that <strong>R2 is the resistor below the
         output connection</strong>. If R1 and R2 are swapped, the calculated
         output voltage changes.
+
     </p>
 
-    <h2>Understanding the Resistors</h2>
+
+    <h2>
+        Understanding the Resistors
+    </h2>
+
 
     <div class="info-box">
 
-        <h3>R1 — Upper Resistor</h3>
+        <h3>
+            R1 — Upper Resistor
+        </h3>
 
         <p>
+
             R1 is connected between the input voltage and the output node.
             Increasing R1 generally causes the output voltage to decrease.
+
         </p>
 
-        <h3>R2 — Lower Resistor</h3>
+
+        <h3>
+            R2 — Lower Resistor
+        </h3>
 
         <p>
+
             R2 is connected between the output node and common.
             Increasing R2 generally causes the output voltage to increase.
+
         </p>
 
-        <h3>Vout — Output Voltage</h3>
+
+        <h3>
+            Vout — Output Voltage
+        </h3>
 
         <p>
+
             Vout is the voltage measured at the junction between R1 and R2
             relative to common.
+
         </p>
 
     </div>
 
-    <h2>Worked Example</h2>
+
+    <h2>
+        Worked Example
+    </h2>
+
 
     <div class="example">
 
-        <h3>24 VDC → 12 VDC</h3>
+        <h3>
+            24 VDC → 12 VDC
+        </h3>
+
 
         <p>
+
             Suppose a circuit has a 24 VDC input and two equal 10 kΩ
             resistors.
+
         </p>
 
+
         <div class="formula">
+
             Vout = Vin × R2 ÷ (R1 + R2)<br><br>
+
             Vout = 24 × 10,000 ÷ (10,000 + 10,000)<br><br>
+
             Vout = 12 V
+
         </div>
 
+
         <p>
+
             Equal resistor values produce half the input voltage.
+
         </p>
 
     </div>
 
-    <h2>Common Voltage Divider Ratios</h2>
+
+    <h2>
+        Common Voltage Divider Ratios
+    </h2>
+
 
     <table>
 
         <tr>
-            <th>Vin</th>
-            <th>R1</th>
-            <th>R2</th>
-            <th>Vout</th>
+
+            <th>
+                Vin
+            </th>
+
+            <th>
+                R1
+            </th>
+
+            <th>
+                R2
+            </th>
+
+            <th>
+                Vout
+            </th>
+
         </tr>
 
-        <tr>
-            <td>24 V</td>
-            <td>10 kΩ</td>
-            <td>10 kΩ</td>
-            <td>12 V</td>
-        </tr>
 
         <tr>
-            <td>24 V</td>
-            <td>15 kΩ</td>
-            <td>10 kΩ</td>
-            <td>9.60 V</td>
+
+            <td>
+                24 V
+            </td>
+
+            <td>
+                10 kΩ
+            </td>
+
+            <td>
+                10 kΩ
+            </td>
+
+            <td>
+                12 V
+            </td>
+
         </tr>
 
-        <tr>
-            <td>24 V</td>
-            <td>20 kΩ</td>
-            <td>10 kΩ</td>
-            <td>8.00 V</td>
-        </tr>
 
         <tr>
-            <td>24 V</td>
-            <td>30 kΩ</td>
-            <td>10 kΩ</td>
-            <td>6.00 V</td>
+
+            <td>
+                24 V
+            </td>
+
+            <td>
+                15 kΩ
+            </td>
+
+            <td>
+                10 kΩ
+            </td>
+
+            <td>
+                9.60 V
+            </td>
+
         </tr>
 
+
         <tr>
-            <td>24 V</td>
-            <td>40 kΩ</td>
-            <td>10 kΩ</td>
-            <td>4.80 V</td>
+
+            <td>
+                24 V
+            </td>
+
+            <td>
+                20 kΩ
+            </td>
+
+            <td>
+                10 kΩ
+            </td>
+
+            <td>
+                8.00 V
+            </td>
+
+        </tr>
+
+
+        <tr>
+
+            <td>
+                24 V
+            </td>
+
+            <td>
+                30 kΩ
+            </td>
+
+            <td>
+                10 kΩ
+            </td>
+
+            <td>
+                6.00 V
+            </td>
+
+        </tr>
+
+
+        <tr>
+
+            <td>
+                24 V
+            </td>
+
+            <td>
+                40 kΩ
+            </td>
+
+            <td>
+                10 kΩ
+            </td>
+
+            <td>
+                4.80 V
+            </td>
+
         </tr>
 
     </table>
 
-    <h2>Voltage Dividers in Controls</h2>
+
+    <h2>
+        Voltage Dividers in Controls
+    </h2>
+
 
     <p>
+
         Voltage dividers show up in many control and instrumentation
         applications.
+
     </p>
+
 
     <ul>
-        <li>Scaling a sensor voltage to an analog input range</li>
-        <li>Creating a reference voltage</li>
-        <li>Reading potentiometers</li>
-        <li>Conditioning certain sensor signals</li>
-        <li>Reducing a voltage for measurement</li>
-        <li>Creating test signals for electronic circuits</li>
+
+        <li>
+            Scaling a sensor voltage to an analog input range
+        </li>
+
+        <li>
+            Creating a reference voltage
+        </li>
+
+        <li>
+            Reading potentiometers
+        </li>
+
+        <li>
+            Conditioning certain sensor signals
+        </li>
+
+        <li>
+            Reducing a voltage for measurement
+        </li>
+
+        <li>
+            Creating test signals for electronic circuits
+        </li>
+
     </ul>
 
-    <h3>Example: Reducing 24 V to Approximately 10 V</h3>
+
+    <h3>
+        Example: Reducing 24 V to Approximately 10 V
+    </h3>
+
 
     <p>
+
         Suppose a circuit has a 24 V signal but an input can only accept
         approximately 0–10 V.
+
     </p>
 
+
     <p>
+
         One possible divider ratio is:
+
     </p>
 
+
     <div class="formula">
+
         Vout ÷ Vin = 10 ÷ 24<br><br>
+
         Vout ÷ Vin ≈ 0.417
+
     </div>
 
+
     <p>
+
         Therefore, the resistor ratio should be selected so that:
+
     </p>
 
+
     <div class="formula">
+
         R2 ÷ (R1 + R2) ≈ 0.417
+
     </div>
 
+
     <p>
+
         Actual resistor values should then be selected based on the required
         accuracy, loading, current consumption, and the specifications of the
         receiving input.
+
     </p>
 
-    <h2>The Most Important Practical Concept: Loading</h2>
+
+    <h2>
+        The Most Important Practical Concept: Loading
+    </h2>
+
 
     <p>
+
         The basic voltage-divider equation assumes that the output is not
         significantly loaded by whatever is connected to it.
+
     </p>
 
+
     <p>
+
         In the real world, an analog input has some input impedance. If that
         input impedance is comparable to the resistor values in the divider,
         it becomes another path for current and changes the actual output
         voltage.
+
     </p>
+
 
     <div class="note">
 
         <strong>Field lesson:</strong>
+
         A voltage divider that measures correctly with nothing connected to it
         may produce a different voltage when connected to an analog input,
         meter, controller, or other device.
@@ -609,7 +1024,11 @@
 
     </div>
 
-    <h2>Using a Multimeter to Troubleshoot a Divider</h2>
+
+    <h2>
+        Using a Multimeter to Troubleshoot a Divider
+    </h2>
+
 
     <ol>
 
@@ -635,92 +1054,176 @@
 
     </ol>
 
-    <h3>If Vout Is Too High</h3>
 
-    <ul>
-        <li>R1 may be too low.</li>
-        <li>R2 may be too high.</li>
-        <li>The resistor values may not be what the drawing specifies.</li>
-        <li>R1 and R2 may have been installed in the wrong positions.</li>
-        <li>The output circuit may not be connected as expected.</li>
-    </ul>
+    <h3>
+        If Vout Is Too High
+    </h3>
 
-    <h3>If Vout Is Too Low</h3>
-
-    <ul>
-        <li>R1 may be too high.</li>
-        <li>R2 may be too low.</li>
-        <li>One resistor may have changed value or failed.</li>
-        <li>The output may be heavily loaded.</li>
-        <li>There may be a wiring or grounding problem.</li>
-    </ul>
-
-    <h2>Common Mistakes</h2>
 
     <ul>
 
         <li>
-            <strong>Swapping R1 and R2:</strong>
-            The resistor connected to common is R2.
+            R1 may be too low.
         </li>
 
         <li>
+            R2 may be too high.
+        </li>
+
+        <li>
+            The resistor values may not be what the drawing specifies.
+        </li>
+
+        <li>
+            R1 and R2 may have been installed in the wrong positions.
+        </li>
+
+        <li>
+            The output circuit may not be connected as expected.
+        </li>
+
+    </ul>
+
+
+    <h3>
+        If Vout Is Too Low
+    </h3>
+
+
+    <ul>
+
+        <li>
+            R1 may be too high.
+        </li>
+
+        <li>
+            R2 may be too low.
+        </li>
+
+        <li>
+            One resistor may have changed value or failed.
+        </li>
+
+        <li>
+            The output may be heavily loaded.
+        </li>
+
+        <li>
+            There may be a wiring or grounding problem.
+        </li>
+
+    </ul>
+
+
+    <h2>
+        Common Mistakes
+    </h2>
+
+
+    <ul>
+
+        <li>
+
+            <strong>Swapping R1 and R2:</strong>
+
+            The resistor connected to common is R2.
+
+        </li>
+
+        <li>
+
             <strong>Ignoring loading:</strong>
+
             The simple formula assumes the load does not significantly alter
             the circuit.
+
         </li>
 
         <li>
+
             <strong>Using extremely large resistors:</strong>
+
             High resistance reduces current consumption but makes the divider
             more susceptible to loading and electrical noise.
+
         </li>
 
         <li>
+
             <strong>Using extremely small resistors:</strong>
+
             Low resistance reduces loading effects but wastes more current and
             dissipates more power.
+
         </li>
 
         <li>
+
             <strong>Forgetting resistor tolerance:</strong>
+
             Real resistors have tolerances, so the actual output may differ
             from the nominal calculated value.
+
         </li>
 
         <li>
+
             <strong>Assuming a divider is a power supply:</strong>
+
             A voltage divider is generally intended for signal/reference
             applications, not for supplying significant load current.
+
         </li>
 
     </ul>
 
-    <h2>Resistor Power</h2>
+
+    <h2>
+        Resistor Power
+    </h2>
+
 
     <p>
+
         Current flows through both resistors because they are in series.
         Therefore, both resistors dissipate power.
+
     </p>
 
+
     <div class="formula">
+
         P = I² × R
+
     </div>
 
+
     <p>
+
         The divider current is:
+
     </p>
 
+
     <div class="formula">
+
         I = Vin ÷ (R1 + R2)
+
     </div>
 
+
     <p>
+
         For a properly designed divider, check the power dissipated by each
         resistor and make sure the resistor's power rating is appropriate.
+
     </p>
 
-    <h2>Related Calculators</h2>
+
+    <h2>
+        Related Calculators
+    </h2>
+
 
     <div class="related">
 
@@ -750,112 +1253,197 @@
 
     </div>
 
-    <h2>Engineering Note</h2>
+
+    <h2>
+        Engineering Note
+    </h2>
+
 
     <p>
+
         A voltage divider is simple electrically, but designing one for an
         actual control system requires more than calculating the ratio.
         Consider the receiving input impedance, resistor tolerance, temperature
         effects, noise, available current, and required signal accuracy.
+
     </p>
 
+
     <p>
+
         For a production control system, always verify the divider against the
         specifications of the actual sensor, controller, analog input, or
         signal-conditioning device being used.
+
     </p>
+
 
 </main>
 
+
 <footer>
+
     ControlsCalc — Controls & Instrumentation Calculators
+
 </footer>
+
 
 <script>
 
 function calculateDivider() {
 
-    const Vin = parseFloat(document.getElementById("inputVoltage").value);
-    const R1 = parseFloat(document.getElementById("r1").value);
-    const R2 = parseFloat(document.getElementById("r2").value);
+    const Vin =
+        parseFloat(
+            document.getElementById("inputVoltage").value
+        );
 
-    const result = document.getElementById("result");
-    const error = document.getElementById("error");
+    const R1 =
+        parseFloat(
+            document.getElementById("r1").value
+        );
+
+    const R2 =
+        parseFloat(
+            document.getElementById("r2").value
+        );
+
+
+    const result =
+        document.getElementById("result");
+
+    const error =
+        document.getElementById("error");
+
 
     result.style.display = "none";
     error.style.display = "none";
 
-    if (!isFinite(Vin) || !isFinite(R1) || !isFinite(R2)) {
 
-        error.textContent = "Please enter valid values for voltage, R1, and R2.";
+    if (
+        !isFinite(Vin) ||
+        !isFinite(R1) ||
+        !isFinite(R2)
+    ) {
+
+        error.textContent =
+            "Please enter valid values for voltage, R1, and R2.";
+
         error.style.display = "block";
 
         return;
     }
+
 
     if (R1 <= 0 || R2 <= 0) {
 
-        error.textContent = "Both resistor values must be greater than zero.";
+        error.textContent =
+            "Both resistor values must be greater than zero.";
+
         error.style.display = "block";
 
         return;
     }
 
-    const Vout = Vin * (R2 / (R1 + R2));
 
-    const current = Vin / (R1 + R2);
+    const Vout =
+        Vin * (R2 / (R1 + R2));
 
-    const powerR1 = current * current * R1;
 
-    const powerR2 = current * current * R2;
+    const current =
+        Vin / (R1 + R2);
 
-    const ratio = (Vout / Vin) * 100;
+
+    const powerR1 =
+        current * current * R1;
+
+
+    const powerR2 =
+        current * current * R2;
+
+
+    const ratio =
+        (Vout / Vin) * 100;
+
 
     result.innerHTML = `
-        <strong>Voltage Divider Result</strong>
+
+        <strong>
+            Voltage Divider Result
+        </strong>
+
         <br><br>
 
         Output Voltage:
-        <strong>${formatNumber(Vout)} V</strong>
+
+        <strong>
+            ${formatNumber(Vout)} V
+        </strong>
 
         <br><br>
 
         Divider Current:
-        <strong>${formatNumber(current * 1000)} mA</strong>
+
+        <strong>
+            ${formatNumber(current * 1000)} mA
+        </strong>
 
         <br><br>
 
         Output is approximately:
-        <strong>${formatNumber(ratio)}%</strong>
+
+        <strong>
+            ${formatNumber(ratio)}%
+        </strong>
+
         of the input voltage.
 
         <br><br>
 
         R1 Power:
-        <strong>${formatNumber(powerR1)} W</strong>
+
+        <strong>
+            ${formatNumber(powerR1)} W
+        </strong>
 
         <br>
 
         R2 Power:
-        <strong>${formatNumber(powerR2)} W</strong>
+
+        <strong>
+            ${formatNumber(powerR2)} W
+        </strong>
+
     `;
 
+
     result.style.display = "block";
+
 }
+
 
 function formatNumber(value) {
 
     if (
         Math.abs(value) >= 1000 ||
-        (Math.abs(value) > 0 && Math.abs(value) < 0.001)
+        (
+            Math.abs(value) > 0 &&
+            Math.abs(value) < 0.001
+        )
     ) {
+
         return value.toExponential(3);
+
     }
 
-    return Number(value.toFixed(6)).toString();
+
+    return Number(
+        value.toFixed(6)
+    ).toString();
+
 }
 
 </script>
+
 
 </body>
 </html>
