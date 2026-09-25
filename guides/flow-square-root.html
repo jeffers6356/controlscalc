@@ -1,0 +1,1119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Square-Root Extraction & DP Flow Explained | ControlsCalc</title>
+
+    <meta name="description"
+          content="Learn how differential-pressure flow measurement works, why square-root extraction is required, where SRE should occur, and how to troubleshoot DP flow scaling in a PLC.">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f4f6f8;
+            color: #1f2933;
+            line-height: 1.7;
+        }
+
+        header {
+            background: #17202a;
+            color: white;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .header-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            min-height: 64px;
+        }
+
+        .logo {
+            color: white;
+            text-decoration: none;
+            font-size: 1.35rem;
+            font-weight: bold;
+        }
+
+        nav a {
+            color: #d9e2ec;
+            text-decoration: none;
+            margin-left: 24px;
+            font-size: 0.95rem;
+        }
+
+        nav a:hover {
+            color: white;
+        }
+
+        .hero {
+            background: white;
+            border-bottom: 1px solid #d9e2ec;
+            padding: 55px 0;
+        }
+
+        .hero h1 {
+            margin: 0 0 14px;
+            font-size: 2.5rem;
+            line-height: 1.2;
+            color: #17202a;
+        }
+
+        .hero p {
+            max-width: 800px;
+            margin: 0;
+            color: #52606d;
+            font-size: 1.08rem;
+        }
+
+        main {
+            padding: 36px 0 60px;
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: 250px minmax(0, 1fr);
+            gap: 30px;
+            align-items: start;
+        }
+
+        .toc {
+            position: sticky;
+            top: 20px;
+            background: white;
+            border: 1px solid #d9e2ec;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .toc h2 {
+            font-size: 1rem;
+            margin-top: 0;
+            color: #17202a;
+        }
+
+        .toc a {
+            display: block;
+            color: #486581;
+            text-decoration: none;
+            padding: 5px 0;
+            font-size: 0.92rem;
+            line-height: 1.4;
+        }
+
+        .toc a:hover {
+            color: #102a43;
+        }
+
+        article section {
+            background: white;
+            border: 1px solid #d9e2ec;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 24px;
+        }
+
+        article section:first-child {
+            margin-top: 0;
+        }
+
+        h2 {
+            margin-top: 0;
+            color: #17202a;
+            font-size: 1.65rem;
+        }
+
+        h3 {
+            color: #243b53;
+            margin-top: 30px;
+        }
+
+        p {
+            margin: 0 0 16px;
+        }
+
+        ul,
+        ol {
+            padding-left: 24px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        .formula {
+            background: #f0f4f8;
+            border: 1px solid #d9e2ec;
+            border-radius: 7px;
+            padding: 18px;
+            margin: 20px 0;
+            text-align: center;
+            font-family: Consolas, monospace;
+            font-size: 1.05rem;
+            overflow-x: auto;
+        }
+
+        .example {
+            background: #f8fafc;
+            border-left: 4px solid #486581;
+            padding: 20px;
+            margin: 22px 0;
+        }
+
+        .example strong {
+            color: #243b53;
+        }
+
+        .info-box {
+            background: #eef3f7;
+            border-left: 4px solid #486581;
+            border-radius: 4px;
+            padding: 18px;
+            margin: 22px 0;
+        }
+
+        .warning {
+            background: #fff8e1;
+            border-left: 4px solid #d99a00;
+            border-radius: 4px;
+            padding: 18px;
+            margin: 22px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 22px 0;
+        }
+
+        th,
+        td {
+            padding: 10px 12px;
+            border: 1px solid #d9e2ec;
+            text-align: left;
+        }
+
+        th {
+            background: #f0f4f8;
+            color: #243b53;
+        }
+
+        code {
+            background: #f0f4f8;
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-family: Consolas, monospace;
+        }
+
+        .signal-chain {
+            background: #f0f4f8;
+            border: 1px solid #d9e2ec;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 22px 0;
+            text-align: center;
+            font-weight: bold;
+            color: #243b53;
+        }
+
+        .related-links {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .related-links a {
+            display: block;
+            padding: 14px 16px;
+            background: #f0f4f8;
+            border: 1px solid #d9e2ec;
+            border-radius: 6px;
+            color: #243b53;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .related-links a:hover {
+            background: #e4e9ee;
+        }
+
+        footer {
+            background: #17202a;
+            color: #bcccdc;
+            padding: 30px 0;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 800px) {
+            .layout {
+                grid-template-columns: 1fr;
+            }
+
+            .toc {
+                position: static;
+            }
+
+            .related-links {
+                grid-template-columns: 1fr;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="container header-inner">
+        <a href="../" class="logo">ControlsCalc</a>
+
+        <nav>
+            <a href="../#calculators">Calculators</a>
+            <a href="index.html">Guides</a>
+        </nav>
+    </div>
+</header>
+
+<div class="hero">
+    <div class="container">
+        <h1>Square-Root Extraction & Differential-Pressure Flow</h1>
+
+        <p>
+            Understand why differential-pressure flow measurements are
+            nonlinear, how square-root extraction converts DP into flow,
+            where the square root belongs in a control system, and how to
+            troubleshoot flow scaling in the field.
+        </p>
+    </div>
+</div>
+
+<main>
+    <div class="container">
+
+        <div class="layout">
+
+            <aside class="toc">
+                <h2>On This Page</h2>
+
+                <a href="#what">What Is Square-Root Extraction?</a>
+                <a href="#dp-flow">Why DP Measures Flow</a>
+                <a href="#relationship">The DP-to-Flow Relationship</a>
+                <a href="#signal">From DP to 4–20 mA</a>
+                <a href="#formula">The SRE Formula</a>
+                <a href="#example">Worked Example</a>
+                <a href="#table">Reference Table</a>
+                <a href="#where">Where SRE Happens</a>
+                <a href="#double">Double Square Root</a>
+                <a href="#lowflow">Low-Flow Behavior</a>
+                <a href="#plc">SRE in the PLC</a>
+                <a href="#troubleshooting">Troubleshooting</a>
+                <a href="#mistakes">Common Mistakes</a>
+                <a href="#workflow">Field Workflow</a>
+                <a href="#calculators">Calculators</a>
+            </aside>
+
+            <article>
+
+                <section id="what">
+                    <h2>What Is Square-Root Extraction?</h2>
+
+                    <p>
+                        Square-root extraction, often abbreviated <strong>SRE</strong>,
+                        is a mathematical operation used to convert a differential
+                        pressure measurement into a value proportional to flow.
+                    </p>
+
+                    <p>
+                        The reason is simple:
+                        <strong>differential pressure is proportional to the
+                        square of flow.</strong>
+                    </p>
+
+                    <div class="formula">
+                        DP ∝ Q²
+                    </div>
+
+                    <p>
+                        Therefore, to obtain flow from differential pressure,
+                        we take the square root:
+                    </p>
+
+                    <div class="formula">
+                        Q ∝ √DP
+                    </div>
+
+                    <p>
+                        This relationship is fundamental to many differential-pressure
+                        flow measurements.
+                    </p>
+
+                    <div class="info-box">
+                        <strong>Key idea:</strong>
+                        Square-root extraction is not something that should
+                        automatically be applied to every flow transmitter.
+                        It is specifically associated with measurements where
+                        the measured quantity has a square-law relationship
+                        to flow.
+                    </div>
+                </section>
+
+                <section id="dp-flow">
+                    <h2>Why Does Differential Pressure Measure Flow?</h2>
+
+                    <p>
+                        One common way to measure flow is to place a restriction
+                        in the pipe. Examples include:
+                    </p>
+
+                    <ul>
+                        <li>Orifice plates</li>
+                        <li>Venturi tubes</li>
+                        <li>Flow nozzles</li>
+                        <li>Other differential-pressure primary elements</li>
+                    </ul>
+
+                    <p>
+                        As fluid moves through the restriction, a pressure
+                        difference develops between the upstream and downstream
+                        sides.
+                    </p>
+
+                    <p>
+                        The amount of differential pressure depends on the
+                        velocity of the fluid. Since flow rate is related to
+                        velocity, the resulting relationship is approximately:
+                    </p>
+
+                    <div class="formula">
+                        DP ∝ Flow²
+                    </div>
+
+                    <p>
+                        That means doubling the flow does not simply double
+                        the differential pressure.
+                    </p>
+
+                    <p>
+                        If flow doubles, the differential pressure increases
+                        approximately four times.
+                    </p>
+
+                    <div class="example">
+                        <strong>Example:</strong>
+
+                        <p>
+                            If a system produces 25 units of DP at one flow
+                            condition, approximately 100 units of DP would
+                            correspond to twice the flow, assuming the same
+                            operating conditions and idealized relationship.
+                        </p>
+                    </div>
+                </section>
+
+                <section id="relationship">
+                    <h2>The Differential Pressure / Flow Relationship</h2>
+
+                    <p>
+                        The basic relationship can be expressed as:
+                    </p>
+
+                    <div class="formula">
+                        Q = K × √DP
+                    </div>
+
+                    <p>
+                        where:
+                    </p>
+
+                    <ul>
+                        <li><strong>Q</strong> = flow</li>
+                        <li><strong>K</strong> = constant determined by the measurement system</li>
+                        <li><strong>DP</strong> = differential pressure</li>
+                    </ul>
+
+                    <p>
+                        The constant depends on the primary element, pipe,
+                        fluid, geometry, units, and other characteristics of
+                        the measurement installation.
+                    </p>
+
+                    <p>
+                        For PLC and instrumentation troubleshooting, however,
+                        we often work with percentages rather than calculating
+                        the complete flow equation from the physical installation.
+                    </p>
+                </section>
+
+                <section id="signal">
+                    <h2>From Differential Pressure to 4–20 mA</h2>
+
+                    <p>
+                        A DP transmitter measures the pressure difference and
+                        converts it into an electrical output.
+                    </p>
+
+                    <p>
+                        There are two important possibilities.
+                    </p>
+
+                    <h3>DP transmitter with linear output</h3>
+
+                    <p>
+                        The transmitter can produce a 4–20 mA signal proportional
+                        to differential pressure.
+                    </p>
+
+                    <div class="signal-chain">
+                        Differential Pressure → 4–20 mA → PLC
+                    </div>
+
+                    <p>
+                        In this case, the PLC receives a signal representing
+                        DP. If the application requires flow, square-root
+                        extraction must happen somewhere downstream.
+                    </p>
+
+                    <h3>Transmitter configured for flow output</h3>
+
+                    <p>
+                        Some transmitters can perform the square-root operation
+                        internally.
+                    </p>
+
+                    <div class="signal-chain">
+                        Differential Pressure → SRE → 4–20 mA → PLC
+                    </div>
+
+                    <p>
+                        In this configuration, the output can already be
+                        proportional to flow.
+                    </p>
+
+                    <div class="warning">
+                        <strong>Always check the transmitter configuration.</strong>
+                        The same physical transmitter may be configurable for
+                        different output characteristics. Never assume that
+                        the PLC needs to perform SRE simply because the
+                        transmitter is measuring differential pressure.
+                    </div>
+                </section>
+
+                <section id="formula">
+                    <h2>The Square-Root Extraction Formula</h2>
+
+                    <p>
+                        For a normalized signal, first determine the percentage
+                        of the 4–20 mA span:
+                    </p>
+
+                    <div class="formula">
+                        Signal Fraction = (mA − 4) ÷ 16
+                    </div>
+
+                    <p>
+                        Then take the square root:
+                    </p>
+
+                    <div class="formula">
+                        Flow Fraction = √Signal Fraction
+                    </div>
+
+                    <p>
+                        If the flow range is 0 to 100%, the result can be
+                        expressed as:
+                    </p>
+
+                    <div class="formula">
+                        Flow % = √((mA − 4) ÷ 16) × 100
+                    </div>
+
+                    <p>
+                        For a general engineering range:
+                    </p>
+
+                    <div class="formula">
+                        Flow =
+                        LRV +
+                        √((mA − 4) ÷ 16)
+                        ×
+                        (URV − LRV)
+                    </div>
+
+                    <div class="info-box">
+                        <strong>Important distinction:</strong>
+                        The square root is taken from the normalized
+                        <em>span percentage</em>, not directly from the
+                        milliamp value.
+                    </div>
+                </section>
+
+                <section id="example">
+                    <h2>Worked Example: 0–100 GPM</h2>
+
+                    <p>
+                        Suppose a DP-based flow measurement has been configured
+                        for a flow range of:
+                    </p>
+
+                    <ul>
+                        <li>LRV = 0 GPM</li>
+                        <li>URV = 100 GPM</li>
+                        <li>Measured signal = 12 mA</li>
+                    </ul>
+
+                    <h3>Step 1: Calculate signal percentage</h3>
+
+                    <div class="formula">
+                        (12 − 4) ÷ 16 = 0.50
+                    </div>
+
+                    <p>
+                        The signal is therefore at 50% of its electrical span.
+                    </p>
+
+                    <h3>Step 2: Take the square root</h3>
+
+                    <div class="formula">
+                        √0.50 = 0.7071
+                    </div>
+
+                    <p>
+                        Therefore the flow is approximately 70.71% of its
+                        configured range.
+                    </p>
+
+                    <h3>Step 3: Convert to GPM</h3>
+
+                    <div class="formula">
+                        0.7071 × 100 = 70.71 GPM
+                    </div>
+
+                    <div class="example">
+                        <strong>Result:</strong>
+
+                        <p>
+                            A 12 mA signal represents <strong>50% signal span</strong>,
+                            but approximately <strong>70.7% flow</strong> when
+                            square-root extraction is required.
+                        </p>
+                    </div>
+
+                    <p>
+                        This is one of the most important concepts to understand
+                        when troubleshooting DP flow measurements.
+                    </p>
+                </section>
+
+                <section id="table">
+                    <h2>4–20 mA Square-Root Reference Table</h2>
+
+                    <p>
+                        For a 0–100% DP range, the following values illustrate
+                        the difference between signal percentage and flow
+                        percentage.
+                    </p>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Current</th>
+                                <th>Signal %</th>
+                                <th>Flow % After SRE</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr>
+                                <td>4 mA</td>
+                                <td>0%</td>
+                                <td>0%</td>
+                            </tr>
+
+                            <tr>
+                                <td>8 mA</td>
+                                <td>25%</td>
+                                <td>50%</td>
+                            </tr>
+
+                            <tr>
+                                <td>12 mA</td>
+                                <td>50%</td>
+                                <td>70.7%</td>
+                            </tr>
+
+                            <tr>
+                                <td>16 mA</td>
+                                <td>75%</td>
+                                <td>86.6%</td>
+                            </tr>
+
+                            <tr>
+                                <td>20 mA</td>
+                                <td>100%</td>
+                                <td>100%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <p>
+                        Notice how the flow percentage increases rapidly at
+                        the low end and gradually approaches 100% at the
+                        high end.
+                    </p>
+                </section>
+
+                <section id="where">
+                    <h2>Where Should Square-Root Extraction Happen?</h2>
+
+                    <p>
+                        There is no single location where SRE must always
+                        occur. It depends on the system design.
+                    </p>
+
+                    <h3>Inside the transmitter</h3>
+
+                    <p>
+                        The transmitter can measure DP, perform the square-root
+                        calculation, and produce a 4–20 mA output proportional
+                        to flow.
+                    </p>
+
+                    <div class="signal-chain">
+                        DP → Transmitter SRE → 4–20 mA → PLC
+                    </div>
+
+                    <h3>Inside the PLC</h3>
+
+                    <p>
+                        The transmitter can instead send a linear DP signal.
+                        The PLC then scales the signal and performs SRE.
+                    </p>
+
+                    <div class="signal-chain">
+                        DP → Transmitter → 4–20 mA → PLC Scaling → SRE → Flow
+                    </div>
+
+                    <h3>Inside a flow computer or DCS</h3>
+
+                    <p>
+                        Some systems perform the calculation in a dedicated
+                        flow computer, DCS function block, or another control
+                        system component.
+                    </p>
+
+                    <div class="info-box">
+                        <strong>The important question is not "Where should
+                        SRE normally happen?"</strong>
+
+                        <p>
+                            The important question is:
+                            <strong>"Where is SRE happening in this particular
+                            system?"</strong>
+                        </p>
+                    </div>
+                </section>
+
+                <section id="double">
+                    <h2>The Double Square-Root Problem</h2>
+
+                    <p>
+                        One of the easiest ways to create a bad flow reading
+                        is to perform square-root extraction twice.
+                    </p>
+
+                    <p>
+                        For example, suppose the transmitter is already
+                        configured to output a signal proportional to flow.
+                        The PLC receives that signal and then applies another
+                        square root.
+                    </p>
+
+                    <div class="formula">
+                        Transmitter SRE
+                        +
+                        PLC SRE
+                        =
+                        Incorrect Result
+                    </div>
+
+                    <p>
+                        The error can be especially noticeable at lower flow
+                        rates.
+                    </p>
+
+                    <div class="example">
+                        <strong>Example:</strong>
+
+                        <p>
+                            If the transmitter already produces a signal
+                            representing 50% flow, treating that signal as
+                            though it were still a linear DP signal and taking
+                            another square root changes the result to:
+                        </p>
+
+                        <div class="formula">
+                            √0.50 = 70.7%
+                        </div>
+
+                        <p>
+                            The PLC would therefore report approximately
+                            70.7% instead of the intended 50%.
+                        </p>
+                    </div>
+
+                    <p>
+                        When troubleshooting an unexpectedly high flow reading,
+                        always determine whether SRE has already been performed
+                        upstream.
+                    </p>
+                </section>
+
+                <section id="lowflow">
+                    <h2>Low-Flow Behavior</h2>
+
+                    <p>
+                        Square-root extraction has a very steep response near
+                        zero.
+                    </p>
+
+                    <p>
+                        Mathematically:
+                    </p>
+
+                    <div class="formula">
+                        √0.01 = 0.10
+                    </div>
+
+                    <p>
+                        So only 1% of the DP span corresponds to 10% of the
+                        calculated flow span.
+                    </p>
+
+                    <p>
+                        This makes low-level noise and small measurement errors
+                        more significant after square-root extraction.
+                    </p>
+
+                    <h3>Low-flow cutoff</h3>
+
+                    <p>
+                        Many control systems use a low-flow cutoff or zero
+                        suppression function so that very small DP signals
+                        do not produce an unstable or unrealistic flow value.
+                    </p>
+
+                    <p>
+                        The exact cutoff is application-specific and should
+                        not be assumed to be the same for every system.
+                    </p>
+
+                    <div class="warning">
+                        <strong>Don't confuse a low-flow cutoff with SRE.</strong>
+                        The square root performs the mathematical conversion.
+                        A cutoff is an additional decision about what the
+                        control system should consider to be meaningful flow.
+                    </div>
+                </section>
+
+                <section id="plc">
+                    <h2>Square-Root Extraction in the PLC</h2>
+
+                    <p>
+                        When SRE is performed in a PLC, the general sequence
+                        is usually:
+                    </p>
+
+                    <ol>
+                        <li>Read the analog input.</li>
+                        <li>Convert raw counts to a signal value or percentage.</li>
+                        <li>Determine the normalized signal fraction.</li>
+                        <li>Apply the square root.</li>
+                        <li>Scale the result into engineering units.</li>
+                        <li>Apply any required limits, filtering, or low-flow logic.</li>
+                    </ol>
+
+                    <p>
+                        Conceptually:
+                    </p>
+
+                    <div class="formula">
+                        Raw Counts
+                        → Signal %
+                        → √Signal %
+                        → Flow %
+                        → Engineering Units
+                    </div>
+
+                    <p>
+                        The exact implementation depends on the PLC platform
+                        and analog module configuration.
+                    </p>
+
+                    <div class="info-box">
+                        <strong>Important:</strong>
+                        The raw analog input range is not universal. Always
+                        verify the actual analog module's resolution,
+                        configuration, raw-count range, and data format before
+                        implementing PLC scaling.
+                    </div>
+                </section>
+
+                <section id="troubleshooting">
+                    <h2>Troubleshooting DP Flow Measurements</h2>
+
+                    <h3>Flow is too high</h3>
+
+                    <p>
+                        Check:
+                    </p>
+
+                    <ul>
+                        <li>Whether SRE is being performed twice</li>
+                        <li>Transmitter configuration</li>
+                        <li>PLC SRE logic</li>
+                        <li>Transmitter LRV and URV</li>
+                        <li>Analog input scaling</li>
+                    </ul>
+
+                    <h3>Flow is too low</h3>
+
+                    <p>
+                        Check whether square-root extraction is missing.
+                        Also verify the transmitter range and analog scaling.
+                    </p>
+
+                    <h3>Flow is unstable at low rates</h3>
+
+                    <p>
+                        Investigate:
+                    </p>
+
+                    <ul>
+                        <li>DP signal noise</li>
+                        <li>Transmitter damping</li>
+                        <li>Impulse-line problems</li>
+                        <li>Low-flow cutoff configuration</li>
+                        <li>PLC filtering</li>
+                        <li>Square-root implementation</li>
+                    </ul>
+
+                    <h3>Flow suddenly changed after transmitter replacement</h3>
+
+                    <p>
+                        Compare the configuration of the old and new
+                        transmitters.
+                    </p>
+
+                    <p>
+                        In particular, check whether the old transmitter was
+                        configured for square-root output while the replacement
+                        is configured for linear DP output, or vice versa.
+                    </p>
+
+                    <h3>PLC value doesn't agree with the transmitter display</h3>
+
+                    <p>
+                        Trace the complete signal path rather than immediately
+                        changing the PLC calculation.
+                    </p>
+
+                    <div class="signal-chain">
+                        Process
+                        → DP
+                        → Transmitter
+                        → 4–20 mA
+                        → Analog Input
+                        → Scaling
+                        → SRE
+                        → Flow
+                        → HMI
+                    </div>
+                </section>
+
+                <section id="mistakes">
+                    <h2>Common Mistakes</h2>
+
+                    <ul>
+                        <li>
+                            Applying SRE to a signal that is already linearized
+                            to flow.
+                        </li>
+
+                        <li>
+                            Forgetting SRE when the PLC receives linear DP.
+                        </li>
+
+                        <li>
+                            Applying square-root extraction twice.
+                        </li>
+
+                        <li>
+                            Taking the square root of the raw mA value instead
+                            of the normalized signal percentage.
+                        </li>
+
+                        <li>
+                            Assuming every flow transmitter uses differential
+                            pressure.
+                        </li>
+
+                        <li>
+                            Assuming 12 mA always means 50% flow.
+                        </li>
+
+                        <li>
+                            Ignoring transmitter configuration.
+                        </li>
+
+                        <li>
+                            Ignoring the analog input module's actual raw-count
+                            range.
+                        </li>
+
+                        <li>
+                            Treating low-flow noise as a scaling problem when
+                            the underlying issue is the measurement itself.
+                        </li>
+                    </ul>
+                </section>
+
+                <section id="workflow">
+                    <h2>A Practical Field Troubleshooting Workflow</h2>
+
+                    <p>
+                        When a DP flow measurement doesn't look right, work
+                        through the signal chain one stage at a time.
+                    </p>
+
+                    <ol>
+                        <li>
+                            <strong>Identify the measurement technology.</strong>
+                            Determine whether the flow measurement is based on
+                            differential pressure.
+                        </li>
+
+                        <li>
+                            <strong>Check the transmitter configuration.</strong>
+                            Verify the pressure range, output range, units,
+                            and whether square-root extraction is enabled.
+                        </li>
+
+                        <li>
+                            <strong>Measure the actual current.</strong>
+                            Verify the 4–20 mA signal with appropriate test
+                            equipment and procedures.
+                        </li>
+
+                        <li>
+                            <strong>Verify the analog input.</strong>
+                            Determine what raw value the PLC is actually seeing.
+                        </li>
+
+                        <li>
+                            <strong>Verify scaling.</strong>
+                            Confirm the PLC converts the raw input to the
+                            expected signal percentage.
+                        </li>
+
+                        <li>
+                            <strong>Find the SRE.</strong>
+                            Determine whether the square root is being performed
+                            in the transmitter, PLC, DCS, flow computer, or
+                            another device.
+                        </li>
+
+                        <li>
+                            <strong>Check low-flow logic.</strong>
+                            Look for filtering, cutoff, limiting, or other
+                            signal conditioning.
+                        </li>
+
+                        <li>
+                            <strong>Compare the final value.</strong>
+                            Compare the PLC/HMI flow with the expected process
+                            condition and any independent measurement.
+                        </li>
+                    </ol>
+
+                    <div class="info-box">
+                        <strong>Good controls troubleshooting principle:</strong>
+                        Follow the signal from the process to the display.
+                        Don't change a downstream calculation until you've
+                        established what the upstream device is actually
+                        sending.
+                    </div>
+                </section>
+
+                <section id="calculators">
+                    <h2>Flow & Scaling Calculators</h2>
+
+                    <p>
+                        Use the ControlsCalc calculators to work through the
+                        numerical side of the measurement.
+                    </p>
+
+                    <div class="related-links">
+
+                        <a href="../calculators/flow-transmitter.html">
+                            Flow Transmitter Scaling
+                        </a>
+
+                        <a href="../calculators/4-20ma-scaling.html">
+                            4–20 mA Scaling
+                        </a>
+
+                        <a href="../calculators/analog-scaling.html">
+                            Analog Signal Scaling
+                        </a>
+
+                        <a href="../calculators/pressure-transmitter.html">
+                            Pressure Transmitter Scaling
+                        </a>
+
+                        <a href="4-20ma.html">
+                            4–20 mA Guide
+                        </a>
+
+                        <a href="plc-scaling.html">
+                            PLC Scaling Guide
+                        </a>
+
+                    </div>
+                </section>
+
+            </article>
+
+        </div>
+    </div>
+</main>
+
+<footer>
+    <div class="container">
+        <strong>ControlsCalc</strong>
+        <br>
+        Controls & instrumentation calculators and field references.
+    </div>
+</footer>
+
+</body>
+</html>
