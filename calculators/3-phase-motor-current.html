@@ -6,8 +6,10 @@
 
     <title>3-Phase Motor Current Calculator | ControlsCalc</title>
 
-    <meta name="description"
-          content="Calculate estimated 3-phase motor current from horsepower or kW, voltage, power factor, and motor efficiency. Includes formulas, examples, and field troubleshooting guidance.">
+    <meta
+        name="description"
+        content="Free 3-phase motor current calculator. Estimate motor current from horsepower or kW, voltage, power factor, and efficiency."
+    >
 
     <style>
         * {
@@ -17,88 +19,104 @@
         body {
             margin: 0;
             font-family: Arial, Helvetica, sans-serif;
-            background: #f4f6f8;
-            color: #1f2933;
+            color: #172033;
+            background: #f5f7fa;
             line-height: 1.6;
         }
 
-        header {
-            background: #17202a;
-            color: white;
+        a {
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
         }
 
         .container {
-            max-width: 1100px;
+            width: min(1000px, calc(100% - 40px));
             margin: 0 auto;
-            padding: 0 20px;
+        }
+
+        /* Header */
+
+        header {
+            background: #ffffff;
+            border-bottom: 1px solid #e1e5eb;
         }
 
         .header-inner {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
             min-height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
         .logo {
-            color: white;
-            text-decoration: none;
-            font-size: 1.35rem;
-            font-weight: bold;
+            font-size: 22px;
+            font-weight: 800;
+            color: #172033;
+        }
+
+        nav {
+            display: flex;
+            gap: 24px;
         }
 
         nav a {
-            color: #d9e2ec;
-            text-decoration: none;
-            margin-left: 24px;
-            font-size: 0.95rem;
+            font-size: 15px;
         }
 
-        nav a:hover {
-            color: white;
-        }
-
-        .hero {
-            background: white;
-            border-bottom: 1px solid #d9e2ec;
-            padding: 50px 0;
-        }
-
-        .hero h1 {
-            margin: 0 0 12px;
-            font-size: 2.4rem;
-            color: #17202a;
-        }
-
-        .hero p {
-            max-width: 780px;
-            margin: 0;
-            color: #52606d;
-            font-size: 1.08rem;
-        }
+        /* Main */
 
         main {
-            padding: 36px 0 60px;
+            padding: 48px 0 70px;
         }
 
-        .calculator-card {
-            background: white;
-            border: 1px solid #d9e2ec;
-            border-radius: 10px;
-            padding: 28px;
+        .breadcrumbs {
+            margin-bottom: 24px;
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .intro {
             margin-bottom: 32px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
         }
 
-        .calculator-card h2 {
-            margin-top: 0;
-            color: #17202a;
+        .intro h1 {
+            margin: 0 0 16px;
+            font-size: clamp(32px, 5vw, 46px);
+            line-height: 1.1;
+            letter-spacing: -1px;
+        }
+
+        .intro p {
+            max-width: 800px;
+            margin: 8px 0;
+            color: #64748b;
+            font-size: 17px;
+        }
+
+        /* Calculator */
+
+        .calculator {
+            background: #ffffff;
+            border: 1px solid #dfe5ec;
+            border-radius: 14px;
+            padding: 32px;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 18px rgba(15, 23, 42, 0.04);
+        }
+
+        .calculator h2 {
+            margin: 0 0 24px;
+            font-size: 25px;
         }
 
         .form-grid {
             display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 18px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 22px;
         }
 
         .field {
@@ -107,228 +125,302 @@
         }
 
         .field label {
-            font-weight: bold;
             margin-bottom: 7px;
-            color: #34495e;
+            font-weight: 700;
+            font-size: 15px;
         }
 
         .field input,
         .field select {
             width: 100%;
-            padding: 11px 12px;
-            border: 1px solid #bcccdc;
-            border-radius: 6px;
-            font-size: 1rem;
-            background: white;
+            padding: 13px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            background: #ffffff;
+            color: #172033;
+            font-size: 16px;
+            outline: none;
         }
 
         .field input:focus,
         .field select:focus {
-            outline: none;
-            border-color: #486581;
-            box-shadow: 0 0 0 2px rgba(72, 101, 129, 0.12);
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
         }
 
-        .full-width {
-            grid-column: 1 / -1;
+        .field small {
+            margin-top: 6px;
+            color: #64748b;
+            font-size: 13px;
         }
 
-        button {
-            margin-top: 22px;
-            padding: 12px 22px;
-            border: none;
-            border-radius: 6px;
-            background: #243b53;
-            color: white;
-            font-size: 1rem;
-            font-weight: bold;
+        .calculate-button {
+            width: 100%;
+            margin-top: 26px;
+            padding: 14px 20px;
+            border: 0;
+            border-radius: 8px;
+            background: #2563eb;
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 700;
             cursor: pointer;
         }
 
-        button:hover {
-            background: #334e68;
+        .calculate-button:hover {
+            background: #1d4ed8;
         }
 
-        .results {
-            margin-top: 26px;
-            padding: 20px;
-            background: #f0f4f8;
-            border-radius: 8px;
-            border: 1px solid #d9e2ec;
+        /* Result */
+
+        .result {
+            display: none;
+            margin-top: 28px;
+            padding: 24px;
+            border-radius: 10px;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            text-align: center;
         }
 
-        .result-main {
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: #17202a;
-            margin-bottom: 12px;
+        .result.show {
+            display: block;
         }
 
-        .result-row {
-            display: flex;
-            justify-content: space-between;
-            gap: 20px;
-            padding: 7px 0;
-            border-bottom: 1px solid #d9e2ec;
-        }
-
-        .result-row:last-child {
-            border-bottom: none;
-        }
-
-        .result-label {
-            color: #52606d;
+        .result h3 {
+            margin: 0 0 10px;
+            font-size: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #2563eb;
         }
 
         .result-value {
-            font-weight: bold;
-            text-align: right;
+            margin: 0;
+            font-size: 38px;
+            font-weight: 800;
+            color: #172033;
         }
 
-        .warning {
-            margin-top: 16px;
-            padding: 13px 15px;
-            background: #fff8e1;
-            border-left: 4px solid #d99a00;
-            border-radius: 4px;
-            color: #5f4b00;
+        .result-details {
+            margin: 8px 0 0;
+            color: #475569;
         }
 
         .error {
-            margin-top: 16px;
-            padding: 13px 15px;
-            background: #fff0f0;
-            border-left: 4px solid #c0392b;
-            border-radius: 4px;
-            color: #7b241c;
+            display: none;
+            margin-top: 20px;
+            padding: 14px;
+            border-radius: 8px;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
         }
 
-        .info-box {
-            padding: 18px;
-            margin: 20px 0;
-            background: #eef3f7;
-            border-left: 4px solid #486581;
-            border-radius: 4px;
+        .error.show {
+            display: block;
         }
 
-        section {
-            background: white;
-            border: 1px solid #d9e2ec;
-            border-radius: 10px;
-            padding: 28px;
+        .warning {
+            display: none;
+            margin-top: 20px;
+            padding: 14px;
+            border-radius: 8px;
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+            color: #9a3412;
+        }
+
+        .warning.show {
+            display: block;
+        }
+
+        /* Secondary results */
+
+        .secondary-results {
+            display: none;
+            margin-top: 20px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .secondary-results.show {
+            display: grid;
+        }
+
+        .secondary-result {
+            padding: 14px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .secondary-result-label {
+            color: #64748b;
+            font-size: 13px;
+            margin-bottom: 4px;
+        }
+
+        .secondary-result-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: #172033;
+        }
+
+        /* Content */
+
+        .content-section {
+            background: #ffffff;
+            border: 1px solid #dfe5ec;
+            border-radius: 12px;
+            padding: 30px;
             margin-bottom: 24px;
         }
 
-        section h2 {
-            margin-top: 0;
-            color: #17202a;
+        .content-section h2 {
+            margin: 0 0 16px;
+            font-size: 24px;
         }
 
-        section h3 {
-            color: #243b53;
-            margin-top: 28px;
+        .content-section h3 {
+            margin: 24px 0 8px;
+            font-size: 18px;
         }
 
-        code {
-            background: #f0f4f8;
-            padding: 2px 5px;
-            border-radius: 4px;
-            font-family: Consolas, monospace;
+        .content-section p {
+            color: #475569;
+        }
+
+        .content-section li {
+            margin-bottom: 10px;
+            color: #475569;
         }
 
         .formula {
-            background: #f0f4f8;
-            border: 1px solid #d9e2ec;
-            border-radius: 7px;
+            margin: 20px 0;
             padding: 18px;
-            margin: 18px 0;
+            background: #f5f7fa;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
             text-align: center;
-            font-family: Consolas, monospace;
-            font-size: 1.05rem;
+            font-size: 18px;
+            font-weight: 700;
             overflow-x: auto;
         }
 
-        .example {
-            background: #f8fafc;
-            border-left: 4px solid #486581;
-            padding: 20px;
-            margin: 22px 0;
+        .example-result {
+            display: inline-block;
+            margin: 10px 0;
+            padding: 12px 18px;
+            border-radius: 8px;
+            background: #f1f5f9;
+            font-weight: 700;
         }
 
-        table {
+        /* Reference table */
+
+        .reference-table {
             width: 100%;
             border-collapse: collapse;
-            margin: 20px 0;
-        }
-
-        th,
-        td {
-            padding: 10px 12px;
-            border: 1px solid #d9e2ec;
-            text-align: left;
-        }
-
-        th {
-            background: #f0f4f8;
-            color: #243b53;
-        }
-
-        .related-links {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 12px;
-            margin-top: 18px;
-        }
-
-        .related-links a {
-            display: block;
-            padding: 13px 15px;
-            background: #f0f4f8;
-            border: 1px solid #d9e2ec;
-            border-radius: 6px;
-            color: #243b53;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        .related-links a:hover {
-            background: #e4e9ee;
-        }
-
-        footer {
-            background: #17202a;
-            color: #bcccdc;
-            padding: 30px 0;
             margin-top: 20px;
         }
 
-        footer a {
-            color: #d9e2ec;
+        .reference-table th,
+        .reference-table td {
+            padding: 12px;
+            border-bottom: 1px solid #e2e8f0;
+            text-align: left;
         }
 
-        @media (max-width: 700px) {
-            .form-grid,
-            .related-links {
-                grid-template-columns: 1fr;
-            }
+        .reference-table th {
+            background: #f8fafc;
+            font-size: 14px;
+        }
 
-            .hero h1 {
-                font-size: 1.9rem;
+        /* Related calculators */
+
+        .related-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            padding: 0;
+            list-style: none;
+        }
+
+        .related-list li {
+            margin: 0;
+        }
+
+        .related-list a {
+            display: block;
+            padding: 12px 14px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+        }
+
+        .related-list a:hover {
+            background: #eff6ff;
+            text-decoration: none;
+        }
+
+        /* Footer */
+
+        footer {
+            padding: 32px 0;
+            background: #ffffff;
+            border-top: 1px solid #e1e5eb;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        footer p {
+            margin: 4px 0;
+        }
+
+        /* Mobile */
+
+        @media (max-width: 650px) {
+
+            .container {
+                width: min(100% - 28px, 1000px);
             }
 
             .header-inner {
-                flex-direction: column;
-                align-items: flex-start;
-                padding: 15px 20px;
+                min-height: 58px;
             }
 
             nav {
-                margin-top: 8px;
+                gap: 14px;
             }
 
-            nav a {
-                margin-left: 0;
-                margin-right: 18px;
+            main {
+                padding-top: 32px;
+            }
+
+            .calculator {
+                padding: 22px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .secondary-results {
+                grid-template-columns: 1fr;
+            }
+
+            .related-list {
+                grid-template-columns: 1fr;
+            }
+
+            .result-value {
+                font-size: 30px;
+            }
+
+            .reference-table {
+                font-size: 14px;
             }
         }
     </style>
@@ -338,148 +430,284 @@
 
 <header>
     <div class="container header-inner">
-        <a href="../" class="logo">ControlsCalc</a>
+
+        <a href="../index.html" class="logo">
+            ControlsCalc
+        </a>
 
         <nav>
-            <a href="../#calculators">Calculators</a>
+            <a href="../index.html">Calculators</a>
             <a href="../guides/index.html">Guides</a>
         </nav>
+
     </div>
 </header>
 
-<div class="hero">
-    <div class="container">
-        <h1>3-Phase Motor Current Calculator</h1>
-
-        <p>
-            Estimate the full-load current of a 3-phase motor from horsepower
-            or kW, line voltage, power factor, and motor efficiency.
-        </p>
-    </div>
-</div>
 
 <main>
+
     <div class="container">
 
-        <div class="calculator-card">
+        <div class="breadcrumbs">
+            <a href="../index.html">ControlsCalc</a>
+            &nbsp; / &nbsp;
+            3-Phase Motor Current
+        </div>
+
+
+        <section class="intro">
+
+            <h1>3-Phase Motor Current Calculator</h1>
+
+            <p>
+                Estimate three-phase motor current from horsepower or kW,
+                line-to-line voltage, power factor, and motor efficiency.
+            </p>
+
+            <p>
+                This calculator is useful for motor sizing, controls work,
+                electrical troubleshooting, VFD applications, and estimating
+                the electrical input requirements of three-phase motors.
+            </p>
+
+        </section>
+
+
+        <!-- Calculator -->
+
+        <section class="calculator">
 
             <h2>Calculate Motor Current</h2>
 
             <div class="form-grid">
 
                 <div class="field">
-                    <label for="powerType">Motor Rating</label>
 
-                    <select id="powerType">
-                        <option value="hp">Horsepower (HP)</option>
-                        <option value="kw">Kilowatts (kW)</option>
+                    <label for="ratingType">
+                        Motor Rating
+                    </label>
+
+                    <select id="ratingType">
+
+                        <option value="hp">
+                            Horsepower (HP)
+                        </option>
+
+                        <option value="kw">
+                            Kilowatts (kW)
+                        </option>
+
                     </select>
+
+                    <small>
+                        Select the motor's rated mechanical power.
+                    </small>
+
                 </div>
 
+
                 <div class="field">
-                    <label for="power">Motor Power</label>
+
+                    <label for="motorPower">
+                        Motor Power
+                    </label>
+
                     <input
                         type="number"
-                        id="power"
-                        value="10"
+                        id="motorPower"
+                        placeholder="Example: 10"
                         min="0"
                         step="any"
                     >
+
+                    <small id="powerHelp">
+                        Motor horsepower.
+                    </small>
+
                 </div>
 
+
                 <div class="field">
-                    <label for="voltage">Line-to-Line Voltage (V)</label>
+
+                    <label for="voltage">
+                        Line-to-Line Voltage (V)
+                    </label>
+
                     <input
                         type="number"
                         id="voltage"
-                        value="480"
+                        placeholder="Example: 480"
                         min="0"
                         step="any"
                     >
+
+                    <small>
+                        Three-phase line-to-line voltage.
+                    </small>
+
                 </div>
 
+
                 <div class="field">
-                    <label for="powerFactor">Power Factor</label>
+
+                    <label for="powerFactor">
+                        Power Factor
+                    </label>
+
                     <input
                         type="number"
                         id="powerFactor"
+                        placeholder="Example: 0.85"
                         value="0.85"
                         min="0"
                         max="1"
                         step="0.01"
                     >
+
+                    <small>
+                        Enter as a decimal, such as 0.85 for 85%.
+                    </small>
+
                 </div>
 
+
                 <div class="field">
-                    <label for="efficiency">Motor Efficiency (%)</label>
+
+                    <label for="efficiency">
+                        Motor Efficiency (%)
+                    </label>
+
                     <input
                         type="number"
                         id="efficiency"
+                        placeholder="Example: 90"
                         value="90"
                         min="0"
                         max="100"
-                        step="0.1"
+                        step="any"
                     >
+
+                    <small>
+                        Typical motor efficiency may be around 80–95%.
+                    </small>
+
                 </div>
 
             </div>
 
-            <button onclick="calculateCurrent()">Calculate Current</button>
 
-            <div id="result"></div>
+            <button
+                type="button"
+                class="calculate-button"
+                onclick="calculateMotorCurrent()"
+            >
+                Calculate
+            </button>
 
-        </div>
 
-        <section>
+            <div id="error" class="error"></div>
+
+
+            <div id="result" class="result">
+
+                <h3>Estimated Full-Load Current</h3>
+
+                <p id="resultValue" class="result-value"></p>
+
+                <p id="resultDetails" class="result-details"></p>
+
+            </div>
+
+
+            <div
+                id="secondaryResults"
+                class="secondary-results"
+            >
+
+                <div class="secondary-result">
+
+                    <div class="secondary-result-label">
+                        Electrical Input
+                    </div>
+
+                    <div
+                        id="inputPowerResult"
+                        class="secondary-result-value"
+                    >
+                        —
+                    </div>
+
+                </div>
+
+
+                <div class="secondary-result">
+
+                    <div class="secondary-result-label">
+                        Apparent Power
+                    </div>
+
+                    <div
+                        id="kvaResult"
+                        class="secondary-result-value"
+                    >
+                        —
+                    </div>
+
+                </div>
+
+
+                <div class="secondary-result">
+
+                    <div class="secondary-result-label">
+                        Power Factor
+                    </div>
+
+                    <div
+                        id="pfResult"
+                        class="secondary-result-value"
+                    >
+                        —
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div id="warning" class="warning"></div>
+
+        </section>
+
+
+        <!-- How It Works -->
+
+        <section class="content-section">
+
             <h2>How 3-Phase Motor Current Is Calculated</h2>
 
             <p>
-                A balanced 3-phase motor draws power from three AC phases.
-                For a 3-phase system, electrical input power can be related
-                to line current by:
-            </p>
-
-            <div class="formula">
-                P = √3 × V × I × PF
-            </div>
-
-            <p>
-                For a real motor, the electrical input power must be greater
-                than the mechanical power delivered by the motor because
-                motors are not 100% efficient.
+                A three-phase motor's current depends on its power,
+                voltage, power factor, and efficiency.
             </p>
 
             <p>
-                When the motor power rating is given as mechanical output
-                power, efficiency must therefore be included:
+                The calculation estimates the electrical current required
+                to supply the motor's mechanical output while accounting
+                for electrical and mechanical losses.
             </p>
 
-            <div class="formula">
-                I =
-                P<sub>mechanical</sub>
-                ÷
-                (√3 × V × PF × η)
-            </div>
-
-            <p>
-                where <strong>η</strong> is motor efficiency expressed as a
-                decimal.
-            </p>
         </section>
 
-        <section>
+
+        <!-- HP Formula -->
+
+        <section class="content-section">
+
             <h2>Horsepower Formula</h2>
 
             <p>
-                One mechanical horsepower is approximately:
-            </p>
-
-            <div class="formula">
-                1 HP = 746 W
-            </div>
-
-            <p>
-                Therefore, for a motor rated in horsepower:
+                When motor power is given in horsepower, the estimated
+                three-phase current is:
             </p>
 
             <div class="formula">
@@ -489,131 +717,126 @@
                 (√3 × V × PF × η)
             </div>
 
-            <h3>Worked Example: 10 HP, 480 V Motor</h3>
-
             <p>
-                Assume:
+                Where:
             </p>
 
             <ul>
-                <li>Motor power = 10 HP</li>
-                <li>Voltage = 480 V</li>
-                <li>Power factor = 0.85</li>
-                <li>Efficiency = 90%</li>
+                <li><strong>I</strong> = motor current in amps</li>
+                <li><strong>HP</strong> = motor horsepower</li>
+                <li><strong>V</strong> = line-to-line voltage</li>
+                <li><strong>PF</strong> = power factor</li>
+                <li><strong>η</strong> = motor efficiency as a decimal</li>
             </ul>
 
             <p>
-                Convert horsepower to mechanical power:
+                The value 746 converts horsepower into watts.
             </p>
 
-            <div class="formula">
-                10 × 746 = 7,460 W
-            </div>
-
-            <p>
-                Then calculate current:
-            </p>
-
-            <div class="formula">
-                I =
-                7,460
-                ÷
-                (√3 × 480 × 0.85 × 0.90)
-            </div>
-
-            <div class="formula">
-                I ≈ 11.76 A
-            </div>
-
-            <div class="example">
-                <strong>Estimated current: approximately 11.8 A.</strong>
-
-                <p>
-                    The actual nameplate full-load current may differ because
-                    the actual motor efficiency and power factor vary with
-                    motor design and operating conditions.
-                </p>
-            </div>
         </section>
 
-        <section>
+
+        <!-- kW Formula -->
+
+        <section class="content-section">
+
             <h2>kW Formula</h2>
 
             <p>
-                If motor power is already provided in kilowatts, convert kW
-                to watts:
-            </p>
-
-            <div class="formula">
-                P(W) = kW × 1,000
-            </div>
-
-            <p>
-                The current equation becomes:
+                If motor power is already given in kilowatts:
             </p>
 
             <div class="formula">
                 I =
-                (kW × 1,000)
+                (kW × 1000)
                 ÷
                 (√3 × V × PF × η)
             </div>
 
-            <h3>Example: 7.5 kW, 400 V Motor</h3>
+            <p>
+                The motor's mechanical output power is divided by efficiency
+                to estimate the electrical input power before calculating
+                current.
+            </p>
+
+        </section>
+
+
+        <!-- Why Square Root 3 -->
+
+        <section class="content-section">
+
+            <h2>Why Does √3 Appear?</h2>
 
             <p>
-                Assume:
+                In a balanced three-phase system, apparent power is related
+                to line-to-line voltage and line current by:
+            </p>
+
+            <div class="formula">
+                kVA =
+                (√3 × V × I) ÷ 1000
+            </div>
+
+            <p>
+                The √3 factor comes from the relationship between the
+                three phases in a balanced AC system.
+            </p>
+
+            <p>
+                This formula uses <strong>line-to-line voltage</strong>.
+                Using phase-to-neutral voltage with the same formula would
+                produce an incorrect result.
+            </p>
+
+        </section>
+
+
+        <!-- Worked Example -->
+
+        <section class="content-section">
+
+            <h2>Worked Example: 10 HP Motor</h2>
+
+            <p>
+                Suppose a three-phase motor has:
             </p>
 
             <ul>
-                <li>Motor power = 7.5 kW</li>
-                <li>Voltage = 400 V</li>
-                <li>Power factor = 0.82</li>
+                <li>10 HP</li>
+                <li>480 V</li>
+                <li>Power factor = 0.85</li>
                 <li>Efficiency = 90%</li>
             </ul>
 
             <div class="formula">
                 I =
-                7,500
+                (10 × 746)
                 ÷
-                (√3 × 400 × 0.82 × 0.90)
+                (√3 × 480 × 0.85 × 0.90)
             </div>
 
-            <div class="formula">
-                I ≈ 14.70 A
+            <p>
+                The estimated current is approximately:
+            </p>
+
+            <div class="example-result">
+                11.76 A
             </div>
+
+            <p>
+                This is an estimated operating current based on the
+                assumptions above. Actual motor nameplate current should
+                be used when available.
+            </p>
+
         </section>
 
-        <section>
-            <h2>Why √3 Appears in the Formula</h2>
 
-            <p>
-                The √3 term comes from the geometry and phase relationship
-                of a balanced 3-phase electrical system.
-            </p>
+        <!-- Power Factor -->
 
-            <p>
-                When using the standard 3-phase power equation:
-            </p>
+        <section class="content-section">
 
-            <div class="formula">
-                P = √3 × V<sub>L-L</sub> × I × PF
-            </div>
-
-            <p>
-                <strong>V<sub>L-L</sub></strong> is the line-to-line voltage
-                and <strong>I</strong> is the line current.
-            </p>
-
-            <div class="info-box">
-                <strong>Important:</strong>
-                This calculator expects the motor's line-to-line supply
-                voltage, such as 480 V in a typical U.S. industrial system.
-                Do not substitute line-to-neutral voltage into this equation.
-            </div>
-        </section>
-
-        <section>
             <h2>Power Factor</h2>
 
             <p>
@@ -621,34 +844,40 @@
                 and apparent power in an AC electrical system.
             </p>
 
-            <div class="formula">
-                PF = Real Power ÷ Apparent Power
-            </div>
-
             <p>
-                A lower power factor means that more current is required to
+                A lower power factor means more current is required to
                 deliver the same amount of real power.
             </p>
 
             <p>
-                For example, holding all other values constant, a motor with
-                a power factor of 0.80 will draw more current than one with
-                a power factor of 0.95.
+                For this calculator, enter power factor as a decimal:
             </p>
+
+            <div class="formula">
+                0.80 = 80%
+                <br>
+                0.85 = 85%
+                <br>
+                0.90 = 90%
+            </div>
 
             <p>
-                Actual motor power factor changes with load, so the value
-                used for an estimate should be appropriate for the operating
-                condition being considered.
+                Motor power factor changes with motor design and operating
+                load, so use the manufacturer's data when available.
             </p>
+
         </section>
 
-        <section>
+
+        <!-- Efficiency -->
+
+        <section class="content-section">
+
             <h2>Motor Efficiency</h2>
 
             <p>
-                Efficiency accounts for the fact that a motor consumes more
-                electrical power than the mechanical power it delivers.
+                Motor efficiency represents how much of the electrical
+                input power is converted into mechanical output power.
             </p>
 
             <div class="formula">
@@ -660,407 +889,519 @@
 
             <p>
                 For example, a motor operating at 90% efficiency requires
-                approximately 1.111 times as much electrical input power as
-                its mechanical output power.
+                approximately 1.111 times its mechanical output power in
+                electrical input power.
             </p>
-
-            <div class="formula">
-                Electrical Input =
-                Mechanical Output ÷ 0.90
-            </div>
 
             <p>
-                Efficiency should be entered as a decimal in the mathematical
-                formula, even though the calculator accepts it as a percentage.
+                Motor efficiency is entered as a percentage in the
+                calculator and converted internally to a decimal.
             </p>
+
         </section>
 
-        <section>
+
+        <!-- Nameplate -->
+
+        <section class="content-section">
+
             <h2>Calculated Current vs. Nameplate FLA</h2>
 
             <p>
-                This calculator produces an <strong>estimated current</strong>
-                based on the motor's power rating, voltage, power factor, and
-                efficiency.
+                The current calculated here is an estimate. It should not
+                automatically be treated as the motor's official full-load
+                amperage.
             </p>
 
             <p>
-                The motor nameplate may provide a specific full-load current
-                rating based on the manufacturer's motor design and applicable
-                standards.
+                When the motor nameplate is available, use the manufacturer's
+                nameplate current for equipment sizing and protection
+                decisions.
             </p>
-
-            <div class="warning">
-                <strong>Use the nameplate when it is available.</strong>
-                A calculated value should not automatically replace the
-                manufacturer's rated full-load current when selecting,
-                configuring, or protecting equipment.
-            </div>
 
             <p>
-                In the field, calculated current is particularly useful for
-                understanding whether a measured value is in the expected
-                general range and for estimating current when motor details
-                are incomplete.
+                The calculated value is particularly useful for understanding
+                the relationship between motor power, voltage, efficiency,
+                power factor, and current.
             </p>
+
         </section>
 
-        <section>
+
+        <!-- Motor Load -->
+
+        <section class="content-section">
+
             <h2>Motor Current and Operating Load</h2>
 
             <p>
-                A motor's current is not necessarily constant throughout its
-                operating range.
+                Motor current changes with operating conditions. A motor
+                that is lightly loaded may draw considerably less current
+                than its nameplate full-load current.
             </p>
 
             <p>
-                At reduced mechanical load, a motor may draw substantially
-                less current than its full-load current.
+                Conversely, a heavily loaded motor can approach or exceed
+                its rated current.
             </p>
 
             <p>
-                This is especially important when troubleshooting a motor
-                that appears to be operating normally but is drawing less
-                current than expected.
+                When troubleshooting, compare measured current with the
+                motor's nameplate information and operating conditions
+                rather than assuming the motor should always draw the
+                calculated value.
             </p>
 
-            <p>
-                Conversely, sustained current above the expected operating
-                range can indicate excessive mechanical load, voltage
-                problems, phase imbalance, motor problems, or other issues.
-            </p>
         </section>
 
-        <section>
+
+        <!-- Field Troubleshooting -->
+
+        <section class="content-section">
+
             <h2>Field Troubleshooting</h2>
 
-            <h3>Motor current is higher than expected</h3>
-
             <p>
-                Check:
+                If a three-phase motor is drawing unexpected current,
+                investigate the electrical and mechanical system together.
             </p>
 
-            <ul>
-                <li>Mechanical load</li>
-                <li>Supply voltage</li>
-                <li>Phase-to-phase voltage balance</li>
-                <li>Motor nameplate rating</li>
-                <li>Motor connection</li>
-                <li>Motor condition</li>
-                <li>Bearing or driven-equipment problems</li>
-                <li>Power quality</li>
-            </ul>
+            <ol>
 
-            <h3>Motor current is lower than expected</h3>
+                <li>
+                    <strong>Check the motor nameplate.</strong>
+                    Verify rated voltage, current, horsepower, frequency,
+                    efficiency, and power factor where provided.
+                </li>
 
-            <p>
-                A low current reading is not automatically a problem.
-                Determine the actual mechanical load first.
-            </p>
+                <li>
+                    <strong>Measure all three phase currents.</strong>
+                    Compare the readings for significant imbalance.
+                </li>
 
-            <p>
-                Also verify that the motor is operating at the expected
-                voltage and that the measurement is being made correctly.
-            </p>
+                <li>
+                    <strong>Verify line-to-line voltage.</strong>
+                    Voltage imbalance can affect motor current and heating.
+                </li>
 
-            <h3>One phase has substantially different current</h3>
+                <li>
+                    <strong>Check motor loading.</strong>
+                    A mechanical problem can increase motor current.
+                </li>
 
-            <p>
-                Compare all three phase currents and investigate:
-            </p>
+                <li>
+                    <strong>Check the power factor.</strong>
+                    Actual power factor may differ from the assumed value.
+                </li>
 
-            <ul>
-                <li>Voltage imbalance</li>
-                <li>Loose or damaged connections</li>
-                <li>Contactor problems</li>
-                <li>Motor winding issues</li>
-                <li>Supply problems</li>
-                <li>Uneven phase loading</li>
-            </ul>
+                <li>
+                    <strong>Check motor efficiency and operating conditions.</strong>
+                    These affect the relationship between mechanical output
+                    and electrical input.
+                </li>
 
-            <div class="info-box">
-                <strong>Don't diagnose from current alone.</strong>
-                Motor current should be considered together with voltage,
-                mechanical load, motor temperature, nameplate data, and the
-                operating condition.
-            </div>
+                <li>
+                    <strong>For VFD applications, check drive parameters.</strong>
+                    Verify motor data, voltage, frequency, current limits,
+                    and motor tuning/configuration.
+                </li>
+
+            </ol>
+
         </section>
 
-        <section>
-            <h2>Common Mistakes</h2>
 
-            <ul>
+        <!-- Common Mistakes -->
+
+        <section class="content-section">
+
+            <h2>Common 3-Phase Motor Current Mistakes</h2>
+
+            <ol>
+
                 <li>
-                    Using line-to-neutral voltage instead of line-to-line voltage.
+                    <strong>Using phase voltage instead of line-to-line voltage.</strong>
+                    The formula used here is based on line-to-line voltage.
                 </li>
 
                 <li>
-                    Forgetting to include power factor.
+                    <strong>Entering 90 instead of 0.90 for power factor.</strong>
+                    Power factor must be entered as a decimal.
                 </li>
 
                 <li>
-                    Forgetting motor efficiency when converting mechanical
-                    output power to electrical input power.
+                    <strong>Forgetting motor efficiency.</strong>
+                    Mechanical output power is not the same as electrical
+                    input power.
                 </li>
 
                 <li>
-                    Entering efficiency as 90 instead of 0.90 when doing the
-                    calculation manually.
+                    <strong>Treating calculated current as nameplate FLA.</strong>
+                    Actual motor nameplate data should take precedence.
                 </li>
 
                 <li>
-                    Assuming calculated current must exactly match nameplate FLA.
+                    <strong>Ignoring power factor.</strong>
+                    Real motors do not behave like purely resistive loads.
                 </li>
 
                 <li>
-                    Assuming motor current is constant regardless of mechanical load.
+                    <strong>Ignoring operating load.</strong>
+                    Actual motor current depends on what the motor is doing.
                 </li>
 
-                <li>
-                    Confusing HP with electrical kW.
-                </li>
+            </ol>
 
-                <li>
-                    Using single-phase formulas for a 3-phase motor.
-                </li>
-            </ul>
         </section>
 
-        <section>
+
+        <!-- Quick Reference -->
+
+        <section class="content-section">
+
             <h2>Quick Reference</h2>
 
-            <table>
+            <table class="reference-table">
+
                 <thead>
+
                     <tr>
                         <th>Quantity</th>
                         <th>Relationship</th>
                     </tr>
+
                 </thead>
 
                 <tbody>
+
                     <tr>
-                        <td>1 HP</td>
-                        <td>746 W</td>
+                        <td>3-Phase Apparent Power</td>
+                        <td>kVA = √3 × V × I ÷ 1000</td>
                     </tr>
 
                     <tr>
-                        <td>3-Phase Power</td>
-                        <td>P = √3 × V × I × PF</td>
-                    </tr>
-
-                    <tr>
-                        <td>Motor Input Power</td>
-                        <td>P<sub>in</sub> = P<sub>out</sub> ÷ η</td>
-                    </tr>
-
-                    <tr>
-                        <td>HP Current</td>
-                        <td>I = (HP × 746) ÷ (√3 × V × PF × η)</td>
+                        <td>Horsepower Current</td>
+                        <td>I = HP × 746 ÷ (√3 × V × PF × η)</td>
                     </tr>
 
                     <tr>
                         <td>kW Current</td>
-                        <td>I = (kW × 1000) ÷ (√3 × V × PF × η)</td>
+                        <td>I = kW × 1000 ÷ (√3 × V × PF × η)</td>
                     </tr>
+
+                    <tr>
+                        <td>Power Factor</td>
+                        <td>PF = kW ÷ kVA</td>
+                    </tr>
+
                 </tbody>
+
             </table>
+
         </section>
 
-        <section>
+
+        <!-- Related -->
+
+        <section class="content-section">
+
             <h2>Related Calculators</h2>
 
-            <div class="related-links">
+            <ul class="related-list">
 
-                <a href="ohms-law.html">
-                    Ohm's Law Calculator
-                </a>
+                <li>
+                    <a href="power-factor.html">
+                        Power Factor
+                    </a>
+                </li>
 
-                <a href="voltage-divider.html">
-                    Voltage Divider Calculator
-                </a>
+                <li>
+                    <a href="ohms-law.html">
+                        Ohm's Law
+                    </a>
+                </li>
 
-                <a href="4-20ma-voltage.html">
-                    4–20 mA to Voltage
-                </a>
+                <li>
+                    <a href="frequency-rpm.html">
+                        Frequency ↔ RPM
+                    </a>
+                </li>
 
-                <a href="4-20ma-resistor.html">
-                    4–20 mA Loop Resistor
-                </a>
+                <li>
+                    <a href="voltage-divider.html">
+                        Voltage Divider
+                    </a>
+                </li>
 
-                <a href="../guides/index.html">
-                    Controls & Instrumentation Guides
-                </a>
+            </ul>
 
-            </div>
+        </section>
+
+
+        <!-- Engineering Note -->
+
+        <section class="content-section">
+
+            <h2>Engineering Note</h2>
+
+            <p>
+                This calculator estimates three-phase motor current from
+                motor power, line-to-line voltage, power factor, and
+                efficiency. Actual motor current depends on motor design,
+                loading, operating conditions, and manufacturer data.
+                Always use the motor nameplate and applicable electrical
+                codes and manufacturer documentation when making equipment
+                sizing, protection, or installation decisions.
+            </p>
+
         </section>
 
     </div>
+
 </main>
 
+
 <footer>
+
     <div class="container">
-        <strong>ControlsCalc</strong>
-        <br>
-        Controls & instrumentation calculators and field references.
+
+        <p>
+            <strong>ControlsCalc</strong>
+        </p>
+
+        <p>
+            Engineering and controls calculators for technicians and engineers.
+        </p>
+
     </div>
+
 </footer>
 
+
 <script>
-function formatNumber(value, decimals = 3) {
-    if (!Number.isFinite(value)) {
-        return "—";
+
+const ratingType =
+    document.getElementById("ratingType");
+
+const powerHelp =
+    document.getElementById("powerHelp");
+
+
+ratingType.addEventListener("change", function () {
+
+    if (ratingType.value === "hp") {
+
+        powerHelp.textContent =
+            "Motor horsepower.";
+
+    } else {
+
+        powerHelp.textContent =
+            "Motor mechanical output power in kilowatts.";
+
     }
 
-    if (Math.abs(value) < 1e-10) {
-        value = 0;
-    }
-
-    return Number(value.toFixed(decimals)).toLocaleString();
-}
+});
 
 
-function calculateCurrent() {
+function calculateMotorCurrent() {
 
-    const powerType = document.getElementById("powerType").value;
-    const power = parseFloat(document.getElementById("power").value);
-    const voltage = parseFloat(document.getElementById("voltage").value);
-    const powerFactor = parseFloat(
-        document.getElementById("powerFactor").value
-    );
-    const efficiencyPercent = parseFloat(
-        document.getElementById("efficiency").value
-    );
+    const type =
+        document.getElementById("ratingType").value;
 
-    const result = document.getElementById("result");
+    const motorPower =
+        parseFloat(document.getElementById("motorPower").value);
 
-    result.innerHTML = "";
+    const voltage =
+        parseFloat(document.getElementById("voltage").value);
+
+    const powerFactor =
+        parseFloat(document.getElementById("powerFactor").value);
+
+    const efficiencyPercent =
+        parseFloat(document.getElementById("efficiency").value);
+
+    const error =
+        document.getElementById("error");
+
+    const result =
+        document.getElementById("result");
+
+    const resultValue =
+        document.getElementById("resultValue");
+
+    const resultDetails =
+        document.getElementById("resultDetails");
+
+    const secondaryResults =
+        document.getElementById("secondaryResults");
+
+    const inputPowerResult =
+        document.getElementById("inputPowerResult");
+
+    const kvaResult =
+        document.getElementById("kvaResult");
+
+    const pfResult =
+        document.getElementById("pfResult");
+
+    const warning =
+        document.getElementById("warning");
+
+
+    error.classList.remove("show");
+    result.classList.remove("show");
+    secondaryResults.classList.remove("show");
+    warning.classList.remove("show");
+
 
     if (
-        !Number.isFinite(power) ||
-        !Number.isFinite(voltage) ||
-        !Number.isFinite(powerFactor) ||
-        !Number.isFinite(efficiencyPercent)
+        Number.isNaN(motorPower) ||
+        Number.isNaN(voltage) ||
+        Number.isNaN(powerFactor) ||
+        Number.isNaN(efficiencyPercent)
     ) {
-        result.innerHTML =
-            '<div class="error">Please enter valid numeric values.</div>';
+
+        error.textContent =
+            "Please enter motor power, voltage, power factor, and efficiency.";
+
+        error.classList.add("show");
 
         return;
     }
 
-    if (power <= 0) {
-        result.innerHTML =
-            '<div class="error">Motor power must be greater than zero.</div>';
+
+    if (motorPower <= 0) {
+
+        error.textContent =
+            "Motor power must be greater than zero.";
+
+        error.classList.add("show");
 
         return;
     }
+
 
     if (voltage <= 0) {
-        result.innerHTML =
-            '<div class="error">Voltage must be greater than zero.</div>';
+
+        error.textContent =
+            "Voltage must be greater than zero.";
+
+        error.classList.add("show");
 
         return;
     }
 
-    if (powerFactor <= 0 || powerFactor > 1) {
-        result.innerHTML =
-            '<div class="error">Power factor must be greater than 0 and no greater than 1.</div>';
+
+    if (
+        powerFactor <= 0 ||
+        powerFactor > 1
+    ) {
+
+        error.textContent =
+            "Power factor must be greater than 0 and no greater than 1.";
+
+        error.classList.add("show");
 
         return;
     }
 
-    if (efficiencyPercent <= 0 || efficiencyPercent > 100) {
-        result.innerHTML =
-            '<div class="error">Efficiency must be greater than 0% and no greater than 100%.</div>';
+
+    if (
+        efficiencyPercent <= 0 ||
+        efficiencyPercent > 100
+    ) {
+
+        error.textContent =
+            "Motor efficiency must be greater than 0% and no greater than 100%.";
+
+        error.classList.add("show");
 
         return;
     }
 
-    const efficiency = efficiencyPercent / 100;
 
-    let mechanicalPowerWatts;
+    const efficiency =
+        efficiencyPercent / 100;
 
-    if (powerType === "hp") {
-        mechanicalPowerWatts = power * 746;
+
+    let mechanicalPowerKW;
+
+
+    if (type === "hp") {
+
+        mechanicalPowerKW =
+            (motorPower * 746) / 1000;
+
     } else {
-        mechanicalPowerWatts = power * 1000;
+
+        mechanicalPowerKW =
+            motorPower;
+
     }
+
+
+    const electricalInputKW =
+        mechanicalPowerKW / efficiency;
+
 
     const current =
-        mechanicalPowerWatts /
+        (electricalInputKW * 1000) /
         (
             Math.sqrt(3) *
             voltage *
-            powerFactor *
-            efficiency
+            powerFactor
         );
 
-    const electricalInputPower =
-        mechanicalPowerWatts / efficiency;
 
-    const apparentPower =
-        Math.sqrt(3) *
-        voltage *
-        current;
+    const apparentPowerKVA =
+        (
+            Math.sqrt(3) *
+            voltage *
+            current
+        ) / 1000;
 
-    let powerLabel;
 
-    if (powerType === "hp") {
-        powerLabel = formatNumber(power, 2) + " HP";
-    } else {
-        powerLabel = formatNumber(power, 2) + " kW";
-    }
+    resultValue.textContent =
+        current.toFixed(2) + " A";
 
-    result.innerHTML =
-        '<div class="results">' +
 
-            '<div class="result-main">' +
-                formatNumber(current, 3) + " A" +
-            '</div>' +
+    resultDetails.textContent =
+        "Estimated three-phase current at " +
+        voltage.toFixed(0) +
+        " V, PF " +
+        powerFactor.toFixed(2) +
+        ", and " +
+        efficiencyPercent.toFixed(1) +
+        "% motor efficiency.";
 
-            '<div class="result-row">' +
-                '<span class="result-label">Motor Rating</span>' +
-                '<span class="result-value">' +
-                    powerLabel +
-                '</span>' +
-            '</div>' +
 
-            '<div class="result-row">' +
-                '<span class="result-label">Line-to-Line Voltage</span>' +
-                '<span class="result-value">' +
-                    formatNumber(voltage, 1) + " V" +
-                '</span>' +
-            '</div>' +
+    inputPowerResult.textContent =
+        electricalInputKW.toFixed(2) + " kW";
 
-            '<div class="result-row">' +
-                '<span class="result-label">Power Factor</span>' +
-                '<span class="result-value">' +
-                    formatNumber(powerFactor, 3) +
-                '</span>' +
-            '</div>' +
 
-            '<div class="result-row">' +
-                '<span class="result-label">Efficiency</span>' +
-                '<span class="result-value">' +
-                    formatNumber(efficiencyPercent, 1) + "%" +
-                '</span>' +
-            '</div>' +
+    kvaResult.textContent =
+        apparentPowerKVA.toFixed(2) + " kVA";
 
-            '<div class="result-row">' +
-                '<span class="result-label">Estimated Electrical Input</span>' +
-                '<span class="result-value">' +
-                    formatNumber(electricalInputPower / 1000, 3) + " kW" +
-                '</span>' +
-            '</div>' +
 
-            '<div class="result-row">' +
-                '<span class="result-label">Apparent Power</span>' +
-                '<span class="result-value">' +
-                    formatNumber(apparentPower / 1000, 3) + " kVA" +
-                '</span>' +
-            '</div>' +
+    pfResult.textContent =
+        powerFactor.toFixed(2);
 
-        '</div>';
+
+    result.classList.add("show");
+    secondaryResults.classList.add("show");
+
+
+    warning.textContent =
+        "This is an estimated operating current. " +
+        "Use the motor nameplate current for equipment sizing, " +
+        "overload settings, and other application-specific decisions " +
+        "when the nameplate is available.";
+
+    warning.classList.add("show");
+
 }
+
 </script>
 
 </body>
