@@ -1,1 +1,1051 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>0–10 V Scaling | ControlsCalc</title><meta name="description" content="Convert a 0–10 V signal into engineering units."><link rel="stylesheet" href="../style.css"></head><body><header><nav class="wrap"><a class="brand" href="../index.html">ControlsCalc</a><div class="links"><a href="../index.html">Calculators</a><a href="../guides/index.html">Guides</a></div></nav></header><main class="wrap calc"><span class="tag">ControlsCalc</span><h1>0–10 V Scaling</h1><p class="muted">Convert a 0–10 V signal into engineering units.</p><div class="panel" data-calc="010scale"></div><div class="panel"><h2>Field note</h2><p>Use this as a practical reference. Verify transmitter ranges, wiring, scaling, device documentation, and applicable project standards before making control changes.</p></div></main><footer><div class="wrap">ControlsCalc — practical controls and instrumentation calculators.</div></footer><script src="../script.js"></script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>0–10 V Scaling Calculator | ControlsCalc</title>
+
+    <meta
+        name="description"
+        content="Free 0–10 V scaling calculator. Convert an analog 0–10 V signal into engineering units for HVAC, BMS, PLC, automation, and instrumentation applications."
+    >
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #172033;
+            background: #f5f7fa;
+            line-height: 1.6;
+        }
+
+        a {
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            width: min(1000px, calc(100% - 40px));
+            margin: 0 auto;
+        }
+
+        /* Header */
+
+        header {
+            background: #ffffff;
+            border-bottom: 1px solid #e1e5eb;
+        }
+
+        .header-inner {
+            min-height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 800;
+            color: #172033;
+        }
+
+        nav {
+            display: flex;
+            gap: 24px;
+        }
+
+        nav a {
+            font-size: 15px;
+        }
+
+        /* Main */
+
+        main {
+            padding: 48px 0 70px;
+        }
+
+        .breadcrumbs {
+            margin-bottom: 24px;
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .intro {
+            margin-bottom: 32px;
+        }
+
+        .intro h1 {
+            margin: 0 0 16px;
+            font-size: clamp(32px, 5vw, 46px);
+            line-height: 1.1;
+            letter-spacing: -1px;
+        }
+
+        .intro p {
+            max-width: 800px;
+            margin: 8px 0;
+            color: #64748b;
+            font-size: 17px;
+        }
+
+        /* Calculator */
+
+        .calculator {
+            background: #ffffff;
+            border: 1px solid #dfe5ec;
+            border-radius: 14px;
+            padding: 32px;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 18px rgba(15, 23, 42, 0.04);
+        }
+
+        .calculator h2 {
+            margin: 0 0 24px;
+            font-size: 25px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 22px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .field label {
+            margin-bottom: 7px;
+            font-weight: 700;
+            font-size: 15px;
+        }
+
+        .field input {
+            width: 100%;
+            padding: 13px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            background: #ffffff;
+            color: #172033;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .field input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+        }
+
+        .field small {
+            margin-top: 6px;
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        .calculate-button {
+            width: 100%;
+            margin-top: 26px;
+            padding: 14px 20px;
+            border: 0;
+            border-radius: 8px;
+            background: #2563eb;
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .calculate-button:hover {
+            background: #1d4ed8;
+        }
+
+        /* Result */
+
+        .result {
+            display: none;
+            margin-top: 28px;
+            padding: 24px;
+            border-radius: 10px;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            text-align: center;
+        }
+
+        .result.show {
+            display: block;
+        }
+
+        .result h3 {
+            margin: 0 0 10px;
+            font-size: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #2563eb;
+        }
+
+        .result-value {
+            margin: 0;
+            font-size: 38px;
+            font-weight: 800;
+            color: #172033;
+        }
+
+        .result-details {
+            margin: 8px 0 0;
+            color: #475569;
+        }
+
+        .error {
+            display: none;
+            margin-top: 20px;
+            padding: 14px;
+            border-radius: 8px;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+        }
+
+        .error.show {
+            display: block;
+        }
+
+        /* Content */
+
+        .content-section {
+            background: #ffffff;
+            border: 1px solid #dfe5ec;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 24px;
+        }
+
+        .content-section h2 {
+            margin: 0 0 16px;
+            font-size: 24px;
+        }
+
+        .content-section h3 {
+            margin: 24px 0 8px;
+            font-size: 18px;
+        }
+
+        .content-section p {
+            color: #475569;
+        }
+
+        .content-section li {
+            margin-bottom: 10px;
+            color: #475569;
+        }
+
+        .formula {
+            margin: 20px 0;
+            padding: 18px;
+            background: #f5f7fa;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: 700;
+            overflow-x: auto;
+        }
+
+        .example-result {
+            display: inline-block;
+            margin: 10px 0;
+            padding: 12px 18px;
+            border-radius: 8px;
+            background: #f1f5f9;
+            font-weight: 700;
+        }
+
+        /* Reference table */
+
+        .reference-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .reference-table th,
+        .reference-table td {
+            padding: 12px;
+            border-bottom: 1px solid #e2e8f0;
+            text-align: left;
+        }
+
+        .reference-table th {
+            background: #f8fafc;
+            font-size: 14px;
+        }
+
+        /* Related calculators */
+
+        .related-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            padding: 0;
+            list-style: none;
+        }
+
+        .related-list li {
+            margin: 0;
+        }
+
+        .related-list a {
+            display: block;
+            padding: 12px 14px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+        }
+
+        .related-list a:hover {
+            background: #eff6ff;
+            text-decoration: none;
+        }
+
+        /* Footer */
+
+        footer {
+            padding: 32px 0;
+            background: #ffffff;
+            border-top: 1px solid #e1e5eb;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        footer p {
+            margin: 4px 0;
+        }
+
+        /* Mobile */
+
+        @media (max-width: 650px) {
+
+            .container {
+                width: min(100% - 28px, 1000px);
+            }
+
+            .header-inner {
+                min-height: 58px;
+            }
+
+            nav {
+                gap: 14px;
+            }
+
+            main {
+                padding-top: 32px;
+            }
+
+            .calculator {
+                padding: 22px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .related-list {
+                grid-template-columns: 1fr;
+            }
+
+            .result-value {
+                font-size: 30px;
+            }
+
+            .reference-table {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="container header-inner">
+
+        <a href="../index.html" class="logo">
+            ControlsCalc
+        </a>
+
+        <nav>
+            <a href="../index.html">Calculators</a>
+            <a href="../guides/index.html">Guides</a>
+        </nav>
+
+    </div>
+</header>
+
+
+<main>
+
+    <div class="container">
+
+        <div class="breadcrumbs">
+            <a href="../index.html">ControlsCalc</a>
+            &nbsp; / &nbsp;
+            0–10 V Scaling
+        </div>
+
+
+        <section class="intro">
+
+            <h1>0–10 V Scaling Calculator</h1>
+
+            <p>
+                Convert a measured 0–10 V analog signal into engineering units.
+                This type of signal is commonly encountered in HVAC, building
+                automation, PLCs, motor controls, actuators, and industrial
+                automation.
+            </p>
+
+            <p>
+                Enter the lower and upper engineering range and the measured
+                signal voltage to calculate the corresponding process value.
+            </p>
+
+        </section>
+
+
+        <!-- Calculator -->
+
+        <section class="calculator">
+
+            <h2>Calculate Engineering Units</h2>
+
+            <div class="form-grid">
+
+                <div class="field">
+
+                    <label for="lowRange">
+                        Lower Range Value (LRV)
+                    </label>
+
+                    <input
+                        type="number"
+                        id="lowRange"
+                        placeholder="Example: 0"
+                        step="any"
+                    >
+
+                    <small>
+                        The engineering value represented by 0 V.
+                    </small>
+
+                </div>
+
+
+                <div class="field">
+
+                    <label for="highRange">
+                        Upper Range Value (URV)
+                    </label>
+
+                    <input
+                        type="number"
+                        id="highRange"
+                        placeholder="Example: 100"
+                        step="any"
+                    >
+
+                    <small>
+                        The engineering value represented by 10 V.
+                    </small>
+
+                </div>
+
+
+                <div class="field">
+
+                    <label for="unit">
+                        Engineering Unit
+                    </label>
+
+                    <input
+                        type="text"
+                        id="unit"
+                        placeholder="Example: %"
+                        maxlength="20"
+                    >
+
+                    <small>
+                        Examples: %, °F, °C, PSI, RPM, GPM.
+                    </small>
+
+                </div>
+
+
+                <div class="field">
+
+                    <label for="voltage">
+                        Measured Voltage (V)
+                    </label>
+
+                    <input
+                        type="number"
+                        id="voltage"
+                        placeholder="Example: 5"
+                        step="any"
+                    >
+
+                    <small>
+                        Enter the measured analog signal voltage.
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="calculate-button"
+                onclick="calculateScaling()"
+            >
+                Calculate
+            </button>
+
+
+            <div id="error" class="error"></div>
+
+
+            <div id="result" class="result">
+
+                <h3>Result</h3>
+
+                <p id="resultValue" class="result-value"></p>
+
+                <p id="resultDetails" class="result-details"></p>
+
+            </div>
+
+        </section>
+
+
+        <!-- Formula -->
+
+        <section class="content-section">
+
+            <h2>0–10 V Scaling Formula</h2>
+
+            <p>
+                A linear 0–10 V signal represents the full span of the
+                configured engineering range.
+            </p>
+
+            <div class="formula">
+                Engineering Value =
+                LRV + (V ÷ 10) × (URV − LRV)
+            </div>
+
+            <p>
+                Where:
+            </p>
+
+            <ul>
+                <li><strong>LRV</strong> = Lower Range Value</li>
+                <li><strong>URV</strong> = Upper Range Value</li>
+                <li><strong>V</strong> = measured signal voltage</li>
+            </ul>
+
+        </section>
+
+
+        <!-- Worked Example -->
+
+        <section class="content-section">
+
+            <h2>Worked Example: 0–10 V Representing 0–100%</h2>
+
+            <p>
+                Suppose a controller uses a 0–10 V signal to represent
+                <strong>0–100%</strong>.
+            </p>
+
+            <p>
+                You measure <strong>7.5 V</strong> at the signal terminals.
+            </p>
+
+            <div class="formula">
+                0 + (7.5 ÷ 10) × (100 − 0)
+            </div>
+
+            <p>
+                Therefore:
+            </p>
+
+            <div class="example-result">
+                7.5 V = 75%
+            </div>
+
+            <p>
+                Because the signal is 75% of the 0–10 V span, it represents
+                75% of the configured engineering range.
+            </p>
+
+        </section>
+
+
+        <!-- HVAC Example -->
+
+        <section class="content-section">
+
+            <h2>HVAC Example: 0–10 V Damper Command</h2>
+
+            <p>
+                A common building automation application uses a 0–10 V output
+                from a controller to command a damper actuator.
+            </p>
+
+            <p>
+                If the controller sends:
+            </p>
+
+            <div class="formula">
+                0 V → 0% open
+                <br>
+                5 V → 50% open
+                <br>
+                10 V → 100% open
+            </div>
+
+            <p>
+                If you measure <strong>6.8 V</strong>, the signal represents
+                approximately <strong>68%</strong> of the output range, assuming
+                the actuator is configured for a standard 0–10 V command.
+            </p>
+
+            <p>
+                This is a useful distinction when troubleshooting: the voltage
+                tells you what the controller is commanding, but it does not
+                necessarily prove that the physical actuator has reached that
+                position.
+            </p>
+
+        </section>
+
+
+        <!-- Reference -->
+
+        <section class="content-section">
+
+            <h2>0–10 V Reference Points</h2>
+
+            <table class="reference-table">
+
+                <thead>
+                    <tr>
+                        <th>Signal</th>
+                        <th>Percent of Span</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    <tr>
+                        <td><strong>0 V</strong></td>
+                        <td>0%</td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>2 V</strong></td>
+                        <td>20%</td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>5 V</strong></td>
+                        <td>50%</td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>7.5 V</strong></td>
+                        <td>75%</td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>10 V</strong></td>
+                        <td>100%</td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </section>
+
+
+        <!-- Troubleshooting -->
+
+        <section class="content-section">
+
+            <h2>Using 0–10 V Scaling for Troubleshooting</h2>
+
+            <p>
+                Measuring the actual voltage at an analog signal can help
+                determine whether a controller is producing the expected
+                command.
+            </p>
+
+            <p>
+                For example, suppose a BAS controller is commanding a valve
+                to 80%. A properly configured 0–10 V output should produce
+                approximately:
+            </p>
+
+            <div class="formula">
+                80% × 10 V = 8 V
+            </div>
+
+            <p>
+                If you measure 8 V at the controller but the valve is not
+                responding correctly, the problem may be downstream of the
+                controller. Possible areas to investigate include wiring,
+                actuator configuration, power supply, actuator feedback, or
+                mechanical problems.
+            </p>
+
+        </section>
+
+
+        <!-- Signal vs Physical Position -->
+
+        <section class="content-section">
+
+            <h2>Command Signal vs. Actual Position</h2>
+
+            <p>
+                One of the most important concepts when troubleshooting analog
+                controls is that the signal represents a <strong>command</strong>,
+                not necessarily the physical result.
+            </p>
+
+            <p>
+                For example, 8 V may represent an 80% command to a damper
+                actuator. It does not automatically mean the damper is
+                physically 80% open.
+            </p>
+
+            <p>
+                If the system provides position feedback, compare the command
+                signal with the feedback signal to determine whether the
+                actuator is responding correctly.
+            </p>
+
+        </section>
+
+
+        <!-- Common Mistakes -->
+
+        <section class="content-section">
+
+            <h2>Common 0–10 V Scaling Mistakes</h2>
+
+            <ol>
+
+                <li>
+                    <strong>Assuming every 0–10 V signal means 0–100%.</strong>
+                    The signal can represent temperature, pressure, speed,
+                    flow, position, or another engineering range.
+                </li>
+
+                <li>
+                    <strong>Assuming 5 V always means 50% of the physical process.</strong>
+                    It means 50% of the configured signal range. The physical
+                    equipment may have different behavior.
+                </li>
+
+                <li>
+                    <strong>Measuring the wrong reference point.</strong>
+                    Voltage is measured between two points. Verify the signal
+                    common/reference used by the equipment.
+                </li>
+
+                <li>
+                    <strong>Ignoring input impedance and loading.</strong>
+                    A receiving device should be compatible with the output
+                    device and its specified signal range.
+                </li>
+
+                <li>
+                    <strong>Assuming a correct command means the actuator is correct.</strong>
+                    Always distinguish between the controller's command and
+                    the equipment's actual response.
+                </li>
+
+            </ol>
+
+        </section>
+
+
+        <!-- 0-10 vs 4-20 -->
+
+        <section class="content-section">
+
+            <h2>0–10 V vs. 4–20 mA</h2>
+
+            <p>
+                Both signals can represent a linear engineering range, but
+                they behave differently electrically.
+            </p>
+
+            <table class="reference-table">
+
+                <thead>
+                    <tr>
+                        <th>Characteristic</th>
+                        <th>0–10 V</th>
+                        <th>4–20 mA</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    <tr>
+                        <td>Signal type</td>
+                        <td>Voltage</td>
+                        <td>Current</td>
+                    </tr>
+
+                    <tr>
+                        <td>Typical span</td>
+                        <td>10 V</td>
+                        <td>16 mA</td>
+                    </tr>
+
+                    <tr>
+                        <td>Zero signal</td>
+                        <td>0 V</td>
+                        <td>4 mA</td>
+                    </tr>
+
+                    <tr>
+                        <td>Full-scale signal</td>
+                        <td>10 V</td>
+                        <td>20 mA</td>
+                    </tr>
+
+                    <tr>
+                        <td>Common applications</td>
+                        <td>BAS, HVAC, controls</td>
+                        <td>Industrial instrumentation</td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+            <p>
+                The best signal type depends on the equipment, application,
+                wiring, distance, environmental conditions, and system design.
+            </p>
+
+        </section>
+
+
+        <!-- Related -->
+
+        <section class="content-section">
+
+            <h2>Related Calculators</h2>
+
+            <ul class="related-list">
+
+                <li>
+                    <a href="4-20ma-scaling.html">
+                        4–20 mA Scaling
+                    </a>
+                </li>
+
+                <li>
+                    <a href="4-20ma-voltage.html">
+                        4–20 mA to Voltage
+                    </a>
+                </li>
+
+                <li>
+                    <a href="analog-scaling.html">
+                        Analog Signal Scaling
+                    </a>
+                </li>
+
+                <li>
+                    <a href="voltage-divider.html">
+                        Voltage Divider
+                    </a>
+                </li>
+
+                <li>
+                    <a href="../guides/plc-scaling.html">
+                        PLC Scaling Guide
+                    </a>
+                </li>
+
+            </ul>
+
+        </section>
+
+
+        <!-- Engineering Note -->
+
+        <section class="content-section">
+
+            <h2>Engineering Note</h2>
+
+            <p>
+                This calculator assumes a linear 0–10 V relationship between
+                the configured Lower Range Value and Upper Range Value.
+                Always verify the actual signal range, polarity, reference,
+                input/output configuration, and manufacturer documentation
+                when troubleshooting a control system.
+            </p>
+
+        </section>
+
+    </div>
+
+</main>
+
+
+<footer>
+
+    <div class="container">
+
+        <p>
+            <strong>ControlsCalc</strong>
+        </p>
+
+        <p>
+            Engineering and controls calculators for technicians and engineers.
+        </p>
+
+    </div>
+
+</footer>
+
+
+<script>
+
+function calculateScaling() {
+
+    const lowRange =
+        parseFloat(document.getElementById("lowRange").value);
+
+    const highRange =
+        parseFloat(document.getElementById("highRange").value);
+
+    const voltage =
+        parseFloat(document.getElementById("voltage").value);
+
+    const unit =
+        document.getElementById("unit").value.trim();
+
+    const error =
+        document.getElementById("error");
+
+    const result =
+        document.getElementById("result");
+
+    const resultValue =
+        document.getElementById("resultValue");
+
+    const resultDetails =
+        document.getElementById("resultDetails");
+
+
+    error.classList.remove("show");
+    result.classList.remove("show");
+
+
+    if (
+        Number.isNaN(lowRange) ||
+        Number.isNaN(highRange) ||
+        Number.isNaN(voltage)
+    ) {
+
+        error.textContent =
+            "Please enter a lower range, upper range, and measured voltage.";
+
+        error.classList.add("show");
+
+        return;
+    }
+
+
+    if (highRange === lowRange) {
+
+        error.textContent =
+            "The lower and upper range values cannot be the same.";
+
+        error.classList.add("show");
+
+        return;
+    }
+
+
+    if (voltage < 0 || voltage > 10) {
+
+        error.textContent =
+            "Measured voltage should normally be between 0 and 10 V.";
+
+        error.classList.add("show");
+
+        return;
+    }
+
+
+    const engineeringValue =
+        lowRange +
+        (voltage / 10) *
+        (highRange - lowRange);
+
+
+    const percentage =
+        (voltage / 10) * 100;
+
+
+    const formattedValue =
+        Number.isInteger(engineeringValue)
+            ? engineeringValue.toString()
+            : engineeringValue
+                .toFixed(3)
+                .replace(/0+$/, "")
+                .replace(/\.$/, "");
+
+
+    const displayedUnit =
+        unit !== "" ? " " + unit : "";
+
+
+    resultValue.textContent =
+        formattedValue + displayedUnit;
+
+
+    resultDetails.textContent =
+        voltage +
+        " V = " +
+        percentage.toFixed(1) +
+        "% of the configured signal range";
+
+
+    result.classList.add("show");
+
+}
+
+</script>
+
+</body>
+</html>
