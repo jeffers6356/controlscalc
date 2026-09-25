@@ -6,8 +6,10 @@
 
     <title>Flow Transmitter Scaling Calculator | ControlsCalc</title>
 
-    <meta name="description"
-          content="Calculate flow from a 4–20 mA flow transmitter, including square-root extraction for differential-pressure flow measurement.">
+    <meta
+        name="description"
+        content="Free flow transmitter scaling calculator. Convert 4–20 mA flow signals into engineering units using linear scaling or square-root extraction."
+    >
 
     <style>
         * {
@@ -17,88 +19,104 @@
         body {
             margin: 0;
             font-family: Arial, Helvetica, sans-serif;
-            background: #f4f6f8;
-            color: #1f2933;
+            color: #172033;
+            background: #f5f7fa;
             line-height: 1.6;
         }
 
-        header {
-            background: #17202a;
-            color: white;
+        a {
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
         }
 
         .container {
-            max-width: 1100px;
+            width: min(1000px, calc(100% - 40px));
             margin: 0 auto;
-            padding: 0 20px;
+        }
+
+        /* Header */
+
+        header {
+            background: #ffffff;
+            border-bottom: 1px solid #e1e5eb;
         }
 
         .header-inner {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
             min-height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
         .logo {
-            color: white;
-            text-decoration: none;
-            font-size: 1.35rem;
-            font-weight: bold;
+            font-size: 22px;
+            font-weight: 800;
+            color: #172033;
+        }
+
+        nav {
+            display: flex;
+            gap: 24px;
         }
 
         nav a {
-            color: #d9e2ec;
-            text-decoration: none;
-            margin-left: 24px;
-            font-size: 0.95rem;
+            font-size: 15px;
         }
 
-        nav a:hover {
-            color: white;
-        }
-
-        .hero {
-            background: white;
-            border-bottom: 1px solid #d9e2ec;
-            padding: 50px 0;
-        }
-
-        .hero h1 {
-            margin: 0 0 12px;
-            font-size: 2.4rem;
-            color: #17202a;
-        }
-
-        .hero p {
-            max-width: 760px;
-            margin: 0;
-            color: #52606d;
-            font-size: 1.08rem;
-        }
+        /* Main */
 
         main {
-            padding: 36px 0 60px;
+            padding: 48px 0 70px;
         }
 
-        .calculator-card {
-            background: white;
-            border: 1px solid #d9e2ec;
-            border-radius: 10px;
-            padding: 28px;
+        .breadcrumbs {
+            margin-bottom: 24px;
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .intro {
             margin-bottom: 32px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
         }
 
-        .calculator-card h2 {
-            margin-top: 0;
-            color: #17202a;
+        .intro h1 {
+            margin: 0 0 16px;
+            font-size: clamp(32px, 5vw, 46px);
+            line-height: 1.1;
+            letter-spacing: -1px;
+        }
+
+        .intro p {
+            max-width: 800px;
+            margin: 8px 0;
+            color: #64748b;
+            font-size: 17px;
+        }
+
+        /* Calculator */
+
+        .calculator {
+            background: #ffffff;
+            border: 1px solid #dfe5ec;
+            border-radius: 14px;
+            padding: 32px;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 18px rgba(15, 23, 42, 0.04);
+        }
+
+        .calculator h2 {
+            margin: 0 0 24px;
+            font-size: 25px;
         }
 
         .form-grid {
             display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 18px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 22px;
         }
 
         .field {
@@ -107,220 +125,265 @@
         }
 
         .field label {
-            font-weight: bold;
             margin-bottom: 7px;
-            color: #34495e;
+            font-weight: 700;
+            font-size: 15px;
         }
 
         .field input,
         .field select {
             width: 100%;
-            padding: 11px 12px;
-            border: 1px solid #bcccdc;
-            border-radius: 6px;
-            font-size: 1rem;
-            background: white;
+            padding: 13px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            background: #ffffff;
+            color: #172033;
+            font-size: 16px;
+            outline: none;
         }
 
         .field input:focus,
         .field select:focus {
-            outline: none;
-            border-color: #486581;
-            box-shadow: 0 0 0 2px rgba(72, 101, 129, 0.12);
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
         }
 
-        .full-width {
-            grid-column: 1 / -1;
+        .field small {
+            margin-top: 6px;
+            color: #64748b;
+            font-size: 13px;
         }
 
-        button {
-            margin-top: 22px;
-            padding: 12px 22px;
-            border: none;
-            border-radius: 6px;
-            background: #243b53;
-            color: white;
-            font-size: 1rem;
-            font-weight: bold;
+        .calculate-button {
+            width: 100%;
+            margin-top: 26px;
+            padding: 14px 20px;
+            border: 0;
+            border-radius: 8px;
+            background: #2563eb;
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 700;
             cursor: pointer;
         }
 
-        button:hover {
-            background: #334e68;
+        .calculate-button:hover {
+            background: #1d4ed8;
         }
 
-        .results {
-            margin-top: 26px;
-            padding: 20px;
-            background: #f0f4f8;
-            border-radius: 8px;
-            border: 1px solid #d9e2ec;
+        /* Result */
+
+        .result {
+            display: none;
+            margin-top: 28px;
+            padding: 24px;
+            border-radius: 10px;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            text-align: center;
         }
 
-        .result-main {
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: #17202a;
-            margin-bottom: 12px;
+        .result.show {
+            display: block;
         }
 
-        .result-row {
-            display: flex;
-            justify-content: space-between;
-            gap: 20px;
-            padding: 7px 0;
-            border-bottom: 1px solid #d9e2ec;
-        }
-
-        .result-row:last-child {
-            border-bottom: none;
-        }
-
-        .result-label {
-            color: #52606d;
+        .result h3 {
+            margin: 0 0 10px;
+            font-size: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #2563eb;
         }
 
         .result-value {
-            font-weight: bold;
-            text-align: right;
+            margin: 0;
+            font-size: 38px;
+            font-weight: 800;
+            color: #172033;
         }
 
-        .warning {
-            margin-top: 16px;
-            padding: 13px 15px;
-            background: #fff8e1;
-            border-left: 4px solid #d99a00;
-            border-radius: 4px;
-            color: #5f4b00;
+        .result-details {
+            margin: 8px 0 0;
+            color: #475569;
         }
 
         .error {
-            margin-top: 16px;
-            padding: 13px 15px;
-            background: #fff0f0;
-            border-left: 4px solid #c0392b;
-            border-radius: 4px;
-            color: #7b241c;
+            display: none;
+            margin-top: 20px;
+            padding: 14px;
+            border-radius: 8px;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
         }
 
-        .info-box {
-            padding: 18px;
-            margin: 20px 0;
-            background: #eef3f7;
-            border-left: 4px solid #486581;
-            border-radius: 4px;
+        .error.show {
+            display: block;
         }
 
-        section {
-            background: white;
-            border: 1px solid #d9e2ec;
-            border-radius: 10px;
-            padding: 28px;
+        .warning {
+            display: none;
+            margin-top: 20px;
+            padding: 14px;
+            border-radius: 8px;
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+            color: #9a3412;
+        }
+
+        .warning.show {
+            display: block;
+        }
+
+        /* Content */
+
+        .content-section {
+            background: #ffffff;
+            border: 1px solid #dfe5ec;
+            border-radius: 12px;
+            padding: 30px;
             margin-bottom: 24px;
         }
 
-        section h2 {
-            margin-top: 0;
-            color: #17202a;
+        .content-section h2 {
+            margin: 0 0 16px;
+            font-size: 24px;
         }
 
-        section h3 {
-            color: #243b53;
-            margin-top: 28px;
+        .content-section h3 {
+            margin: 24px 0 8px;
+            font-size: 18px;
         }
 
-        code {
-            background: #f0f4f8;
-            padding: 2px 5px;
-            border-radius: 4px;
-            font-family: Consolas, monospace;
+        .content-section p {
+            color: #475569;
+        }
+
+        .content-section li {
+            margin-bottom: 10px;
+            color: #475569;
         }
 
         .formula {
-            background: #f0f4f8;
-            border: 1px solid #d9e2ec;
-            border-radius: 7px;
+            margin: 20px 0;
             padding: 18px;
-            margin: 18px 0;
+            background: #f5f7fa;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
             text-align: center;
-            font-family: Consolas, monospace;
-            font-size: 1.05rem;
+            font-size: 18px;
+            font-weight: 700;
+            overflow-x: auto;
         }
 
-        table {
+        .example-result {
+            display: inline-block;
+            margin: 10px 0;
+            padding: 12px 18px;
+            border-radius: 8px;
+            background: #f1f5f9;
+            font-weight: 700;
+        }
+
+        /* Reference table */
+
+        .reference-table {
             width: 100%;
             border-collapse: collapse;
-            margin: 20px 0;
-        }
-
-        th,
-        td {
-            padding: 10px 12px;
-            border: 1px solid #d9e2ec;
-            text-align: left;
-        }
-
-        th {
-            background: #f0f4f8;
-            color: #243b53;
-        }
-
-        .related-links {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 12px;
-            margin-top: 18px;
-        }
-
-        .related-links a {
-            display: block;
-            padding: 13px 15px;
-            background: #f0f4f8;
-            border: 1px solid #d9e2ec;
-            border-radius: 6px;
-            color: #243b53;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        .related-links a:hover {
-            background: #e4e9ee;
-        }
-
-        footer {
-            background: #17202a;
-            color: #bcccdc;
-            padding: 30px 0;
             margin-top: 20px;
         }
 
-        footer a {
-            color: #d9e2ec;
+        .reference-table th,
+        .reference-table td {
+            padding: 12px;
+            border-bottom: 1px solid #e2e8f0;
+            text-align: left;
         }
 
-        @media (max-width: 700px) {
-            .form-grid,
-            .related-links {
-                grid-template-columns: 1fr;
-            }
+        .reference-table th {
+            background: #f8fafc;
+            font-size: 14px;
+        }
 
-            .hero h1 {
-                font-size: 1.9rem;
+        /* Related calculators */
+
+        .related-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            padding: 0;
+            list-style: none;
+        }
+
+        .related-list li {
+            margin: 0;
+        }
+
+        .related-list a {
+            display: block;
+            padding: 12px 14px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+        }
+
+        .related-list a:hover {
+            background: #eff6ff;
+            text-decoration: none;
+        }
+
+        /* Footer */
+
+        footer {
+            padding: 32px 0;
+            background: #ffffff;
+            border-top: 1px solid #e1e5eb;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        footer p {
+            margin: 4px 0;
+        }
+
+        /* Mobile */
+
+        @media (max-width: 650px) {
+
+            .container {
+                width: min(100% - 28px, 1000px);
             }
 
             .header-inner {
-                flex-direction: column;
-                align-items: flex-start;
-                padding: 15px 20px;
+                min-height: 58px;
             }
 
             nav {
-                margin-top: 8px;
+                gap: 14px;
             }
 
-            nav a {
-                margin-left: 0;
-                margin-right: 18px;
+            main {
+                padding-top: 32px;
+            }
+
+            .calculator {
+                padding: 22px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .related-list {
+                grid-template-columns: 1fr;
+            }
+
+            .result-value {
+                font-size: 30px;
+            }
+
+            .reference-table {
+                font-size: 14px;
             }
         }
     </style>
@@ -330,60 +393,171 @@
 
 <header>
     <div class="container header-inner">
-        <a href="../" class="logo">ControlsCalc</a>
+
+        <a href="../index.html" class="logo">
+            ControlsCalc
+        </a>
 
         <nav>
-            <a href="../#calculators">Calculators</a>
+            <a href="../index.html">Calculators</a>
             <a href="../guides/index.html">Guides</a>
         </nav>
+
     </div>
 </header>
 
-<div class="hero">
-    <div class="container">
-        <h1>Flow Transmitter Scaling Calculator</h1>
-
-        <p>
-            Calculate flow from a 4–20 mA flow transmitter and see the difference
-            between linear scaling and square-root extraction used with
-            differential-pressure flow measurement.
-        </p>
-    </div>
-</div>
 
 <main>
+
     <div class="container">
 
-        <div class="calculator-card">
+        <div class="breadcrumbs">
+            <a href="../index.html">ControlsCalc</a>
+            &nbsp; / &nbsp;
+            Flow Transmitter Scaling
+        </div>
+
+
+        <section class="intro">
+
+            <h1>Flow Transmitter Scaling Calculator</h1>
+
+            <p>
+                Convert a measured 4–20 mA flow transmitter signal into
+                engineering units using linear scaling or square-root
+                extraction.
+            </p>
+
+            <p>
+                This calculator is useful for differential-pressure flow
+                measurement, PLC and DCS scaling, flow transmitters,
+                instrumentation, and industrial automation applications.
+            </p>
+
+        </section>
+
+
+        <!-- Calculator -->
+
+        <section class="calculator">
 
             <h2>Calculate Flow</h2>
 
             <div class="form-grid">
 
                 <div class="field">
-                    <label for="lrv">Flow LRV</label>
-                    <input type="number" id="lrv" value="0" step="any">
+
+                    <label for="lowRange">
+                        Flow Lower Range Value (LRV)
+                    </label>
+
+                    <input
+                        type="number"
+                        id="lowRange"
+                        placeholder="Example: 0"
+                        step="any"
+                    >
+
+                    <small>
+                        Flow represented by 4 mA.
+                    </small>
+
                 </div>
+
 
                 <div class="field">
-                    <label for="urv">Flow URV</label>
-                    <input type="number" id="urv" value="100" step="any">
+
+                    <label for="highRange">
+                        Flow Upper Range Value (URV)
+                    </label>
+
+                    <input
+                        type="number"
+                        id="highRange"
+                        placeholder="Example: 100"
+                        step="any"
+                    >
+
+                    <small>
+                        Flow represented by 20 mA.
+                    </small>
+
                 </div>
+
 
                 <div class="field">
-                    <label for="unit">Flow Unit</label>
-                    <input type="text" id="unit" value="GPM">
+
+                    <label for="unit">
+                        Flow Unit
+                    </label>
+
+                    <select id="unit">
+
+                        <option value="GPM">
+                            GPM
+                        </option>
+
+                        <option value="GPH">
+                            GPH
+                        </option>
+
+                        <option value="L/min">
+                            L/min
+                        </option>
+
+                        <option value="L/s">
+                            L/s
+                        </option>
+
+                        <option value="m³/h">
+                            m³/h
+                        </option>
+
+                        <option value="ft³/min">
+                            ft³/min
+                        </option>
+
+                        <option value="ft³/h">
+                            ft³/h
+                        </option>
+
+                    </select>
+
+                    <small>
+                        Engineering unit used for the flow range.
+                    </small>
+
                 </div>
+
 
                 <div class="field">
-                    <label for="current">Measured Current (mA)</label>
-                    <input type="number" id="current" value="12" step="any">
+
+                    <label for="current">
+                        Measured Current (mA)
+                    </label>
+
+                    <input
+                        type="number"
+                        id="current"
+                        placeholder="Example: 12"
+                        step="any"
+                    >
+
+                    <small>
+                        Enter the measured transmitter signal.
+                    </small>
+
                 </div>
 
-                <div class="field full-width">
-                    <label for="mode">Scaling Method</label>
 
-                    <select id="mode">
+                <div class="field">
+
+                    <label for="method">
+                        Scaling Method
+                    </label>
+
+                    <select id="method">
+
                         <option value="linear">
                             Linear Scaling
                         </option>
@@ -391,637 +565,746 @@
                         <option value="sqrt">
                             Square-Root Extraction
                         </option>
+
                     </select>
+
+                    <small>
+                        Select the method used by the transmitter or control system.
+                    </small>
+
                 </div>
 
             </div>
 
-            <button onclick="calculateFlow()">Calculate Flow</button>
 
-            <div id="result"></div>
+            <button
+                type="button"
+                class="calculate-button"
+                onclick="calculateFlow()"
+            >
+                Calculate
+            </button>
 
-        </div>
 
-        <section>
+            <div id="error" class="error"></div>
+
+
+            <div id="result" class="result">
+
+                <h3>Result</h3>
+
+                <p id="resultValue" class="result-value"></p>
+
+                <p id="resultDetails" class="result-details"></p>
+
+            </div>
+
+
+            <div id="warning" class="warning"></div>
+
+        </section>
+
+
+        <!-- How It Works -->
+
+        <section class="content-section">
+
             <h2>How Flow Transmitter Scaling Works</h2>
 
             <p>
-                A flow measurement can be represented by a 4–20 mA signal just
-                like pressure, level, or temperature. The important difference
-                is that some flow measurement technologies produce a
-                <strong>nonlinear relationship</strong> between the measured
-                signal and the actual flow.
+                A flow transmitter can represent a flow range using a
+                standard 4–20 mA signal. The signal can be scaled linearly,
+                or square-root extraction can be used when the measured
+                variable is differential pressure.
             </p>
 
             <p>
-                Differential-pressure flow measurement is the most common example.
-                Devices such as an orifice plate, venturi, or flow nozzle create
-                a pressure difference that is related to flow approximately by:
+                The correct calculation depends on where the square-root
+                extraction is being performed in the measurement and
+                control system.
+            </p>
+
+        </section>
+
+
+        <!-- Linear vs Square Root -->
+
+        <section class="content-section">
+
+            <h2>Linear vs. Square-Root Extraction</h2>
+
+            <p>
+                The two most important scaling cases are linear scaling
+                and square-root extraction.
+            </p>
+
+            <h3>Linear Scaling</h3>
+
+            <p>
+                With linear scaling, the percentage of the 4–20 mA signal
+                corresponds directly to the percentage of the configured
+                flow range.
             </p>
 
             <div class="formula">
-                Q ∝ √DP
+                Flow =
+                LRV +
+                ((mA − 4) ÷ 16) ×
+                (URV − LRV)
+            </div>
+
+            <h3>Square-Root Extraction</h3>
+
+            <p>
+                When flow is measured using differential pressure across
+                a primary element, flow is proportional to the square
+                root of differential pressure.
+            </p>
+
+            <div class="formula">
+                Flow =
+                LRV +
+                √((mA − 4) ÷ 16) ×
+                (URV − LRV)
             </div>
 
             <p>
-                In other words, flow is proportional to the square root of
-                differential pressure.
+                Square-root extraction should only be applied when the
+                signal represents a variable that requires it. Do not
+                automatically apply square-root extraction to every flow
+                transmitter.
             </p>
 
-            <p>
-                This is why square-root extraction may be required somewhere in
-                the measurement system.
-            </p>
         </section>
 
-        <section>
-            <h2>Linear Scaling vs. Square-Root Extraction</h2>
+
+        <!-- Reference -->
+
+        <section class="content-section">
+
+            <h2>4–20 mA Flow Reference</h2>
 
             <p>
-                If a transmitter's 4–20 mA output is already linear with flow,
-                normal linear scaling is appropriate.
+                For a linear flow signal, the current corresponds directly
+                to the percentage of the flow span.
             </p>
 
-            <p>
-                If the 4–20 mA signal represents differential pressure and the
-                square root has not already been extracted, the PLC or another
-                device must perform square-root extraction before interpreting
-                the signal as flow.
-            </p>
+            <table class="reference-table">
 
-            <table>
                 <thead>
+
                     <tr>
                         <th>Signal</th>
-                        <th>Linear Signal %</th>
-                        <th>Square-Root Flow %</th>
+                        <th>Signal Span</th>
+                        <th>Linear Flow</th>
+                        <th>Square-Root Flow</th>
                     </tr>
+
                 </thead>
 
                 <tbody>
+
                     <tr>
-                        <td>4 mA</td>
+                        <td><strong>4 mA</strong></td>
+                        <td>0%</td>
                         <td>0%</td>
                         <td>0%</td>
                     </tr>
 
                     <tr>
-                        <td>8 mA</td>
+                        <td><strong>8 mA</strong></td>
+                        <td>25%</td>
                         <td>25%</td>
                         <td>50%</td>
                     </tr>
 
                     <tr>
-                        <td>12 mA</td>
+                        <td><strong>12 mA</strong></td>
+                        <td>50%</td>
                         <td>50%</td>
                         <td>70.7%</td>
                     </tr>
 
                     <tr>
-                        <td>16 mA</td>
+                        <td><strong>16 mA</strong></td>
+                        <td>75%</td>
                         <td>75%</td>
                         <td>86.6%</td>
                     </tr>
 
                     <tr>
-                        <td>20 mA</td>
+                        <td><strong>20 mA</strong></td>
+                        <td>100%</td>
                         <td>100%</td>
                         <td>100%</td>
                     </tr>
+
                 </tbody>
+
             </table>
 
-            <div class="info-box">
-                <strong>Important:</strong>
-                Square-root extraction should only be applied when the signal
-                represents a quantity that has a square-root relationship to
-                the desired measurement. Do not automatically apply SRE to
-                every flow transmitter.
-            </div>
         </section>
 
-        <section>
-            <h2>The Linear Scaling Formula</h2>
+
+        <!-- Worked Example -->
+
+        <section class="content-section">
+
+            <h2>Worked Example: 0–100 GPM</h2>
 
             <p>
-                For a linear 4–20 mA flow signal:
-            </p>
-
-            <div class="formula">
-                Flow = LRV + ((mA − 4) ÷ 16) × (URV − LRV)
-            </div>
-
-            <p>
-                For example, suppose a transmitter is configured for
-                <strong>0–100 GPM</strong> and the measured signal is
-                <strong>12 mA</strong>.
-            </p>
-
-            <div class="formula">
-                Flow = 0 + ((12 − 4) ÷ 16) × 100
-                <br><br>
-                Flow = 50 GPM
-            </div>
-
-            <p>
-                This is correct when the transmitter output is linear with
-                flow.
-            </p>
-        </section>
-
-        <section>
-            <h2>The Square-Root Formula</h2>
-
-            <p>
-                When the 4–20 mA signal represents differential pressure and
-                square-root extraction is required, first determine the
-                percentage of signal span:
-            </p>
-
-            <div class="formula">
-                Signal % = (mA − 4) ÷ 16
-            </div>
-
-            <p>
-                Then take the square root:
-            </p>
-
-            <div class="formula">
-                Flow % = √(Signal %)
-            </div>
-
-            <p>
-                The complete calculation is:
-            </p>
-
-            <div class="formula">
-                Flow = LRV + √((mA − 4) ÷ 16) × (URV − LRV)
-            </div>
-
-            <h3>Example: 0–100 GPM at 12 mA</h3>
-
-            <p>
-                First calculate the signal percentage:
-            </p>
-
-            <div class="formula">
-                (12 − 4) ÷ 16 = 0.50
-            </div>
-
-            <p>
-                Then take the square root:
-            </p>
-
-            <div class="formula">
-                √0.50 = 0.7071
-            </div>
-
-            <p>
-                Therefore:
-            </p>
-
-            <div class="formula">
-                Flow = 0.7071 × 100
-                <br><br>
-                Flow ≈ 70.7 GPM
-            </div>
-
-            <p>
-                Notice the important difference:
-                <strong>12 mA corresponds to 50% of signal span, but approximately
-                70.7% of flow span when square-root extraction is required.</strong>
-            </p>
-        </section>
-
-        <section>
-            <h2>Where Should Square-Root Extraction Occur?</h2>
-
-            <p>
-                Square-root extraction can occur in different parts of a control
-                system.
-            </p>
-
-            <h3>1. Inside the transmitter</h3>
-
-            <p>
-                Some differential-pressure transmitters can be configured to
-                perform square-root extraction internally. In that case, the
-                transmitter's 4–20 mA output may already be linear with flow.
-            </p>
-
-            <h3>2. Inside the PLC</h3>
-
-            <p>
-                The transmitter may instead send a signal proportional to
-                differential pressure, while the PLC performs the square-root
-                calculation.
-            </p>
-
-            <h3>3. Inside another flow computer or control system</h3>
-
-            <p>
-                A dedicated flow computer, DCS, or other control device may
-                perform the extraction and additional flow calculations.
-            </p>
-
-            <div class="warning">
-                <strong>Watch for double square-root extraction.</strong>
-                If the transmitter has already linearized the signal and the
-                PLC applies another square root, the resulting flow value will
-                be incorrect.
-            </div>
-        </section>
-
-        <section>
-            <h2>Field Application</h2>
-
-            <p>
-                A common application is measuring flow through an orifice plate.
-                The orifice creates a differential pressure across the plate.
-                As flow increases, differential pressure increases according to
-                a nonlinear relationship.
-            </p>
-
-            <p>
-                The general signal path may look like this:
-            </p>
-
-            <div class="formula">
-                Process Flow
-                → Differential Pressure
-                → DP Transmitter
-                → 4–20 mA
-                → Analog Input
-                → Scaling
-                → Square Root
-                → Flow
-                → HMI / SCADA
-            </div>
-
-            <p>
-                However, the actual sequence depends on how the transmitter and
-                control system have been configured.
-            </p>
-
-            <p>
-                When troubleshooting a flow measurement, determine exactly where
-                the square root is being performed before changing the PLC logic.
-            </p>
-        </section>
-
-        <section>
-            <h2>Troubleshooting Flow Scaling</h2>
-
-            <h3>Flow is approximately correct at high flow but wrong at low flow</h3>
-
-            <p>
-                Check whether square-root extraction is required and whether it
-                is being performed in the correct location.
-            </p>
-
-            <h3>Flow appears much too high at moderate signal levels</h3>
-
-            <p>
-                Check for an incorrect scaling formula, incorrect transmitter
-                range, or square-root extraction being applied when it should
-                not be.
-            </p>
-
-            <h3>Flow appears unusually low</h3>
-
-            <p>
-                Check whether the square root is missing from a DP-based
-                measurement.
-            </p>
-
-            <h3>The value changed dramatically after a transmitter replacement</h3>
-
-            <p>
-                Compare the configuration of the old and new transmitters.
-                Important parameters can include:
+                Suppose a flow transmitter is configured for:
             </p>
 
             <ul>
-                <li>LRV and URV</li>
-                <li>Pressure range</li>
-                <li>Output mode</li>
-                <li>Square-root configuration</li>
-                <li>Damping</li>
-                <li>Engineering units</li>
-                <li>Failure/current alarm settings</li>
+                <li>LRV = 0 GPM</li>
+                <li>URV = 100 GPM</li>
+                <li>Measured signal = 12 mA</li>
             </ul>
 
-            <h3>The HMI value does not match a local flow indication</h3>
+            <h3>Linear Scaling</h3>
+
+            <div class="formula">
+                0 + ((12 − 4) ÷ 16) × 100
+                <br>
+                = 50 GPM
+            </div>
+
+            <div class="example-result">
+                12 mA = 50 GPM
+            </div>
+
+            <h3>Square-Root Extraction</h3>
+
+            <div class="formula">
+                √((12 − 4) ÷ 16) × 100
+                <br>
+                = √0.5 × 100
+                <br>
+                ≈ 70.71 GPM
+            </div>
+
+            <div class="example-result">
+                12 mA = 70.71 GPM
+            </div>
 
             <p>
-                Trace the signal from the field device through the entire
-                control system:
+                The large difference between these results demonstrates
+                why it is important to know whether the signal has already
+                undergone square-root extraction.
+            </p>
+
+        </section>
+
+
+        <!-- Where SRE Happens -->
+
+        <section class="content-section">
+
+            <h2>Where Does Square-Root Extraction Happen?</h2>
+
+            <p>
+                Square-root extraction can be performed in different parts
+                of a control system.
+            </p>
+
+            <ul>
+
+                <li>
+                    <strong>Inside the transmitter:</strong>
+                    The transmitter converts the DP measurement into a
+                    flow-proportional 4–20 mA signal.
+                </li>
+
+                <li>
+                    <strong>Inside the PLC:</strong>
+                    The analog input may receive a signal proportional
+                    to DP, with the PLC performing the square-root
+                    calculation.
+                </li>
+
+                <li>
+                    <strong>Inside a DCS or flow computer:</strong>
+                    The control system may perform the calculation after
+                    receiving the transmitter signal.
+                </li>
+
+            </ul>
+
+            <p>
+                The important question is not simply "Is this a flow
+                transmitter?" The important question is:
+                <strong>Has square-root extraction already been performed,
+                and where?</strong>
+            </p>
+
+        </section>
+
+
+        <!-- Double SRE -->
+
+        <section class="content-section">
+
+            <h2>The Double Square-Root Problem</h2>
+
+            <p>
+                A common scaling error occurs when square-root extraction
+                is performed twice.
+            </p>
+
+            <p>
+                For example, if a transmitter is already configured to
+                output a flow-proportional 4–20 mA signal, applying another
+                square-root calculation in the PLC will distort the
+                measurement.
+            </p>
+
+            <div class="formula">
+                DP signal
+                →
+                transmitter SRE
+                →
+                flow-proportional 4–20 mA
+                →
+                PLC linear scaling
+            </div>
+
+            <p>
+                In this situation, the PLC should normally perform linear
+                scaling rather than another square-root operation.
+            </p>
+
+        </section>
+
+
+        <!-- Low Flow -->
+
+        <section class="content-section">
+
+            <h2>Low-Flow Behavior</h2>
+
+            <p>
+                Square-root extraction greatly changes the relationship
+                between signal percentage and flow percentage at low flow.
+            </p>
+
+            <p>
+                For example, 25% of the DP signal corresponds to 50% of
+                the calculated flow when square-root extraction is used.
+            </p>
+
+            <p>
+                Low-flow cutoff or suppression may also be configured in
+                some transmitters or control systems. This is different
+                from the mathematical square-root calculation itself.
+            </p>
+
+        </section>
+
+
+        <!-- Field Application -->
+
+        <section class="content-section">
+
+            <h2>Field Application</h2>
+
+            <p>
+                This calculator can be useful when commissioning or
+                troubleshooting:
+            </p>
+
+            <ul>
+                <li>Orifice plate flow measurement</li>
+                <li>Differential-pressure flow transmitters</li>
+                <li>Flow control loops</li>
+                <li>PLC analog inputs</li>
+                <li>DCS systems</li>
+                <li>Flow computers</li>
+                <li>Industrial process instrumentation</li>
+            </ul>
+
+            <p>
+                A useful troubleshooting sequence is to determine what
+                the transmitter is measuring, what signal it is producing,
+                and where scaling or square-root extraction is being
+                performed.
+            </p>
+
+        </section>
+
+
+        <!-- Troubleshooting -->
+
+        <section class="content-section">
+
+            <h2>Flow Measurement Troubleshooting</h2>
+
+            <ol>
+
+                <li>
+                    <strong>Verify the transmitter range.</strong>
+                    Confirm the configured LRV and URV.
+                </li>
+
+                <li>
+                    <strong>Measure the actual 4–20 mA signal.</strong>
+                    Do not assume the PLC value represents the field signal.
+                </li>
+
+                <li>
+                    <strong>Determine what the 4–20 mA signal represents.</strong>
+                    It may represent DP or already-processed flow.
+                </li>
+
+                <li>
+                    <strong>Check where square-root extraction occurs.</strong>
+                    Verify transmitter, PLC, DCS, or flow-computer configuration.
+                </li>
+
+                <li>
+                    <strong>Check for double square-root extraction.</strong>
+                    This is a common cause of incorrect flow values.
+                </li>
+
+                <li>
+                    <strong>Check low-flow cutoff settings.</strong>
+                    A configured cutoff can make the displayed flow behave
+                    differently near zero.
+                </li>
+
+                <li>
+                    <strong>Verify the primary element and impulse system.</strong>
+                    For DP flow measurement, inspect the process connection,
+                    impulse lines, valves, and transmitter installation.
+                </li>
+
+            </ol>
+
+        </section>
+
+
+        <!-- Common Mistakes -->
+
+        <section class="content-section">
+
+            <h2>Common Flow Scaling Mistakes</h2>
+
+            <ol>
+
+                <li>
+                    <strong>Applying square-root extraction automatically.</strong>
+                    Not every flow transmitter signal requires it.
+                </li>
+
+                <li>
+                    <strong>Applying square-root extraction twice.</strong>
+                    Determine whether the transmitter has already performed
+                    the calculation.
+                </li>
+
+                <li>
+                    <strong>Using the wrong LRV or URV.</strong>
+                    Scaling must match the actual transmitter configuration.
+                </li>
+
+                <li>
+                    <strong>Confusing DP percentage with flow percentage.</strong>
+                    With square-root extraction, they are not the same.
+                </li>
+
+                <li>
+                    <strong>Ignoring low-flow cutoff.</strong>
+                    Mathematical zero and configured process behavior may
+                    not be identical.
+                </li>
+
+                <li>
+                    <strong>Assuming the PLC value proves the field signal.</strong>
+                    Measure the actual current when troubleshooting.
+                </li>
+
+            </ol>
+
+        </section>
+
+
+        <!-- Practical Workflow -->
+
+        <section class="content-section">
+
+            <h2>Practical Field Workflow</h2>
+
+            <p>
+                When troubleshooting a flow loop, follow the signal from
+                the process to the final displayed value.
             </p>
 
             <div class="formula">
                 Process
-                → Transmitter
-                → mA Signal
-                → Analog Input
-                → Raw Counts
-                → Scaling
-                → SRE
-                → Engineering Units
-                → HMI
+                →
+                Primary Element
+                →
+                DP Transmitter
+                →
+                4–20 mA
+                →
+                Analog Input
+                →
+                Scaling / SRE
+                →
+                Engineering Units
+                →
+                HMI
             </div>
+
+            <p>
+                At each stage, determine what the signal represents and
+                whether any mathematical processing has already occurred.
+            </p>
+
         </section>
 
-        <section>
-            <h2>Common Mistakes</h2>
 
-            <ul>
-                <li>
-                    Applying square-root extraction to a transmitter that is
-                    already linearized.
-                </li>
+        <!-- Related -->
 
-                <li>
-                    Forgetting square-root extraction on a DP flow signal.
-                </li>
+        <section class="content-section">
 
-                <li>
-                    Applying square root twice.
-                </li>
-
-                <li>
-                    Using the wrong transmitter LRV or URV.
-                </li>
-
-                <li>
-                    Assuming all flow transmitters use differential pressure.
-                </li>
-
-                <li>
-                    Confusing percentage of signal span with percentage of flow.
-                </li>
-
-                <li>
-                    Changing PLC scaling without checking the transmitter
-                    configuration first.
-                </li>
-
-                <li>
-                    Ignoring the analog input module's actual raw-count range.
-                </li>
-            </ul>
-        </section>
-
-        <section>
-            <h2>Practical Field Workflow</h2>
-
-            <ol>
-                <li>
-                    Identify the flow measurement technology.
-                </li>
-
-                <li>
-                    Determine whether the transmitter measures flow directly
-                    or measures differential pressure.
-                </li>
-
-                <li>
-                    Check the transmitter's configured LRV and URV.
-                </li>
-
-                <li>
-                    Determine whether the transmitter performs square-root
-                    extraction.
-                </li>
-
-                <li>
-                    Measure the actual 4–20 mA signal.
-                </li>
-
-                <li>
-                    Verify the analog input's raw value.
-                </li>
-
-                <li>
-                    Verify PLC scaling.
-                </li>
-
-                <li>
-                    Verify where square-root extraction occurs.
-                </li>
-
-                <li>
-                    Compare the calculated flow with the expected process
-                    condition.
-                </li>
-            </ol>
-
-            <div class="info-box">
-                <strong>Good troubleshooting rule:</strong>
-                Don't start by changing the PLC calculation. First establish
-                what the field device is actually sending and what the
-                transmitter is configured to do.
-            </div>
-        </section>
-
-        <section>
             <h2>Related Calculators</h2>
 
-            <div class="related-links">
+            <ul class="related-list">
 
-                <a href="4-20ma-scaling.html">
-                    4–20 mA Scaling Calculator
-                </a>
+                <li>
+                    <a href="4-20ma-scaling.html">
+                        4–20 mA Scaling
+                    </a>
+                </li>
 
-                <a href="analog-scaling.html">
-                    Analog Signal Scaling Calculator
-                </a>
+                <li>
+                    <a href="analog-scaling.html">
+                        Analog Signal Scaling
+                    </a>
+                </li>
 
-                <a href="pressure-transmitter.html">
-                    Pressure Transmitter Scaling
-                </a>
+                <li>
+                    <a href="pressure-transmitter.html">
+                        Pressure Transmitter Scaling
+                    </a>
+                </li>
 
-                <a href="0-10v-scaling.html">
-                    0–10 V Scaling Calculator
-                </a>
+                <li>
+                    <a href="4-20ma-voltage.html">
+                        4–20 mA to Voltage
+                    </a>
+                </li>
 
-                <a href="../guides/4-20ma.html">
-                    4–20 mA Guide
-                </a>
+                <li>
+                    <a href="../guides/flow-square-root.html">
+                        Square-Root Extraction & DP Flow Guide
+                    </a>
+                </li>
 
-                <a href="../guides/plc-scaling.html">
-                    PLC Scaling Guide
-                </a>
+                <li>
+                    <a href="../guides/plc-scaling.html">
+                        PLC Scaling Guide
+                    </a>
+                </li>
 
-            </div>
+            </ul>
+
+        </section>
+
+
+        <!-- Engineering Note -->
+
+        <section class="content-section">
+
+            <h2>Engineering Note</h2>
+
+            <p>
+                This calculator assumes a standard 4–20 mA signal and a
+                configured flow range. Square-root extraction should only
+                be applied when appropriate for the measurement method.
+                Always verify transmitter configuration, primary-element
+                characteristics, PLC/DCS scaling, and manufacturer
+                documentation when commissioning or troubleshooting a
+                flow measurement system.
+            </p>
+
         </section>
 
     </div>
+
 </main>
 
-<footer>
-    <div class="container">
-        <div>
-            <strong>ControlsCalc</strong>
-        </div>
 
-        <div>
-            Controls & instrumentation calculators and field references.
-        </div>
+<footer>
+
+    <div class="container">
+
+        <p>
+            <strong>ControlsCalc</strong>
+        </p>
+
+        <p>
+            Engineering and controls calculators for technicians and engineers.
+        </p>
+
     </div>
+
 </footer>
 
+
 <script>
-function formatNumber(value, decimals = 3) {
-    if (!Number.isFinite(value)) {
-        return "—";
-    }
-
-    if (Math.abs(value) < 1e-10) {
-        value = 0;
-    }
-
-    return Number(value.toFixed(decimals)).toLocaleString();
-}
-
 
 function calculateFlow() {
 
-    const lrv = parseFloat(document.getElementById("lrv").value);
-    const urv = parseFloat(document.getElementById("urv").value);
-    const current = parseFloat(document.getElementById("current").value);
-    const unit = document.getElementById("unit").value.trim() || "units";
-    const mode = document.getElementById("mode").value;
+    const lowRange =
+        parseFloat(document.getElementById("lowRange").value);
 
-    const result = document.getElementById("result");
+    const highRange =
+        parseFloat(document.getElementById("highRange").value);
 
-    result.innerHTML = "";
+    const current =
+        parseFloat(document.getElementById("current").value);
+
+    const unit =
+        document.getElementById("unit").value;
+
+    const method =
+        document.getElementById("method").value;
+
+    const error =
+        document.getElementById("error");
+
+    const result =
+        document.getElementById("result");
+
+    const resultValue =
+        document.getElementById("resultValue");
+
+    const resultDetails =
+        document.getElementById("resultDetails");
+
+    const warning =
+        document.getElementById("warning");
+
+
+    error.classList.remove("show");
+    result.classList.remove("show");
+    warning.classList.remove("show");
+
 
     if (
-        !Number.isFinite(lrv) ||
-        !Number.isFinite(urv) ||
-        !Number.isFinite(current)
+        Number.isNaN(lowRange) ||
+        Number.isNaN(highRange) ||
+        Number.isNaN(current)
     ) {
-        result.innerHTML =
-            '<div class="error">Please enter valid numeric values.</div>';
+
+        error.textContent =
+            "Please enter a lower range, upper range, and measured current.";
+
+        error.classList.add("show");
 
         return;
     }
 
-    if (urv === lrv) {
-        result.innerHTML =
-            '<div class="error">Flow LRV and URV must be different.</div>';
+
+    if (highRange === lowRange) {
+
+        error.textContent =
+            "The lower and upper flow range values cannot be the same.";
+
+        error.classList.add("show");
 
         return;
     }
 
-    if (current < 0) {
-        result.innerHTML =
-            '<div class="error">Current cannot be negative.</div>';
 
-        return;
+    if (current < 4 || current > 20) {
+
+        warning.textContent =
+            "Measured current is outside the normal 4–20 mA operating range. " +
+            "The calculation can still be performed, but verify the signal " +
+            "and transmitter status.";
+
+        warning.classList.add("show");
     }
 
-    /*
-        Convert current to percentage of the 4–20 mA span.
 
-        4 mA = 0%
-        20 mA = 100%
-    */
+    const signalPercentage =
+        (current - 4) / 16;
 
-    const signalPercent = (current - 4) / 16;
 
-    let flowPercent;
+    let flowPercentage;
 
-    if (mode === "sqrt") {
 
-        if (signalPercent < 0) {
+    if (method === "sqrt") {
 
-            result.innerHTML =
-                '<div class="error">' +
-                'Square-root extraction cannot be applied to a negative ' +
-                'signal percentage.' +
-                '</div>';
+        if (signalPercentage < 0) {
+
+            error.textContent =
+                "Square-root extraction cannot be calculated from a negative " +
+                "signal percentage.";
+
+            error.classList.add("show");
 
             return;
         }
 
-        flowPercent = Math.sqrt(signalPercent);
+        flowPercentage =
+            Math.sqrt(signalPercentage);
 
     } else {
 
-        flowPercent = signalPercent;
+        flowPercentage =
+            signalPercentage;
+
     }
+
 
     const flow =
-        lrv + flowPercent * (urv - lrv);
+        lowRange +
+        flowPercentage *
+        (highRange - lowRange);
 
-    const linearPercent = signalPercent * 100;
-    const flowPercentDisplay = flowPercent * 100;
 
-    let warning = "";
+    const signalPercentDisplay =
+        signalPercentage * 100;
 
-    if (current < 4) {
+    const flowPercentDisplay =
+        flowPercentage * 100;
 
-        warning =
-            '<div class="warning">' +
-            '<strong>Below 4 mA:</strong> ' +
-            'The signal is below the normal 4–20 mA operating range. ' +
-            'Depending on the transmitter and configuration, this may ' +
-            'represent underrange or a fault condition.' +
-            '</div>';
 
-    } else if (current > 20) {
+    const formattedFlow =
+        Number.isInteger(flow)
+            ? flow.toString()
+            : flow
+                .toFixed(3)
+                .replace(/0+$/, "")
+                .replace(/\.$/, "");
 
-        warning =
-            '<div class="warning">' +
-            '<strong>Above 20 mA:</strong> ' +
-            'The signal is above the normal 4–20 mA operating range. ' +
-            'Depending on the transmitter and configuration, this may ' +
-            'represent overrange or a fault condition.' +
-            '</div>';
-    }
 
-    result.innerHTML =
-        '<div class="results">' +
+    resultValue.textContent =
+        formattedFlow + " " + unit;
 
-            '<div class="result-main">' +
-                formatNumber(flow, 3) + " " + unit +
-            '</div>' +
 
-            '<div class="result-row">' +
-                '<span class="result-label">Measured Current</span>' +
-                '<span class="result-value">' +
-                    formatNumber(current, 3) + " mA" +
-                '</span>' +
-            '</div>' +
+    resultDetails.textContent =
+        current.toFixed(2) +
+        " mA = " +
+        signalPercentDisplay.toFixed(1) +
+        "% of signal span = " +
+        flowPercentDisplay.toFixed(1) +
+        "% of flow span using " +
+        (method === "sqrt"
+            ? "square-root extraction"
+            : "linear scaling") +
+        ".";
 
-            '<div class="result-row">' +
-                '<span class="result-label">Signal Span</span>' +
-                '<span class="result-value">' +
-                    formatNumber(linearPercent, 2) + "%" +
-                '</span>' +
-            '</div>' +
 
-            '<div class="result-row">' +
-                '<span class="result-label">Flow Span</span>' +
-                '<span class="result-value">' +
-                    formatNumber(flowPercentDisplay, 2) + "%" +
-                '</span>' +
-            '</div>' +
+    result.classList.add("show");
 
-            '<div class="result-row">' +
-                '<span class="result-label">Scaling Method</span>' +
-                '<span class="result-value">' +
-                    (mode === "sqrt"
-                        ? "Square-root extraction"
-                        : "Linear scaling") +
-                '</span>' +
-            '</div>' +
-
-            warning +
-
-        '</div>';
 }
+
 </script>
 
 </body>
