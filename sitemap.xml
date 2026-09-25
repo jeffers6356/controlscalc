@@ -1,1 +1,60 @@
-<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>https://YOUR-DOMAIN.com/</loc></url><url><loc>https://YOUR-DOMAIN.com/calculators/4-20ma-scaling.html</loc></url><url><loc>https://YOUR-DOMAIN.com/calculators/4-20ma-voltage.html</loc></url><url><loc>https://YOUR-DOMAIN.com/calculators/4-20ma-resistor.html</loc></url><url><loc>https://YOUR-DOMAIN.com/calculators/0-10v-scaling.html</loc></url><url><loc>https://YOUR-DOMAIN.com/calculators/analog-scaling.html</loc></url><url><loc>https://YOUR-DOMAIN.com/calculators/ohms-law.html</loc></url><url><loc>https://YOUR-DOMAIN.com/calculators/voltage-divider.html</loc></url><url><loc>https://YOUR-DOMAIN.com/calculators/pt100-resistance.html</loc></url><url><loc>https://YOUR-DOMAIN.com/calculators/rtd-temperature.html</loc></url><url><loc>https://YOUR-DOMAIN.com/calculators/pressure-transmitter.html</loc></url><url><loc>https://YOUR-DOMAIN.com/guides/index.html</loc></url><url><loc>https://YOUR-DOMAIN.com/guides/4-20ma.html</loc></url><url><loc>https://YOUR-DOMAIN.com/guides/plc-scaling.html</loc></url></urlset>
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <url>
+    <loc>https://controlscalc.jeffers6356.workers.dev/</loc>
+  </url>
+
+  <url>
+    <loc>https://controlscalc.jeffers6356.workers.dev/calculators/4-20ma-scaling.html</loc>
+  </url>
+
+  <url>
+    <loc>https://controlscalc.jeffers6356.workers.dev/calculators/4-20ma-voltage.html</loc>
+  </url>
+
+  <url>
+    <loc>https://controlscalc.jeffers6356.workers.dev/calculators/4-20ma-resistor.html</loc>
+  </url>
+
+  <url>
+    <loc>https://controlscalc.jeffers6356.workers.dev/calculators/0-10v-scaling.html</loc>
+  </url>
+
+  <url>
+    <loc>https://controlscalc.jeffers6356.workers.dev/calculators/analog-scaling.html</loc>
+  </url>
+
+  <url>
+    <loc>https://controlscalc.jeffers6356.workers.dev/calculators/ohms-law.html</loc>
+  </url>
+
+  <url>
+    <loc>https://controlscalc.jeffers6356.workers.dev/calculators/voltage-divider.html</loc>
+  </url>
+
+  <url>
+    <loc>https://controlscalc.jeffers6356.workers.dev/calculators/pt100-resistance.html</loc>
+  </url>
+
+  <url>
+    <loc>https://controlscalc.jeffers6356.workers.dev/calculators/rtd-temperature.html</loc>
+  </url>
+
+  <url>
+    <loc>https://controlscalc.jeffers6356.workers.dev/calculators/pressure-transmitter.html</loc>
+  </url>
+
+  <url>
+    <loc>https://controlscalc.jeffers6356.workers.dev/guides/index.html</loc>
+  </url>
+
+  <url>
+    <loc>https://controlscalc.jeffers6356.workers.dev/guides/4-20ma.html</loc>
+  </url>
+
+  <url>
+    <loc>https://controlscalc.jeffers6356.workers.dev/guides/plc-scaling.html</loc>
+  </url>
+
+</urlset>
