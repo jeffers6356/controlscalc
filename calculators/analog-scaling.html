@@ -1,1 +1,1055 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Analog Signal Scaling | ControlsCalc</title><meta name="description" content="Generic linear scaling for PLC and control signals."><link rel="stylesheet" href="../style.css"></head><body><header><nav class="wrap"><a class="brand" href="../index.html">ControlsCalc</a><div class="links"><a href="../index.html">Calculators</a><a href="../guides/index.html">Guides</a></div></nav></header><main class="wrap calc"><span class="tag">ControlsCalc</span><h1>Analog Signal Scaling</h1><p class="muted">Generic linear scaling for PLC and control signals.</p><div class="panel" data-calc="analog"></div><div class="panel"><h2>Field note</h2><p>Use this as a practical reference. Verify transmitter ranges, wiring, scaling, device documentation, and applicable project standards before making control changes.</p></div></main><footer><div class="wrap">ControlsCalc — practical controls and instrumentation calculators.</div></footer><script src="../script.js"></script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Analog Signal Scaling Calculator | ControlsCalc</title>
+
+    <meta
+        name="description"
+        content="Free analog signal scaling calculator for converting voltage, current, or other linear analog signals into engineering units. Includes formula, worked examples, and PLC troubleshooting guidance."
+    >
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #172033;
+            background: #f5f7fa;
+            line-height: 1.6;
+        }
+
+        a {
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            width: min(1000px, calc(100% - 40px));
+            margin: 0 auto;
+        }
+
+        header {
+            background: #ffffff;
+            border-bottom: 1px solid #e1e5eb;
+        }
+
+        .header-inner {
+            min-height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 800;
+            color: #172033;
+        }
+
+        nav {
+            display: flex;
+            gap: 24px;
+        }
+
+        nav a {
+            font-size: 15px;
+        }
+
+        main {
+            padding: 48px 0 70px;
+        }
+
+        .breadcrumbs {
+            margin-bottom: 24px;
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .intro {
+            margin-bottom: 32px;
+        }
+
+        .intro h1 {
+            margin: 0 0 16px;
+            font-size: clamp(32px, 5vw, 46px);
+            line-height: 1.1;
+            letter-spacing: -1px;
+        }
+
+        .intro p {
+            max-width: 800px;
+            margin: 8px 0;
+            color: #64748b;
+            font-size: 17px;
+        }
+
+        .calculator {
+            background: #ffffff;
+            border: 1px solid #dfe5ec;
+            border-radius: 14px;
+            padding: 32px;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 18px rgba(15, 23, 42, 0.04);
+        }
+
+        .calculator h2 {
+            margin: 0 0 24px;
+            font-size: 25px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 22px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .field label {
+            margin-bottom: 7px;
+            font-weight: 700;
+            font-size: 15px;
+        }
+
+        .field input {
+            width: 100%;
+            padding: 13px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            background: #ffffff;
+            color: #172033;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .field input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+        }
+
+        .field small {
+            margin-top: 6px;
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        .calculate-button {
+            width: 100%;
+            margin-top: 26px;
+            padding: 14px 20px;
+            border: 0;
+            border-radius: 8px;
+            background: #2563eb;
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .calculate-button:hover {
+            background: #1d4ed8;
+        }
+
+        .result {
+            display: none;
+            margin-top: 28px;
+            padding: 24px;
+            border-radius: 10px;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            text-align: center;
+        }
+
+        .result.show {
+            display: block;
+        }
+
+        .result h3 {
+            margin: 0 0 10px;
+            font-size: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #2563eb;
+        }
+
+        .result-value {
+            margin: 0;
+            font-size: 38px;
+            font-weight: 800;
+            color: #172033;
+        }
+
+        .result-details {
+            margin: 8px 0 0;
+            color: #475569;
+        }
+
+        .error {
+            display: none;
+            margin-top: 20px;
+            padding: 14px;
+            border-radius: 8px;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+        }
+
+        .error.show {
+            display: block;
+        }
+
+        .content-section {
+            background: #ffffff;
+            border: 1px solid #dfe5ec;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 24px;
+        }
+
+        .content-section h2 {
+            margin: 0 0 16px;
+            font-size: 24px;
+        }
+
+        .content-section h3 {
+            margin: 24px 0 8px;
+            font-size: 18px;
+        }
+
+        .content-section p {
+            color: #475569;
+        }
+
+        .content-section li {
+            margin-bottom: 10px;
+            color: #475569;
+        }
+
+        .formula {
+            margin: 20px 0;
+            padding: 18px;
+            background: #f5f7fa;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: 700;
+            overflow-x: auto;
+        }
+
+        .example-result {
+            display: inline-block;
+            margin: 10px 0;
+            padding: 12px 18px;
+            border-radius: 8px;
+            background: #f1f5f9;
+            font-weight: 700;
+        }
+
+        .reference-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .reference-table th,
+        .reference-table td {
+            padding: 12px;
+            border-bottom: 1px solid #e2e8f0;
+            text-align: left;
+        }
+
+        .reference-table th {
+            background: #f8fafc;
+            font-size: 14px;
+        }
+
+        .related-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            padding: 0;
+            list-style: none;
+        }
+
+        .related-list li {
+            margin: 0;
+        }
+
+        .related-list a {
+            display: block;
+            padding: 12px 14px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+        }
+
+        .related-list a:hover {
+            background: #eff6ff;
+            text-decoration: none;
+        }
+
+        footer {
+            padding: 32px 0;
+            background: #ffffff;
+            border-top: 1px solid #e1e5eb;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        footer p {
+            margin: 4px 0;
+        }
+
+        @media (max-width: 650px) {
+
+            .container {
+                width: min(100% - 28px, 1000px);
+            }
+
+            .header-inner {
+                min-height: 58px;
+            }
+
+            nav {
+                gap: 14px;
+            }
+
+            main {
+                padding-top: 32px;
+            }
+
+            .calculator {
+                padding: 22px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .related-list {
+                grid-template-columns: 1fr;
+            }
+
+            .result-value {
+                font-size: 30px;
+            }
+
+            .reference-table {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="container header-inner">
+
+        <a href="../index.html" class="logo">
+            ControlsCalc
+        </a>
+
+        <nav>
+            <a href="../index.html">Calculators</a>
+            <a href="../guides/index.html">Guides</a>
+        </nav>
+
+    </div>
+</header>
+
+
+<main>
+
+    <div class="container">
+
+        <div class="breadcrumbs">
+            <a href="../index.html">ControlsCalc</a>
+            &nbsp; / &nbsp;
+            Analog Signal Scaling
+        </div>
+
+
+        <section class="intro">
+
+            <h1>Analog Signal Scaling Calculator</h1>
+
+            <p>
+                Convert a linear analog signal into engineering units using
+                configurable input and output ranges.
+            </p>
+
+            <p>
+                This calculator can be used for voltage signals, current signals,
+                PLC analog inputs, sensor outputs, and other linear control
+                applications.
+            </p>
+
+        </section>
+
+
+        <!-- Calculator -->
+
+        <section class="calculator">
+
+            <h2>Calculate Engineering Units</h2>
+
+            <div class="form-grid">
+
+                <div class="field">
+
+                    <label for="inputLow">
+                        Input Signal Minimum
+                    </label>
+
+                    <input
+                        type="number"
+                        id="inputLow"
+                        placeholder="Example: 4"
+                        step="any"
+                    >
+
+                    <small>
+                        The signal value corresponding to the lower engineering range.
+                    </small>
+
+                </div>
+
+
+                <div class="field">
+
+                    <label for="inputHigh">
+                        Input Signal Maximum
+                    </label>
+
+                    <input
+                        type="number"
+                        id="inputHigh"
+                        placeholder="Example: 20"
+                        step="any"
+                    >
+
+                    <small>
+                        The signal value corresponding to the upper engineering range.
+                    </small>
+
+                </div>
+
+
+                <div class="field">
+
+                    <label for="outputLow">
+                        Engineering Range Minimum
+                    </label>
+
+                    <input
+                        type="number"
+                        id="outputLow"
+                        placeholder="Example: 0"
+                        step="any"
+                    >
+
+                    <small>
+                        The engineering value at the minimum signal.
+                    </small>
+
+                </div>
+
+
+                <div class="field">
+
+                    <label for="outputHigh">
+                        Engineering Range Maximum
+                    </label>
+
+                    <input
+                        type="number"
+                        id="outputHigh"
+                        placeholder="Example: 100"
+                        step="any"
+                    >
+
+                    <small>
+                        The engineering value at the maximum signal.
+                    </small>
+
+                </div>
+
+
+                <div class="field">
+
+                    <label for="signal">
+                        Measured Signal
+                    </label>
+
+                    <input
+                        type="number"
+                        id="signal"
+                        placeholder="Example: 12"
+                        step="any"
+                    >
+
+                    <small>
+                        The actual measured analog signal.
+                    </small>
+
+                </div>
+
+
+                <div class="field">
+
+                    <label for="unit">
+                        Engineering Unit
+                    </label>
+
+                    <input
+                        type="text"
+                        id="unit"
+                        placeholder="Example: PSI"
+                        maxlength="20"
+                    >
+
+                    <small>
+                        Examples: PSI, °F, °C, GPM, %, RPM.
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="calculate-button"
+                onclick="calculateScaling()"
+            >
+                Calculate
+            </button>
+
+
+            <div id="error" class="error"></div>
+
+
+            <div id="result" class="result">
+
+                <h3>Result</h3>
+
+                <p id="resultValue" class="result-value"></p>
+
+                <p id="resultDetails" class="result-details"></p>
+
+            </div>
+
+        </section>
+
+
+        <!-- Formula -->
+
+        <section class="content-section">
+
+            <h2>General Analog Scaling Formula</h2>
+
+            <p>
+                Linear analog scaling converts a signal from one range into
+                another range.
+            </p>
+
+            <div class="formula">
+                Engineering Value =
+                Output Low +
+                ((Signal − Input Low) ÷
+                (Input High − Input Low))
+                ×
+                (Output High − Output Low)
+            </div>
+
+            <p>
+                The important idea is that the signal represents a percentage
+                of its input span, and that same percentage is applied to the
+                engineering-unit span.
+            </p>
+
+        </section>
+
+
+        <!-- Worked Example -->
+
+        <section class="content-section">
+
+            <h2>Worked Example: 4–20 mA to 0–100 PSI</h2>
+
+            <p>
+                Suppose a pressure transmitter produces a 4–20 mA signal
+                representing <strong>0–100 PSI</strong>.
+            </p>
+
+            <p>
+                You measure <strong>12 mA</strong>.
+            </p>
+
+            <div class="formula">
+                0 + ((12 − 4) ÷ (20 − 4)) × (100 − 0)
+            </div>
+
+            <div class="example-result">
+                12 mA = 50 PSI
+            </div>
+
+            <p>
+                The 12 mA signal is halfway through the 4–20 mA range, so the
+                corresponding engineering value is halfway through the
+                0–100 PSI range.
+            </p>
+
+        </section>
+
+
+        <!-- PLC Example -->
+
+        <section class="content-section">
+
+            <h2>PLC Scaling Example</h2>
+
+            <p>
+                PLC analog input modules often convert a physical signal into
+                an internal numerical value before the program converts that
+                value into engineering units.
+            </p>
+
+            <p>
+                For example, suppose a PLC input represents a 4–20 mA signal
+                using raw counts from <strong>3277</strong> to
+                <strong>16384</strong>.
+            </p>
+
+            <p>
+                If the raw input value is <strong>9830</strong>, the same
+                scaling concept can be applied:
+            </p>
+
+            <div class="formula">
+                Engineering Value =
+                0 +
+                ((9830 − 3277) ÷
+                (16384 − 3277))
+                ×
+                100
+            </div>
+
+            <p>
+                The result is approximately:
+            </p>
+
+            <div class="example-result">
+                50 PSI
+            </div>
+
+            <p>
+                The exact raw-count values depend on the PLC platform and
+                analog input configuration. Always verify the module's
+                documentation before using a raw-count range.
+            </p>
+
+        </section>
+
+
+        <!-- Universal Concept -->
+
+        <section class="content-section">
+
+            <h2>The Key Idea: Percentage of Span</h2>
+
+            <p>
+                The most useful way to understand analog scaling is to think
+                in terms of <strong>percentage of span</strong>.
+            </p>
+
+            <p>
+                First determine where the signal is within its input range:
+            </p>
+
+            <div class="formula">
+                Signal Percentage =
+                (Signal − Input Low)
+                ÷
+                (Input High − Input Low)
+            </div>
+
+            <p>
+                Then apply that same percentage to the engineering range.
+            </p>
+
+            <p>
+                This is why the same mathematical concept works for:
+            </p>
+
+            <ul>
+                <li>4–20 mA signals</li>
+                <li>0–10 V signals</li>
+                <li>1–5 V signals</li>
+                <li>PLC raw counts</li>
+                <li>Sensor outputs</li>
+                <li>Position feedback</li>
+                <li>Pressure, temperature, flow, and level transmitters</li>
+            </ul>
+
+        </section>
+
+
+        <!-- Reference -->
+
+        <section class="content-section">
+
+            <h2>Common Analog Signal Ranges</h2>
+
+            <table class="reference-table">
+
+                <thead>
+                    <tr>
+                        <th>Signal</th>
+                        <th>Typical Use</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    <tr>
+                        <td><strong>4–20 mA</strong></td>
+                        <td>Industrial instrumentation</td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>0–10 V</strong></td>
+                        <td>HVAC, BAS, controls, actuators</td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>1–5 V</strong></td>
+                        <td>Voltage representation of 4–20 mA</td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>0–5 V</strong></td>
+                        <td>Electronic and control applications</td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>PLC raw counts</strong></td>
+                        <td>Analog input module representation</td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </section>
+
+
+        <!-- Troubleshooting -->
+
+        <section class="content-section">
+
+            <h2>Using Analog Scaling for Troubleshooting</h2>
+
+            <p>
+                When troubleshooting an analog control system, it helps to
+                separate the problem into stages:
+            </p>
+
+            <ol>
+
+                <li>
+                    <strong>Physical signal:</strong>
+                    What voltage or current is actually present?
+                </li>
+
+                <li>
+                    <strong>Input conversion:</strong>
+                    What raw value is the analog input module producing?
+                </li>
+
+                <li>
+                    <strong>Scaling:</strong>
+                    How is the PLC or controller converting that value?
+                </li>
+
+                <li>
+                    <strong>Displayed value:</strong>
+                    What engineering value does the HMI or supervisory system show?
+                </li>
+
+            </ol>
+
+            <p>
+                Checking each stage independently can help identify where an
+                incorrect value is being introduced.
+            </p>
+
+        </section>
+
+
+        <!-- Common Mistakes -->
+
+        <section class="content-section">
+
+            <h2>Common Scaling Mistakes</h2>
+
+            <ol>
+
+                <li>
+                    <strong>Using the wrong signal range.</strong>
+                    Verify the actual input minimum and maximum.
+                </li>
+
+                <li>
+                    <strong>Using the wrong engineering range.</strong>
+                    Confirm the transmitter or device's configured LRV and URV.
+                </li>
+
+                <li>
+                    <strong>Ignoring non-zero lower limits.</strong>
+                    A signal does not necessarily start at zero.
+                </li>
+
+                <li>
+                    <strong>Reversing the input range.</strong>
+                    Some systems intentionally use reversed scaling.
+                </li>
+
+                <li>
+                    <strong>Confusing raw counts with engineering units.</strong>
+                    PLC raw values are representations of the electrical signal,
+                    not the final process value.
+                </li>
+
+                <li>
+                    <strong>Assuming a correct signal means a correct process value.</strong>
+                    The physical instrument, wiring, input module, and scaling
+                    program can each introduce different problems.
+                </li>
+
+            </ol>
+
+        </section>
+
+
+        <!-- Related -->
+
+        <section class="content-section">
+
+            <h2>Related Calculators</h2>
+
+            <ul class="related-list">
+
+                <li>
+                    <a href="4-20ma-scaling.html">
+                        4–20 mA Scaling
+                    </a>
+                </li>
+
+                <li>
+                    <a href="4-20ma-voltage.html">
+                        4–20 mA to Voltage
+                    </a>
+                </li>
+
+                <li>
+                    <a href="4-20ma-resistor.html">
+                        4–20 mA Loop Resistor
+                    </a>
+                </li>
+
+                <li>
+                    <a href="0-10v-scaling.html">
+                        0–10 V Scaling
+                    </a>
+                </li>
+
+                <li>
+                    <a href="../guides/plc-scaling.html">
+                        PLC Scaling Guide
+                    </a>
+                </li>
+
+            </ul>
+
+        </section>
+
+
+        <!-- Engineering Note -->
+
+        <section class="content-section">
+
+            <h2>Engineering Note</h2>
+
+            <p>
+                This calculator assumes a linear relationship between the input
+                signal and engineering range. Real-world instruments and control
+                systems may use nonlinear characterization, square-root extraction,
+                filtering, clamping, or other signal processing. Verify the actual
+                device and control-program configuration when troubleshooting.
+            </p>
+
+        </section>
+
+    </div>
+
+</main>
+
+
+<footer>
+
+    <div class="container">
+
+        <p>
+            <strong>ControlsCalc</strong>
+        </p>
+
+        <p>
+            Engineering and controls calculators for technicians and engineers.
+        </p>
+
+    </div>
+
+</footer>
+
+
+<script>
+
+function calculateScaling() {
+
+    const inputLow =
+        parseFloat(document.getElementById("inputLow").value);
+
+    const inputHigh =
+        parseFloat(document.getElementById("inputHigh").value);
+
+    const outputLow =
+        parseFloat(document.getElementById("outputLow").value);
+
+    const outputHigh =
+        parseFloat(document.getElementById("outputHigh").value);
+
+    const signal =
+        parseFloat(document.getElementById("signal").value);
+
+    const unit =
+        document.getElementById("unit").value.trim();
+
+    const error =
+        document.getElementById("error");
+
+    const result =
+        document.getElementById("result");
+
+    const resultValue =
+        document.getElementById("resultValue");
+
+    const resultDetails =
+        document.getElementById("resultDetails");
+
+
+    error.classList.remove("show");
+    result.classList.remove("show");
+
+
+    if (
+        Number.isNaN(inputLow) ||
+        Number.isNaN(inputHigh) ||
+        Number.isNaN(outputLow) ||
+        Number.isNaN(outputHigh) ||
+        Number.isNaN(signal)
+    ) {
+
+        error.textContent =
+            "Please enter a value in all five numeric fields.";
+
+        error.classList.add("show");
+
+        return;
+    }
+
+
+    if (inputHigh === inputLow) {
+
+        error.textContent =
+            "The input minimum and maximum cannot be the same.";
+
+        error.classList.add("show");
+
+        return;
+    }
+
+
+    if (outputHigh === outputLow) {
+
+        error.textContent =
+            "The engineering minimum and maximum cannot be the same.";
+
+        error.classList.add("show");
+
+        return;
+    }
+
+
+    const signalPercentage =
+        (signal - inputLow) /
+        (inputHigh - inputLow);
+
+
+    const engineeringValue =
+        outputLow +
+        signalPercentage *
+        (outputHigh - outputLow);
+
+
+    const percentageDisplay =
+        signalPercentage * 100;
+
+
+    const formattedValue =
+        Number.isInteger(engineeringValue)
+            ? engineeringValue.toString()
+            : engineeringValue
+                .toFixed(3)
+                .replace(/0+$/, "")
+                .replace(/\.$/, "");
+
+
+    const displayedUnit =
+        unit !== "" ? " " + unit : "";
+
+
+    resultValue.textContent =
+        formattedValue + displayedUnit;
+
+
+    resultDetails.textContent =
+        signal +
+        " is " +
+        percentageDisplay.toFixed(1) +
+        "% of the input signal span";
+
+
+    result.classList.add("show");
+
+}
+
+</script>
+
+</body>
+</html>
