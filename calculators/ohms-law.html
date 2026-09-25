@@ -3,815 +3,1591 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Ohm's Law Calculator | ControlsCalc</title>
-<meta name="description" content="Calculate voltage, current, resistance, and power using Ohm's Law. Includes formulas, worked examples, 24 VDC controls applications, and troubleshooting tips.">
+
+<meta
+    name="description"
+    content="Calculate voltage, current, resistance, and power using Ohm's Law. Includes formulas, worked examples, 24 VDC controls applications, and troubleshooting tips."
+>
 
 <style>
-    * {
-        box-sizing: border-box;
-    }
 
-    body {
-        margin: 0;
-        font-family: Arial, Helvetica, sans-serif;
-        background: #f5f7fa;
-        color: #172033;
-        line-height: 1.6;
-    }
+* {
+    box-sizing: border-box;
+}
 
-   header {
-            background: #ffffff;
-            border-bottom: 1px solid #e1e5eb;
-        }
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f5f7fa;
+    color: #172033;
+    line-height: 1.6;
+}
+
+a {
+    color: #2563eb;
+}
+
+/* Header */
+
+header {
+    background: #ffffff;
+    border-bottom: 1px solid #dfe5ec;
+}
+
+.header-inner {
+    width: min(1000px, calc(100% - 40px));
+    margin: 0 auto;
+    min-height: 68px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+}
+
+.logo {
+    color: #172033;
+    text-decoration: none;
+    font-size: 1.45rem;
+    font-weight: 700;
+}
+
+nav {
+    display: flex;
+    gap: 20px;
+}
+
+nav a {
+    color: #475569;
+    text-decoration: none;
+    font-size: 0.95rem;
+}
+
+nav a:hover {
+    color: #2563eb;
+}
+
+/* Main */
+
+main {
+    width: min(1000px, calc(100% - 40px));
+    margin: 0 auto;
+    padding: 34px 0 60px;
+}
+
+/* Breadcrumb */
+
+.breadcrumb {
+    font-size: 0.9rem;
+    margin-bottom: 18px;
+    color: #64748b;
+}
+
+.breadcrumb a {
+    color: #2563eb;
+    text-decoration: none;
+}
+
+/* Typography */
+
+h1 {
+    font-size: 2.35rem;
+    line-height: 1.2;
+    margin: 0 0 12px;
+    color: #172033;
+}
+
+h2 {
+    color: #172033;
+    margin-top: 38px;
+    line-height: 1.3;
+}
+
+h3 {
+    color: #172033;
+    margin-top: 26px;
+}
+
+.intro {
+    font-size: 1.08rem;
+    max-width: 850px;
+    color: #475569;
+    margin-bottom: 0;
+}
+
+/* Calculator */
+
+.calculator {
+    background: #ffffff;
+    border: 1px solid #dfe5ec;
+    border-radius: 14px;
+
+    padding: 32px;
+    margin-top: 28px;
+
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
+}
+
+.calculator h2 {
+    margin-top: 0;
+}
+
+.input-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 18px;
+    margin-top: 22px;
+}
+
+/* Inputs */
+
+label {
+    display: block;
+    font-weight: 700;
+    margin-bottom: 7px;
+    color: #334155;
+}
+
+input,
+select {
+    width: 100%;
+
+    padding: 12px;
+
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+
+    font-size: 1rem;
+
+    background: #ffffff;
+    color: #172033;
+}
+
+input:focus,
+select:focus {
+    outline: 2px solid #bfdbfe;
+    border-color: #2563eb;
+}
+
+/* Button */
+
+.button-row {
+    margin-top: 22px;
+}
+
+button {
+    width: 100%;
+
+    background: #2563eb;
+    color: #ffffff;
+
+    border: none;
+    border-radius: 8px;
+
+    padding: 13px 18px;
+
+    font-size: 1rem;
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+button:hover {
+    background: #1d4ed8;
+}
+
+/* Result */
+
+.result {
+    display: none;
+
+    margin-top: 22px;
+    padding: 20px;
+
+    border-radius: 10px;
+
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+
+    border-left: 5px solid #2563eb;
+}
+
+.result strong {
+    color: #1d4ed8;
+}
+
+/* Error */
+
+.error {
+    display: none;
+
+    margin-top: 18px;
+    padding: 14px;
+
+    border-radius: 8px;
+
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+
+    color: #991b1b;
+}
+
+/* Formula */
+
+.formula {
+    background: #f5f7fa;
+    color: #172033;
+
+    padding: 18px 20px;
+
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+
+    font-family: "Courier New", monospace;
+    font-size: 1.05rem;
+
+    margin: 18px 0;
+
+    overflow-x: auto;
+}
+
+/* Ohm's Law Triangle */
+
+.triangle {
+    max-width: 330px;
+    margin: 25px auto;
+    text-align: center;
+}
+
+.triangle-shape {
+    display: inline-grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    width: 260px;
+    height: 190px;
+
+    clip-path: polygon(
+        50% 0%,
+        100% 100%,
+        0% 100%
+    );
+
+    background: #dbeafe;
+
+    position: relative;
+}
+
+.triangle-shape div {
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    font-size: 1.7rem;
+    font-weight: bold;
+
+    color: #172033;
+}
+
+.triangle-v {
+    grid-column: 1 / 3;
+    padding-top: 35px;
+}
+
+.triangle-i {
+    border-right: 1px solid #94a3b8;
+    padding-top: 20px;
+}
+
+.triangle-r {
+    padding-top: 20px;
+}
+
+/* Information / Examples */
+
+.info-box,
+.example {
+    background: #ffffff;
+
+    border: 1px solid #dfe5ec;
+    border-radius: 12px;
+
+    padding: 24px;
+
+    margin: 20px 0;
+}
+
+.example {
+    background: #f8fafc;
+    border-color: #e2e8f0;
+}
+
+/* Tables */
+
+table {
+    width: 100%;
+
+    border-collapse: collapse;
+
+    margin: 20px 0;
+
+    background: #ffffff;
+}
+
+th,
+td {
+    border: 1px solid #cbd5e1;
+
+    padding: 11px 13px;
+
+    text-align: left;
+}
+
+th {
+    background: #f1f5f9;
+    color: #172033;
+}
+
+/* Lists */
+
+ul,
+ol {
+    padding-left: 25px;
+}
+
+/* Related calculators */
+
+.related {
+    display: grid;
+
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 14px;
+
+    margin-top: 20px;
+}
+
+.related a {
+    display: block;
+
+    padding: 15px;
+
+    background: #f8fafc;
+
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+
+    text-decoration: none;
+
+    color: #2563eb;
+    font-weight: 700;
+}
+
+.related a:hover {
+    border-color: #bfdbfe;
+    background: #eff6ff;
+}
+
+/* Field note */
+
+.note {
+    background: #fff7ed;
+
+    border: 1px solid #fed7aa;
+    border-left: 5px solid #f97316;
+
+    padding: 18px 20px;
+
+    border-radius: 8px;
+
+    margin-top: 24px;
+}
+
+/* Footer */
+
+footer {
+    background: #ffffff;
+
+    color: #64748b;
+
+    text-align: center;
+
+    padding: 25px;
+
+    font-size: 0.9rem;
+
+    border-top: 1px solid #dfe5ec;
+}
+
+/* Mobile */
+
+@media (max-width: 650px) {
 
     .header-inner {
-            min-height: 64px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
+        min-height: auto;
 
-    .logo {
-        font-size: 22px;
-        font-weight: 800;
-        color: #172033
+        padding: 16px 0;
+
+        flex-direction: column;
+        align-items: flex-start;
     }
 
-    nav a {
-        color: #dbeafe;
-        text-decoration: none;
-        margin-left: 18px;
-        font-size: 0.95rem;
+    nav {
+        gap: 16px;
     }
 
-    nav a:hover {
-        text-decoration: underline;
+    .input-grid,
+    .related {
+        grid-template-columns: 1fr;
     }
 
-    main {
-        max-width: 1050px;
-        margin: 0 auto;
-        padding: 32px 20px 60px;
-    }
-
-    .breadcrumb {
-        font-size: 0.9rem;
-        margin-bottom: 20px;
-        color: #64748b;
-    }
-
-    .breadcrumb a {
-        color: #2563eb;
-        text-decoration: none;
+    .calculator,
+    .info-box,
+    .example {
+        padding: 22px;
     }
 
     h1 {
-        font-size: 2.3rem;
-        margin-bottom: 10px;
-        color: #0f172a;
+        font-size: 1.9rem;
     }
+}
 
-    h2 {
-        color: #0f172a;
-        margin-top: 38px;
-    }
-
-    h3 {
-        color: #1e293b;
-        margin-top: 26px;
-    }
-
-    .intro {
-        font-size: 1.08rem;
-        max-width: 850px;
-        color: #475569;
-    }
-
-    .calculator {
-        background: white;
-        border-radius: 12px;
-        padding: 28px;
-        margin-top: 28px;
-        box-shadow: 0 3px 12px rgba(15, 23, 42, 0.08);
-        border: 1px solid #e2e8f0;
-    }
-
-    .calculator h2 {
-        margin-top: 0;
-    }
-
-    .input-grid {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 18px;
-        margin-top: 20px;
-    }
-
-    label {
-        display: block;
-        font-weight: bold;
-        margin-bottom: 6px;
-        color: #334155;
-    }
-
-    input, select {
-        width: 100%;
-        padding: 12px;
-        border: 1px solid #cbd5e1;
-        border-radius: 7px;
-        font-size: 1rem;
-        background: white;
-    }
-
-    input:focus, select:focus {
-        outline: 2px solid #93c5fd;
-        border-color: #2563eb;
-    }
-
-    .button-row {
-        margin-top: 22px;
-    }
-
-    button {
-        background: #2563eb;
-        color: white;
-        border: none;
-        border-radius: 7px;
-        padding: 12px 22px;
-        font-size: 1rem;
-        font-weight: bold;
-        cursor: pointer;
-    }
-
-    button:hover {
-        background: #1d4ed8;
-    }
-
-    .result {
-        display: none;
-        margin-top: 22px;
-        padding: 20px;
-        border-radius: 8px;
-        background: #eff6ff;
-        border-left: 5px solid #2563eb;
-    }
-
-    .result strong {
-        font-size: 1.35rem;
-        color: #0f172a;
-    }
-
-    .error {
-        display: none;
-        margin-top: 18px;
-        padding: 14px;
-        border-radius: 7px;
-        background: #fef2f2;
-        border-left: 5px solid #dc2626;
-        color: #991b1b;
-    }
-
-    .formula {
-        background: #0f172a;
-        color: white;
-        padding: 20px;
-        border-radius: 8px;
-        font-family: "Courier New", monospace;
-        font-size: 1.1rem;
-        margin: 18px 0;
-        overflow-x: auto;
-    }
-
-    .triangle {
-        max-width: 330px;
-        margin: 25px auto;
-        text-align: center;
-    }
-
-    .triangle-shape {
-        display: inline-grid;
-        grid-template-columns: 1fr 1fr;
-        width: 260px;
-        height: 190px;
-        clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
-        background: #dbeafe;
-        position: relative;
-    }
-
-    .triangle-shape div {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 1.7rem;
-        font-weight: bold;
-        color: #0f172a;
-    }
-
-    .triangle-v {
-        grid-column: 1 / 3;
-        padding-top: 35px;
-    }
-
-    .triangle-i {
-        border-right: 1px solid #94a3b8;
-        padding-top: 20px;
-    }
-
-    .triangle-r {
-        padding-top: 20px;
-    }
-
-    .info-box {
-        background: white;
-        border: 1px solid #e2e8f0;
-        border-radius: 9px;
-        padding: 20px;
-        margin: 20px 0;
-    }
-
-    .example {
-        background: #f8fafc;
-        border-left: 5px solid #64748b;
-        padding: 18px 20px;
-        margin: 18px 0;
-        border-radius: 5px;
-    }
-
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin: 20px 0;
-        background: white;
-    }
-
-    th, td {
-        border: 1px solid #cbd5e1;
-        padding: 11px 13px;
-        text-align: left;
-    }
-
-    th {
-        background: #e2e8f0;
-        color: #0f172a;
-    }
-
-    ul, ol {
-        padding-left: 25px;
-    }
-
-    .related {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 14px;
-        margin-top: 20px;
-    }
-
-    .related a {
-        display: block;
-        padding: 15px;
-        background: white;
-        border: 1px solid #dbe3ec;
-        border-radius: 8px;
-        text-decoration: none;
-        color: #1d4ed8;
-        font-weight: bold;
-    }
-
-    .related a:hover {
-        border-color: #2563eb;
-        background: #eff6ff;
-    }
-
-    .note {
-        background: #fff7ed;
-        border-left: 5px solid #f97316;
-        padding: 18px 20px;
-        border-radius: 5px;
-        margin-top: 24px;
-    }
-
-    footer {
-        background: #0f172a;
-        color: #cbd5e1;
-        text-align: center;
-        padding: 25px;
-        font-size: 0.9rem;
-    }
-
-    @media (max-width: 700px) {
-        .header-inner {
-            flex-direction: column;
-            align-items: flex-start;
-        }
-
-        nav a {
-            margin-left: 0;
-            margin-right: 15px;
-        }
-
-        .input-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .related {
-            grid-template-columns: 1fr;
-        }
-
-        h1 {
-            font-size: 1.9rem;
-        }
-    }
 </style>
 </head>
+
 
 <body>
 
 <header>
+
     <div class="header-inner">
-        <div class="logo">ControlsCalc</div>
+
+        <a href="../" class="logo">
+            ControlsCalc
+        </a>
+
         <nav>
-            <a href="../index.html">Calculators</a>
-            <a href="../guides/index.html">Guides</a>
+
+            <a href="../">
+                Calculators
+            </a>
+
+            <a href="../guides/index.html">
+                Guides
+            </a>
+
         </nav>
+
     </div>
+
 </header>
+
 
 <main>
 
     <div class="breadcrumb">
-        <a href="../index.html">Calculators</a> → Ohm's Law
+
+        <a href="../">
+            Calculators
+        </a>
+
+        → Ohm's Law
+
     </div>
 
-    <h1>Ohm's Law Calculator</h1>
+
+    <h1>
+        Ohm's Law Calculator
+    </h1>
+
 
     <p class="intro">
+
         Calculate voltage, current, resistance, and power using Ohm's Law.
         This calculator is useful for troubleshooting control circuits, sensors,
         resistive loads, voltage dividers, and 24 VDC instrumentation circuits.
+
     </p>
 
+
+    <!-- Calculator -->
+
     <section class="calculator">
-        <h2>Calculate</h2>
+
+        <h2>
+            Calculate
+        </h2>
+
 
         <p>
+
             Enter any two of voltage, current, and resistance. The calculator
             will determine the remaining electrical values.
+
         </p>
+
 
         <div class="input-grid">
 
-            <div>
-                <label for="voltage">Voltage (V)</label>
-                <input type="number" id="voltage" step="any" placeholder="Example: 24">
-            </div>
 
             <div>
-                <label for="current">Current (A)</label>
-                <input type="number" id="current" step="any" placeholder="Example: 0.5">
+
+                <label for="voltage">
+                    Voltage (V)
+                </label>
+
+                <input
+                    type="number"
+                    id="voltage"
+                    step="any"
+                    placeholder="Example: 24"
+                >
+
             </div>
 
-            <div>
-                <label for="resistance">Resistance (Ω)</label>
-                <input type="number" id="resistance" step="any" placeholder="Example: 48">
-            </div>
 
             <div>
-                <label for="currentUnit">Current Unit</label>
+
+                <label for="current">
+                    Current (A)
+                </label>
+
+                <input
+                    type="number"
+                    id="current"
+                    step="any"
+                    placeholder="Example: 0.5"
+                >
+
+            </div>
+
+
+            <div>
+
+                <label for="resistance">
+                    Resistance (Ω)
+                </label>
+
+                <input
+                    type="number"
+                    id="resistance"
+                    step="any"
+                    placeholder="Example: 48"
+                >
+
+            </div>
+
+
+            <div>
+
+                <label for="currentUnit">
+                    Current Unit
+                </label>
+
                 <select id="currentUnit">
-                    <option value="A">Amps (A)</option>
-                    <option value="mA">Milliamps (mA)</option>
+
+                    <option value="A">
+                        Amps (A)
+                    </option>
+
+                    <option value="mA">
+                        Milliamps (mA)
+                    </option>
+
                 </select>
+
             </div>
+
 
         </div>
+
 
         <div class="button-row">
-            <button onclick="calculateOhmsLaw()">Calculate</button>
+
+            <button onclick="calculateOhmsLaw()">
+                Calculate
+            </button>
+
         </div>
+
 
         <div id="error" class="error"></div>
 
+
         <div id="result" class="result"></div>
+
     </section>
 
-    <h2>Understand Ohm's Law</h2>
+
+    <!-- Educational Content -->
+
+    <h2>
+        Understand Ohm's Law
+    </h2>
+
 
     <p>
-        Ohm's Law describes the relationship between <strong>voltage (V)</strong>,
-        <strong>current (I)</strong>, and <strong>resistance (R)</strong> in an
-        electrical circuit.
+
+        Ohm's Law describes the relationship between
+        <strong>voltage (V)</strong>,
+        <strong>current (I)</strong>, and
+        <strong>resistance (R)</strong>
+        in an electrical circuit.
+
     </p>
 
+
     <div class="formula">
+
         V = I × R
+
     </div>
 
+
     <p>
+
         From that basic equation, you can rearrange the formula to calculate
         any one of the three variables:
+
     </p>
 
+
     <div class="formula">
+
         Voltage:     V = I × R<br>
         Current:     I = V ÷ R<br>
         Resistance:  R = V ÷ I
+
     </div>
+
 
     <div class="triangle">
+
         <div class="triangle-shape">
-            <div class="triangle-v">V</div>
-            <div class="triangle-i">I</div>
-            <div class="triangle-r">R</div>
+
+            <div class="triangle-v">
+                V
+            </div>
+
+            <div class="triangle-i">
+                I
+            </div>
+
+            <div class="triangle-r">
+                R
+            </div>
+
         </div>
-        <p><strong>V = I × R</strong></p>
-    </div>
-
-    <div class="info-box">
-        <h3>What the variables mean</h3>
-
-        <ul>
-            <li><strong>V</strong> = voltage, measured in volts (V)</li>
-            <li><strong>I</strong> = current, measured in amps (A)</li>
-            <li><strong>R</strong> = resistance, measured in ohms (Ω)</li>
-        </ul>
 
         <p>
+            <strong>V = I × R</strong>
+        </p>
+
+    </div>
+
+
+    <div class="info-box">
+
+        <h3>
+            What the variables mean
+        </h3>
+
+
+        <ul>
+
+            <li>
+                <strong>V</strong> = voltage, measured in volts (V)
+            </li>
+
+            <li>
+                <strong>I</strong> = current, measured in amps (A)
+            </li>
+
+            <li>
+                <strong>R</strong> = resistance, measured in ohms (Ω)
+            </li>
+
+        </ul>
+
+
+        <p>
+
             In practical controls work, you'll often measure voltage and current
             and use those measurements to determine whether a resistance,
             load, or circuit is behaving as expected.
+
         </p>
+
     </div>
 
-    <h2>Power: The Other Important Relationship</h2>
+
+    <h2>
+        Power: The Other Important Relationship
+    </h2>
+
 
     <p>
+
         Ohm's Law also gives us several useful ways to calculate electrical
         power.
+
     </p>
 
+
     <div class="formula">
+
         P = V × I<br><br>
         P = I² × R<br><br>
         P = V² ÷ R
+
     </div>
 
+
     <p>
+
         Power is measured in <strong>watts (W)</strong>. This becomes especially
         important when selecting resistors because a resistor must be capable
         of safely dissipating the heat produced by the circuit.
+
     </p>
 
-    <h2>Worked Examples</h2>
+
+    <h2>
+        Worked Examples
+    </h2>
+
 
     <div class="example">
-        <h3>Example 1: Finding Current</h3>
+
+        <h3>
+            Example 1: Finding Current
+        </h3>
+
 
         <p>
+
             A control circuit has a 24 VDC power supply and a 120 Ω load.
             What current should flow?
+
         </p>
 
+
         <div class="formula">
+
             I = V ÷ R<br>
             I = 24 ÷ 120<br>
             I = 0.20 A
+
         </div>
 
+
         <p>
+
             The expected current is <strong>200 mA</strong>.
+
         </p>
+
     </div>
 
+
     <div class="example">
-        <h3>Example 2: Finding Resistance</h3>
+
+        <h3>
+            Example 2: Finding Resistance
+        </h3>
+
 
         <p>
+
             You measure 24 V across a load and 0.5 A flowing through it.
             What is the resistance?
+
         </p>
 
+
         <div class="formula">
+
             R = V ÷ I<br>
             R = 24 ÷ 0.5<br>
             R = 48 Ω
+
         </div>
 
+
         <p>
+
             The calculated resistance is <strong>48 Ω</strong>.
+
         </p>
+
     </div>
 
+
     <div class="example">
-        <h3>Example 3: 4–20 mA Signal</h3>
+
+        <h3>
+            Example 3: 4–20 mA Signal
+        </h3>
+
 
         <p>
+
             A 250 Ω resistor is installed in a 4–20 mA signal circuit.
             What voltage should appear across the resistor at 12 mA?
+
         </p>
 
+
         <div class="formula">
+
             V = I × R<br>
             V = 0.012 × 250<br>
             V = 3 V
+
         </div>
 
+
         <p>
+
             Therefore, 12 mA through a 250 Ω resistor produces
             <strong>3 V</strong>.
+
         </p>
+
 
         <p>
+
             This is why a 250 Ω resistor is commonly used when converting a
             4–20 mA signal into a nominal 1–5 V signal.
+
         </p>
+
     </div>
 
-    <h2>24 VDC Controls Example</h2>
+
+    <h2>
+        24 VDC Controls Example
+    </h2>
+
 
     <p>
+
         Many industrial control systems use 24 VDC. Ohm's Law can quickly help
         determine whether a circuit is behaving as expected.
+
     </p>
 
+
     <table>
+
         <tr>
-            <th>Voltage</th>
-            <th>Resistance</th>
-            <th>Expected Current</th>
+
+            <th>
+                Voltage
+            </th>
+
+            <th>
+                Resistance
+            </th>
+
+            <th>
+                Expected Current
+            </th>
+
         </tr>
+
+
         <tr>
-            <td>24 V</td>
-            <td>24 Ω</td>
-            <td>1.00 A</td>
+
+            <td>
+                24 V
+            </td>
+
+            <td>
+                24 Ω
+            </td>
+
+            <td>
+                1.00 A
+            </td>
+
         </tr>
+
+
         <tr>
-            <td>24 V</td>
-            <td>48 Ω</td>
-            <td>0.50 A</td>
+
+            <td>
+                24 V
+            </td>
+
+            <td>
+                48 Ω
+            </td>
+
+            <td>
+                0.50 A
+            </td>
+
         </tr>
+
+
         <tr>
-            <td>24 V</td>
-            <td>120 Ω</td>
-            <td>0.20 A</td>
+
+            <td>
+                24 V
+            </td>
+
+            <td>
+                120 Ω
+            </td>
+
+            <td>
+                0.20 A
+            </td>
+
         </tr>
+
+
         <tr>
-            <td>24 V</td>
-            <td>240 Ω</td>
-            <td>0.10 A</td>
+
+            <td>
+                24 V
+            </td>
+
+            <td>
+                240 Ω
+            </td>
+
+            <td>
+                0.10 A
+            </td>
+
         </tr>
+
+
         <tr>
-            <td>24 V</td>
-            <td>1,000 Ω</td>
-            <td>24 mA</td>
+
+            <td>
+                24 V
+            </td>
+
+            <td>
+                1,000 Ω
+            </td>
+
+            <td>
+                24 mA
+            </td>
+
         </tr>
+
     </table>
 
-    <h2>Resistor Power</h2>
+
+    <h2>
+        Resistor Power
+    </h2>
+
 
     <p>
+
         When current flows through resistance, electrical energy is converted
         into heat. The amount of power is important when determining whether a
         resistor is properly sized.
+
     </p>
 
+
     <div class="formula">
+
         P = I² × R
+
     </div>
 
+
     <div class="example">
-        <h3>Example: 250 Ω Loop Resistor</h3>
+
+        <h3>
+            Example: 250 Ω Loop Resistor
+        </h3>
+
 
         <p>
+
             At 20 mA, a 250 Ω resistor dissipates:
+
         </p>
 
+
         <div class="formula">
+
             P = I² × R<br>
             P = 0.020² × 250<br>
             P = 0.10 W
+
         </div>
 
+
         <p>
+
             The resistor dissipates <strong>0.10 W</strong>. A resistor with a
             suitable power rating should be selected rather than choosing a
             component solely from its resistance value.
+
         </p>
+
     </div>
 
-    <h2>Using Ohm's Law for Troubleshooting</h2>
+
+    <h2>
+        Using Ohm's Law for Troubleshooting
+    </h2>
+
 
     <p>
+
         Ohm's Law is particularly useful when measurements don't match what
         you expect from a circuit.
+
     </p>
 
-    <h3>If voltage is correct but current is too low</h3>
+
+    <h3>
+        If voltage is correct but current is too low
+    </h3>
 
     <ul>
-        <li>Check for excessive resistance in the circuit.</li>
-        <li>Look for loose or corroded connections.</li>
-        <li>Check for a partially open conductor.</li>
-        <li>Verify the load resistance.</li>
-        <li>Check whether the load is actually connected.</li>
+
+        <li>
+            Check for excessive resistance in the circuit.
+        </li>
+
+        <li>
+            Look for loose or corroded connections.
+        </li>
+
+        <li>
+            Check for a partially open conductor.
+        </li>
+
+        <li>
+            Verify the load resistance.
+        </li>
+
+        <li>
+            Check whether the load is actually connected.
+        </li>
+
     </ul>
 
-    <h3>If voltage is correct but current is too high</h3>
+
+    <h3>
+        If voltage is correct but current is too high
+    </h3>
 
     <ul>
-        <li>Check for an unintended short or low-resistance path.</li>
-        <li>Verify that the correct load is installed.</li>
-        <li>Check wiring against the control schematic.</li>
-        <li>Look for damaged components.</li>
+
+        <li>
+            Check for an unintended short or low-resistance path.
+        </li>
+
+        <li>
+            Verify that the correct load is installed.
+        </li>
+
+        <li>
+            Check wiring against the control schematic.
+        </li>
+
+        <li>
+            Look for damaged components.
+        </li>
+
     </ul>
 
-    <h3>If the calculated resistance seems wrong</h3>
+
+    <h3>
+        If the calculated resistance seems wrong
+    </h3>
 
     <ul>
-        <li>Verify that voltage and current were measured at the same operating condition.</li>
-        <li>Check whether the load is nonlinear.</li>
-        <li>Make sure the meter is measuring the intended circuit.</li>
-        <li>Remember that an energized circuit should not normally have resistance measured across it with an ohmmeter.</li>
+
+        <li>
+            Verify that voltage and current were measured at the same operating condition.
+        </li>
+
+        <li>
+            Check whether the load is nonlinear.
+        </li>
+
+        <li>
+            Make sure the meter is measuring the intended circuit.
+        </li>
+
+        <li>
+            Remember that an energized circuit should not normally have resistance measured across it with an ohmmeter.
+        </li>
+
     </ul>
+
 
     <div class="note">
+
         <strong>Important field rule:</strong>
         Never place an ammeter directly across a voltage source. An ammeter is
         designed to measure current while connected in series with the circuit.
         Placing it directly across a power supply can create a very low-resistance
         path and may damage the meter, fuse, wiring, or equipment.
+
     </div>
 
-    <h2>Common Mistakes</h2>
+
+    <h2>
+        Common Mistakes
+    </h2>
+
 
     <ul>
-        <li><strong>Mixing amps and milliamps:</strong> 20 mA = 0.020 A, not 20 A.</li>
-        <li><strong>Forgetting unit conversions:</strong> resistance may be expressed in kΩ or MΩ.</li>
-        <li><strong>Measuring resistance on an energized circuit:</strong> use the appropriate de-energized test procedure.</li>
-        <li><strong>Ignoring power:</strong> the correct resistance value does not automatically mean the resistor has the correct wattage rating.</li>
-        <li><strong>Assuming every load is purely resistive:</strong> motors, coils, electronic devices, and power supplies can behave differently from a simple resistor.</li>
+
+        <li>
+            <strong>Mixing amps and milliamps:</strong>
+            20 mA = 0.020 A, not 20 A.
+        </li>
+
+        <li>
+            <strong>Forgetting unit conversions:</strong>
+            resistance may be expressed in kΩ or MΩ.
+        </li>
+
+        <li>
+            <strong>Measuring resistance on an energized circuit:</strong>
+            use the appropriate de-energized test procedure.
+        </li>
+
+        <li>
+            <strong>Ignoring power:</strong>
+            the correct resistance value does not automatically mean the resistor has the correct wattage rating.
+        </li>
+
+        <li>
+            <strong>Assuming every load is purely resistive:</strong>
+            motors, coils, electronic devices, and power supplies can behave differently from a simple resistor.
+        </li>
+
     </ul>
 
-    <h2>Quick Reference</h2>
+
+    <h2>
+        Quick Reference
+    </h2>
+
 
     <table>
+
         <tr>
-            <th>What You Know</th>
-            <th>What You Want</th>
-            <th>Formula</th>
+
+            <th>
+                What You Know
+            </th>
+
+            <th>
+                What You Want
+            </th>
+
+            <th>
+                Formula
+            </th>
+
         </tr>
+
+
         <tr>
-            <td>Current + Resistance</td>
-            <td>Voltage</td>
-            <td>V = I × R</td>
+
+            <td>
+                Current + Resistance
+            </td>
+
+            <td>
+                Voltage
+            </td>
+
+            <td>
+                V = I × R
+            </td>
+
         </tr>
+
+
         <tr>
-            <td>Voltage + Resistance</td>
-            <td>Current</td>
-            <td>I = V ÷ R</td>
+
+            <td>
+                Voltage + Resistance
+            </td>
+
+            <td>
+                Current
+            </td>
+
+            <td>
+                I = V ÷ R
+            </td>
+
         </tr>
+
+
         <tr>
-            <td>Voltage + Current</td>
-            <td>Resistance</td>
-            <td>R = V ÷ I</td>
+
+            <td>
+                Voltage + Current
+            </td>
+
+            <td>
+                Resistance
+            </td>
+
+            <td>
+                R = V ÷ I
+            </td>
+
         </tr>
+
+
         <tr>
-            <td>Voltage + Current</td>
-            <td>Power</td>
-            <td>P = V × I</td>
+
+            <td>
+                Voltage + Current
+            </td>
+
+            <td>
+                Power
+            </td>
+
+            <td>
+                P = V × I
+            </td>
+
         </tr>
+
+
         <tr>
-            <td>Current + Resistance</td>
-            <td>Power</td>
-            <td>P = I² × R</td>
+
+            <td>
+                Current + Resistance
+            </td>
+
+            <td>
+                Power
+            </td>
+
+            <td>
+                P = I² × R
+            </td>
+
         </tr>
+
+
         <tr>
-            <td>Voltage + Resistance</td>
-            <td>Power</td>
-            <td>P = V² ÷ R</td>
+
+            <td>
+                Voltage + Resistance
+            </td>
+
+            <td>
+                Power
+            </td>
+
+            <td>
+                P = V² ÷ R
+            </td>
+
         </tr>
+
     </table>
 
-    <h2>Related Calculators</h2>
+
+    <h2>
+        Related Calculators
+    </h2>
+
 
     <div class="related">
-        <a href="voltage-divider.html">Voltage Divider Calculator</a>
-        <a href="4-20ma-voltage.html">4–20 mA → Voltage</a>
-        <a href="4-20ma-resistor.html">4–20 mA Loop Resistor</a>
-        <a href="4-20ma-scaling.html">4–20 mA Scaling</a>
-        <a href="0-10v-scaling.html">0–10 V Scaling</a>
-        <a href="analog-scaling.html">Analog Signal Scaling</a>
+
+        <a href="voltage-divider.html">
+            Voltage Divider Calculator
+        </a>
+
+        <a href="4-20ma-voltage.html">
+            4–20 mA → Voltage
+        </a>
+
+        <a href="4-20ma-resistor.html">
+            4–20 mA Loop Resistor
+        </a>
+
+        <a href="4-20ma-scaling.html">
+            4–20 mA Scaling
+        </a>
+
+        <a href="0-10v-scaling.html">
+            0–10 V Scaling
+        </a>
+
+        <a href="analog-scaling.html">
+            Analog Signal Scaling
+        </a>
+
     </div>
 
-    <h2>Engineering Note</h2>
+
+    <h2>
+        Engineering Note
+    </h2>
+
 
     <p>
+
         Ohm's Law is one of the most useful relationships in electrical
         troubleshooting, but real control systems often contain components that
         are not simple resistive loads. Motors, solenoids, electronic inputs,
         power supplies, and transmitters can have nonlinear or dynamic behavior.
+
     </p>
 
+
     <p>
+
         Use Ohm's Law as a fundamental tool for understanding the circuit, then
         combine it with the equipment schematic, manufacturer's specifications,
         and actual measurements.
+
     </p>
+
 
 </main>
 
+
 <footer>
+
     ControlsCalc — Controls & Instrumentation Calculators
+
 </footer>
 
+
 <script>
+
 function calculateOhmsLaw() {
 
-    const voltageInput = document.getElementById("voltage").value;
-    const currentInput = document.getElementById("current").value;
-    const resistanceInput = document.getElementById("resistance").value;
-    const currentUnit = document.getElementById("currentUnit").value;
+    const voltageInput =
+        document.getElementById("voltage").value;
 
-    const voltage = voltageInput === "" ? null : parseFloat(voltageInput);
-    let current = currentInput === "" ? null : parseFloat(currentInput);
-    const resistance = resistanceInput === "" ? null : parseFloat(resistanceInput);
+    const currentInput =
+        document.getElementById("current").value;
 
-    const result = document.getElementById("result");
-    const error = document.getElementById("error");
+    const resistanceInput =
+        document.getElementById("resistance").value;
+
+    const currentUnit =
+        document.getElementById("currentUnit").value;
+
+
+    const voltage =
+        voltageInput === ""
+            ? null
+            : parseFloat(voltageInput);
+
+
+    let current =
+        currentInput === ""
+            ? null
+            : parseFloat(currentInput);
+
+
+    const resistance =
+        resistanceInput === ""
+            ? null
+            : parseFloat(resistanceInput);
+
+
+    const result =
+        document.getElementById("result");
+
+    const error =
+        document.getElementById("error");
+
 
     result.style.display = "none";
     error.style.display = "none";
 
-    const known = [voltage, current, resistance].filter(v => v !== null).length;
+
+    const known =
+        [voltage, current, resistance]
+            .filter(v => v !== null)
+            .length;
+
 
     if (known !== 2) {
-        error.textContent = "Enter exactly two values: voltage, current, or resistance.";
+
+        error.textContent =
+            "Enter exactly two values: voltage, current, or resistance.";
+
         error.style.display = "block";
+
         return;
     }
 
-    if ([voltage, current, resistance].some(v => v !== null && !isFinite(v))) {
-        error.textContent = "Please enter valid numeric values.";
+
+    if (
+        [voltage, current, resistance]
+            .some(v => v !== null && !isFinite(v))
+    ) {
+
+        error.textContent =
+            "Please enter valid numeric values.";
+
         error.style.display = "block";
+
         return;
     }
 
-    if (current !== null && currentUnit === "mA") {
+
+    if (
+        current !== null &&
+        currentUnit === "mA"
+    ) {
+
         current = current / 1000;
+
     }
+
 
     let V = voltage;
     let I = current;
     let R = resistance;
 
+
     if (V === null) {
+
         if (R === 0) {
-            error.textContent = "Resistance cannot be zero when calculating voltage.";
+
+            error.textContent =
+                "Resistance cannot be zero when calculating voltage.";
+
             error.style.display = "block";
+
             return;
         }
+
         V = I * R;
+
     }
+
 
     if (I === null) {
+
         if (R === 0) {
-            error.textContent = "Resistance cannot be zero when calculating current.";
+
+            error.textContent =
+                "Resistance cannot be zero when calculating current.";
+
             error.style.display = "block";
+
             return;
         }
+
         I = V / R;
+
     }
+
 
     if (R === null) {
+
         if (I === 0) {
-            error.textContent = "Current cannot be zero when calculating resistance.";
+
+            error.textContent =
+                "Current cannot be zero when calculating resistance.";
+
             error.style.display = "block";
+
             return;
         }
+
         R = V / I;
+
     }
+
 
     const power = V * I;
+
     const currentMA = I * 1000;
 
+
     result.innerHTML = `
+
         <strong>Results</strong>
+
         <br><br>
-        Voltage: <strong>${formatNumber(V)} V</strong><br>
-        Current: <strong>${formatNumber(I)} A (${formatNumber(currentMA)} mA)</strong><br>
-        Resistance: <strong>${formatNumber(R)} Ω</strong><br>
-        Power: <strong>${formatNumber(power)} W</strong>
+
+        Voltage:
+        <strong>
+            ${formatNumber(V)} V
+        </strong>
+
+        <br>
+
+        Current:
+        <strong>
+            ${formatNumber(I)} A
+            (${formatNumber(currentMA)} mA)
+        </strong>
+
+        <br>
+
+        Resistance:
+        <strong>
+            ${formatNumber(R)} Ω
+        </strong>
+
+        <br>
+
+        Power:
+        <strong>
+            ${formatNumber(power)} W
+        </strong>
+
     `;
 
+
     result.style.display = "block";
+
 }
+
 
 function formatNumber(value) {
-    if (Math.abs(value) >= 1000 || (Math.abs(value) > 0 && Math.abs(value) < 0.001)) {
+
+    if (
+        Math.abs(value) >= 1000 ||
+        (
+            Math.abs(value) > 0 &&
+            Math.abs(value) < 0.001
+        )
+    ) {
+
         return value.toExponential(3);
+
     }
 
-    return Number(value.toFixed(6)).toString();
+
+    return Number(
+        value.toFixed(6)
+    ).toString();
+
 }
+
 </script>
 
 </body>
