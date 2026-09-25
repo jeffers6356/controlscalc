@@ -1,1 +1,1199 @@
-<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><title>PLC Analog Scaling | ControlsCalc</title><link rel="stylesheet" href="../style.css"></head><body><main class="wrap calc"><h1>PLC Analog Scaling</h1><p>Linear scaling maps a raw input range to an engineering-unit range.</p><p>Output = Output Min + (Input − Input Min) ÷ (Input Max − Input Min) × (Output Max − Output Min).</p><p><a href="../calculators/analog-scaling.html">Use the calculator →</a></p></main></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>PLC Analog Scaling Explained: Raw Counts to Engineering Units | ControlsCalc</title>
+
+    <meta
+        name="description"
+        content="Learn how PLC analog scaling works from 4–20 mA and 0–10 V signals to raw counts and engineering units. Includes formulas, worked examples, troubleshooting, and common PLC scaling mistakes."
+    >
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #172033;
+            background: #f5f7fa;
+            line-height: 1.7;
+        }
+
+        a {
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            width: min(1050px, calc(100% - 40px));
+            margin: 0 auto;
+        }
+
+        /* Header */
+
+        header {
+            background: #ffffff;
+            border-bottom: 1px solid #e1e5eb;
+        }
+
+        .header-inner {
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 800;
+            color: #172033;
+            text-decoration: none;
+        }
+
+        nav {
+            display: flex;
+            gap: 24px;
+        }
+
+        nav a {
+            color: #2563eb;
+            text-decoration: none;
+            font-size: 15px;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        /* Hero */
+
+        .hero {
+            background: #ffffff;
+            padding: 58px 0 48px;
+        }
+
+        .eyebrow {
+            margin-bottom: 10px;
+            color: #64748b;
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+        }
+
+        .hero h1 {
+            max-width: 850px;
+            margin: 0 0 18px;
+            font-size: clamp(36px, 5vw, 54px);
+            line-height: 1.08;
+            letter-spacing: -1.4px;
+        }
+
+        .hero p {
+            max-width: 800px;
+            margin: 0;
+            color: #64748b;
+            font-size: 18px;
+        }
+
+        /* Main */
+
+        main {
+            padding: 48px 0 80px;
+        }
+
+        .content-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 250px;
+            gap: 44px;
+            align-items: start;
+        }
+
+        article {
+            min-width: 0;
+        }
+
+        /* Table of contents */
+
+        .toc {
+            position: sticky;
+            top: 24px;
+            padding: 20px;
+            background: #ffffff;
+            border: 1px solid #dfe5ec;
+            border-radius: 10px;
+        }
+
+        .toc h2 {
+            margin: 0 0 12px;
+            font-size: 16px;
+        }
+
+        .toc a {
+            display: block;
+            padding: 5px 0;
+            color: #64748b;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .toc a:hover {
+            color: #2563eb;
+        }
+
+        /* Article */
+
+        article h2 {
+            margin: 48px 0 14px;
+            font-size: 28px;
+            line-height: 1.25;
+        }
+
+        article h3 {
+            margin: 30px 0 10px;
+            font-size: 20px;
+            line-height: 1.3;
+        }
+
+        article p {
+            margin: 0 0 17px;
+        }
+
+        article ul,
+        article ol {
+            margin: 0 0 20px;
+            padding-left: 25px;
+        }
+
+        article li {
+            margin-bottom: 7px;
+        }
+
+        /* Formula */
+
+        .formula {
+            margin: 22px 0;
+            padding: 20px;
+            background: #f7f9fc;
+            border: 1px solid #dce3ec;
+            border-radius: 9px;
+            font-family: "Courier New", monospace;
+            font-size: 16px;
+            overflow-x: auto;
+        }
+
+        /* Callouts */
+
+        .callout {
+            margin: 24px 0;
+            padding: 20px 22px;
+            background: #ffffff;
+            border: 1px solid #dfe5ec;
+            border-left: 4px solid #2563eb;
+            border-radius: 8px;
+        }
+
+        .callout strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .warning {
+            border-left-color: #d39a00;
+            background: #fffaf0;
+        }
+
+        /* Examples */
+
+        .example {
+            margin: 24px 0;
+            padding: 24px;
+            background: #ffffff;
+            border: 1px solid #dfe5ec;
+            border-radius: 10px;
+        }
+
+        .example h3 {
+            margin-top: 0;
+        }
+
+        /* Tables */
+
+        table {
+            width: 100%;
+            margin: 22px 0 28px;
+            border-collapse: collapse;
+            background: #ffffff;
+        }
+
+        th,
+        td {
+            padding: 11px 13px;
+            border: 1px solid #d7dee8;
+            text-align: left;
+        }
+
+        th {
+            background: #eef2f7;
+            font-weight: 700;
+        }
+
+        /* Signal chain */
+
+        .signal-chain {
+            margin: 25px 0;
+            padding: 22px;
+            background: #f7f9fc;
+            border: 1px solid #dce3ec;
+            border-radius: 9px;
+            font-family: "Courier New", monospace;
+            text-align: center;
+            line-height: 2;
+        }
+
+        /* Tool cards */
+
+        .tool-card {
+            display: block;
+            margin-top: 18px;
+            padding: 20px;
+            background: #ffffff;
+            border: 1px solid #dfe5ec;
+            border-radius: 10px;
+        }
+
+        .tool-card strong {
+            display: block;
+            margin-bottom: 4px;
+            font-size: 17px;
+        }
+
+        .tool-card span {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        /* Footer */
+
+        footer {
+            padding: 36px 0;
+            background: #ffffff;
+            border-top: 1px solid #e1e5eb;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        footer p {
+            margin: 4px 0;
+        }
+
+        /* Mobile */
+
+        @media (max-width: 800px) {
+
+            .content-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .toc {
+                position: static;
+                order: -1;
+            }
+        }
+
+        @media (max-width: 600px) {
+
+            .container {
+                width: min(100% - 28px, 1050px);
+            }
+
+            .header-inner {
+                height: 58px;
+            }
+
+            nav {
+                gap: 14px;
+            }
+
+            .hero {
+                padding: 44px 0 38px;
+            }
+
+            article h2 {
+                font-size: 24px;
+            }
+
+            table {
+                font-size: 14px;
+            }
+
+            th,
+            td {
+                padding: 9px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="container header-inner">
+
+        <a href="../" class="logo">
+            ControlsCalc
+        </a>
+
+        <nav>
+            <a href="../#calculators">Calculators</a>
+            <a href="index.html">Guides</a>
+        </nav>
+
+    </div>
+</header>
+
+
+<section class="hero">
+
+    <div class="container">
+
+        <div class="eyebrow">
+            PLC &amp; Controls Guide
+        </div>
+
+        <h1>
+            PLC Analog Scaling Explained
+        </h1>
+
+        <p>
+            Understand how a PLC turns an analog signal into an engineering
+            value—from the field transmitter and raw input counts all the
+            way to the HMI.
+        </p>
+
+    </div>
+
+</section>
+
+
+<main>
+
+    <div class="container content-layout">
+
+        <article>
+
+            <!-- Introduction -->
+
+            <h2 id="overview">
+                What Is PLC Analog Scaling?
+            </h2>
+
+            <p>
+                PLC analog scaling is the process of converting the numerical
+                value received from an analog input module into the engineering
+                units used by the control system.
+            </p>
+
+            <p>
+                A field transmitter might produce a 4–20 mA signal, but a PLC
+                does not necessarily see that signal directly as "4 mA" or
+                "20 mA." The analog input module converts the electrical signal
+                into a digital value that the PLC program can process.
+            </p>
+
+            <p>
+                The PLC then maps that input value to an engineering range.
+            </p>
+
+            <div class="signal-chain">
+                Physical Process
+                → Transmitter
+                → 4–20 mA
+                → Analog Input
+                → Raw Counts
+                → Engineering Units
+                → HMI / SCADA
+            </div>
+
+            <p>
+                Understanding this entire chain is one of the most useful
+                concepts in controls troubleshooting.
+            </p>
+
+
+            <!-- Example -->
+
+            <h2 id="example">
+                A Complete Example
+            </h2>
+
+            <div class="example">
+
+                <h3>
+                    Pressure Transmitter: 0–100 PSI
+                </h3>
+
+                <p>
+                    Suppose a pressure transmitter is configured for:
+                </p>
+
+                <ul>
+                    <li>LRV = 0 PSI</li>
+                    <li>URV = 100 PSI</li>
+                    <li>Output = 4–20 mA</li>
+                </ul>
+
+                <p>
+                    The transmitter is currently producing 12 mA.
+                </p>
+
+                <p>
+                    From the 4–20 mA relationship:
+                </p>
+
+                <div class="formula">
+                    (12 − 4) ÷ 16 = 0.50
+                </div>
+
+                <p>
+                    The transmitter is therefore at 50% of its configured
+                    measurement span:
+                </p>
+
+                <div class="formula">
+                    0 + (0.50 × 100) = 50 PSI
+                </div>
+
+                <p>
+                    So the actual process value represented by the transmitter
+                    is:
+                </p>
+
+                <p>
+                    <strong>50 PSI</strong>
+                </p>
+
+                <p>
+                    The PLC still has to convert the analog input's digital
+                    representation of that 12 mA signal into 50 PSI.
+                </p>
+
+            </div>
+
+
+            <!-- Raw counts -->
+
+            <h2 id="raw-counts">
+                What Are Raw Counts?
+            </h2>
+
+            <p>
+                An analog input module converts the incoming electrical signal
+                into a numerical representation that the PLC can use.
+            </p>
+
+            <p>
+                Depending on the PLC family, analog input configuration,
+                module resolution, and data format, the numerical range can
+                be different.
+            </p>
+
+            <p>
+                One system might use a range such as:
+            </p>
+
+            <div class="formula">
+                3277 → 4 mA
+                <br>
+                16384 → 20 mA
+            </div>
+
+            <p>
+                Another PLC or analog module may use a completely different
+                representation.
+            </p>
+
+            <div class="callout warning">
+                <strong>Do not memorize one raw-count range.</strong>
+
+                Always verify the actual analog input module's documented
+                scaling, configuration, resolution, and data format before
+                building or troubleshooting PLC scaling.
+            </div>
+
+
+            <!-- Raw count example -->
+
+            <h2 id="raw-example">
+                Raw Counts Example
+            </h2>
+
+            <p>
+                Assume an analog input has been configured so that:
+            </p>
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Signal</th>
+                        <th>Raw Input</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td>4 mA</td>
+                        <td>3277 counts</td>
+                    </tr>
+
+                    <tr>
+                        <td>20 mA</td>
+                        <td>16384 counts</td>
+                    </tr>
+                </tbody>
+
+            </table>
+
+            <p>
+                Suppose the PLC is receiving approximately:
+            </p>
+
+            <div class="formula">
+                Raw Input = 9830 counts
+            </div>
+
+            <p>
+                First determine the percentage of the raw input span:
+            </p>
+
+            <div class="formula">
+                (9830 − 3277) ÷ (16384 − 3277)
+                ≈ 0.50
+            </div>
+
+            <p>
+                The analog input is therefore approximately 50% through
+                its configured range.
+            </p>
+
+            <p>
+                If the engineering range is 0–100 PSI:
+            </p>
+
+            <div class="formula">
+                0 + (0.50 × 100) ≈ 50 PSI
+            </div>
+
+            <p>
+                The PLC should therefore report approximately:
+            </p>
+
+            <p>
+                <strong>50 PSI</strong>
+            </p>
+
+
+            <!-- Generic formula -->
+
+            <h2 id="formula">
+                The General Scaling Formula
+            </h2>
+
+            <p>
+                The same linear scaling concept works regardless of whether
+                the input is expressed as milliamps, volts, raw counts, or
+                another proportional signal.
+            </p>
+
+            <div class="formula">
+                Output =
+                Output Low
+                +
+                ((Input − Input Low)
+                ÷
+                (Input High − Input Low))
+                ×
+                (Output High − Output Low)
+            </div>
+
+            <p>
+                The variables can be interpreted as:
+            </p>
+
+            <ul>
+                <li>
+                    <strong>Input Low:</strong>
+                    the numerical value representing the bottom of the input range.
+                </li>
+
+                <li>
+                    <strong>Input High:</strong>
+                    the numerical value representing the top of the input range.
+                </li>
+
+                <li>
+                    <strong>Output Low:</strong>
+                    the engineering value at the bottom of the range.
+                </li>
+
+                <li>
+                    <strong>Output High:</strong>
+                    the engineering value at the top of the range.
+                </li>
+
+                <li>
+                    <strong>Input:</strong>
+                    the actual value received by the scaling calculation.
+                </li>
+            </ul>
+
+
+            <!-- Signal types -->
+
+            <h2 id="signals">
+                Different Analog Input Types
+            </h2>
+
+            <p>
+                PLC systems commonly encounter several types of analog
+                signals.
+            </p>
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Signal</th>
+                        <th>Typical Application</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td>4–20 mA</td>
+                        <td>Transmitters and industrial instrumentation</td>
+                    </tr>
+
+                    <tr>
+                        <td>0–10 V</td>
+                        <td>HVAC, building automation, control devices</td>
+                    </tr>
+
+                    <tr>
+                        <td>1–5 V</td>
+                        <td>Voltage representation of a 4–20 mA loop</td>
+                    </tr>
+
+                    <tr>
+                        <td>RTD</td>
+                        <td>Temperature measurement</td>
+                    </tr>
+
+                    <tr>
+                        <td>Thermocouple</td>
+                        <td>Temperature measurement</td>
+                    </tr>
+                </tbody>
+
+            </table>
+
+            <p>
+                The underlying scaling concept is similar, but the actual
+                conversion process and hardware configuration can be
+                different for each signal type.
+            </p>
+
+
+            <!-- Transmitter vs PLC -->
+
+            <h2 id="transmitter-vs-plc">
+                Transmitter Scaling vs. PLC Scaling
+            </h2>
+
+            <p>
+                One of the most important distinctions to understand is
+                that the transmitter and PLC can each have their own
+                configuration.
+            </p>
+
+            <p>
+                Consider a transmitter configured for:
+            </p>
+
+            <div class="formula">
+                0–100 PSI = 4–20 mA
+            </div>
+
+            <p>
+                The PLC analog input might then be configured to interpret
+                that signal using the same engineering range.
+            </p>
+
+            <p>
+                If the transmitter is changed to:
+            </p>
+
+            <div class="formula">
+                0–150 PSI = 4–20 mA
+            </div>
+
+            <p>
+                but the PLC remains scaled for 0–100 PSI, the electrical
+                signal can be perfectly correct while the displayed
+                engineering value is wrong.
+            </p>
+
+            <div class="callout">
+                <strong>Key troubleshooting idea</strong>
+
+                A correct 4–20 mA signal does not guarantee a correct
+                displayed engineering value. The transmitter range,
+                analog input configuration, PLC scaling, and HMI display
+                all need to agree.
+            </div>
+
+
+            <!-- PLC data flow -->
+
+            <h2 id="data-flow">
+                Following the Signal Through the PLC
+            </h2>
+
+            <p>
+                When troubleshooting an analog value, follow the signal
+                through the system rather than jumping immediately to
+                the final displayed value.
+            </p>
+
+            <ol>
+
+                <li>
+                    Verify the actual process condition.
+                </li>
+
+                <li>
+                    Verify the transmitter configuration.
+                </li>
+
+                <li>
+                    Measure the actual field signal.
+                </li>
+
+                <li>
+                    Verify the analog input channel configuration.
+                </li>
+
+                <li>
+                    Check the raw input value.
+                </li>
+
+                <li>
+                    Check the PLC scaling calculation.
+                </li>
+
+                <li>
+                    Check the engineering-unit value.
+                </li>
+
+                <li>
+                    Check the HMI or SCADA display.
+                </li>
+
+            </ol>
+
+            <p>
+                This creates a logical troubleshooting path from the
+                physical process to the operator interface.
+            </p>
+
+
+            <!-- Troubleshooting -->
+
+            <h2 id="troubleshooting">
+                Troubleshooting PLC Analog Scaling
+            </h2>
+
+            <h3>
+                The transmitter reads correctly but the PLC value is wrong
+            </h3>
+
+            <p>
+                First measure the actual loop current. If the current
+                corresponds to the expected process value, move downstream
+                into the analog input and PLC configuration.
+            </p>
+
+            <h3>
+                The raw count is wrong
+            </h3>
+
+            <p>
+                Check the analog input module configuration, signal type,
+                range, resolution, channel setup, wiring, and module
+                documentation.
+            </p>
+
+            <h3>
+                Raw counts are correct but engineering units are wrong
+            </h3>
+
+            <p>
+                Investigate the PLC scaling formula and verify the configured
+                input and output ranges.
+            </p>
+
+            <h3>
+                PLC value is correct but HMI is wrong
+            </h3>
+
+            <p>
+                The scaling may already be correct in the PLC. Check the
+                HMI tag, data type, display scaling, unit configuration,
+                and communications path.
+            </p>
+
+            <h3>
+                Value is correct at one point but wrong at another
+            </h3>
+
+            <p>
+                Check whether the scaling is actually linear and whether
+                the transmitter or application requires characterization,
+                square-root extraction, filtering, or another conversion.
+            </p>
+
+
+            <!-- Out of range -->
+
+            <h2 id="range">
+                What Happens Outside the Normal Range?
+            </h2>
+
+            <p>
+                A PLC should not automatically assume that every analog
+                value represents a valid process measurement.
+            </p>
+
+            <p>
+                For a 4–20 mA instrument, values below 4 mA or above 20 mA
+                may represent underrange, overrange, alarm, or fault
+                conditions depending on the instrument and configuration.
+            </p>
+
+            <p>
+                A robust control program may therefore perform separate
+                signal validation before accepting the scaled engineering
+                value as a normal process measurement.
+            </p>
+
+            <div class="callout warning">
+                <strong>Scaling and signal validation are different jobs.</strong>
+
+                The scaling calculation tells you what numerical engineering
+                value corresponds to the input. Signal validation determines
+                whether that input should be treated as a valid measurement.
+            </div>
+
+
+            <!-- Clamping -->
+
+            <h2 id="clamping">
+                Scaling, Clamping, and Limiting
+            </h2>
+
+            <p>
+                A simple linear scaling equation can mathematically produce
+                values outside the intended engineering range if the input
+                goes outside its configured range.
+            </p>
+
+            <p>
+                For example, a 0–100 PSI signal calculated from a current
+                below 4 mA could produce a negative pressure value.
+            </p>
+
+            <p>
+                Whether the PLC should allow that value, clamp it to the
+                engineering range, or flag it as invalid depends on the
+                application.
+            </p>
+
+            <p>
+                This is a controls-design decision rather than something
+                inherent to the basic scaling equation.
+            </p>
+
+
+            <!-- Integer math -->
+
+            <h2 id="precision">
+                Precision and Data Types
+            </h2>
+
+            <p>
+                PLC scaling can involve integers, floating-point values,
+                signed values, and different numerical representations.
+            </p>
+
+            <p>
+                Be careful when performing scaling with integer arithmetic.
+                Integer division can discard fractional information before
+                the final result is calculated.
+            </p>
+
+            <p>
+                For example, a calculation that should produce 0.5 can
+                behave differently if the PLC evaluates the intermediate
+                operation entirely as integer math.
+            </p>
+
+            <div class="callout">
+                <strong>Practical rule</strong>
+
+                Know the data type of the raw input, the intermediate
+                calculations, and the final engineering value.
+            </div>
+
+
+            <!-- Common mistakes -->
+
+            <h2 id="mistakes">
+                Common PLC Scaling Mistakes
+            </h2>
+
+            <ul>
+
+                <li>
+                    Using the wrong raw-count range.
+                </li>
+
+                <li>
+                    Scaling 4–20 mA as though it were 0–20 mA.
+                </li>
+
+                <li>
+                    Using the transmitter's maximum range instead of its
+                    configured LRV and URV.
+                </li>
+
+                <li>
+                    Using different engineering ranges in the transmitter
+                    and PLC.
+                </li>
+
+                <li>
+                    Forgetting that some transmitters use negative LRVs.
+                </li>
+
+                <li>
+                    Assuming every analog input is linear.
+                </li>
+
+                <li>
+                    Ignoring the analog module's configuration.
+                </li>
+
+                <li>
+                    Performing calculations with inappropriate data types.
+                </li>
+
+                <li>
+                    Troubleshooting the HMI before checking the raw input.
+                </li>
+
+                <li>
+                    Treating an out-of-range signal as a normal process value.
+                </li>
+
+            </ul>
+
+
+            <!-- Practical workflow -->
+
+            <h2 id="workflow">
+                A Practical PLC Troubleshooting Workflow
+            </h2>
+
+            <p>
+                When an analog value looks wrong, use this sequence:
+            </p>
+
+            <div class="signal-chain">
+                1. Process
+                →
+                2. Transmitter
+                →
+                3. Field Signal
+                →
+                4. Raw Input
+                →
+                5. PLC Scaling
+                →
+                6. Engineering Value
+                →
+                7. HMI
+            </div>
+
+            <p>
+                At each point, ask:
+            </p>
+
+            <ul>
+
+                <li>
+                    What value should I see here?
+                </li>
+
+                <li>
+                    What value do I actually see?
+                </li>
+
+                <li>
+                    What conversion happened between these two points?
+                </li>
+
+            </ul>
+
+            <p>
+                That approach prevents you from guessing and helps isolate
+                the exact stage where the error is introduced.
+            </p>
+
+
+            <!-- Tools -->
+
+            <h2 id="tools">
+                PLC &amp; Analog Scaling Tools
+            </h2>
+
+            <p>
+                Use the ControlsCalc tools to work through the calculations
+                described in this guide.
+            </p>
+
+            <a class="tool-card" href="../calculators/analog-scaling.html">
+
+                <strong>
+                    Analog Signal Scaling Calculator
+                </strong>
+
+                <span>
+                    Perform general linear scaling between an input range
+                    and an engineering range.
+                </span>
+
+            </a>
+
+            <a class="tool-card" href="../calculators/4-20ma-scaling.html">
+
+                <strong>
+                    4–20 mA Scaling Calculator
+                </strong>
+
+                <span>
+                    Convert a measured 4–20 mA signal into engineering units.
+                </span>
+
+            </a>
+
+            <a class="tool-card" href="../calculators/0-10v-scaling.html">
+
+                <strong>
+                    0–10 V Scaling Calculator
+                </strong>
+
+                <span>
+                    Convert a 0–10 V control signal into engineering units.
+                </span>
+
+            </a>
+
+            <a class="tool-card" href="../calculators/pressure-transmitter.html">
+
+                <strong>
+                    Pressure Transmitter Scaling Calculator
+                </strong>
+
+                <span>
+                    Convert a 4–20 mA pressure transmitter signal into
+                    pressure using its configured LRV and URV.
+                </span>
+
+            </a>
+
+            <a class="tool-card" href="4-20ma.html">
+
+                <strong>
+                    4–20 mA Explained
+                </strong>
+
+                <span>
+                    Learn how the field current signal works before it
+                    reaches the PLC.
+                </span>
+
+            </a>
+
+        </article>
+
+
+        <!-- Table of contents -->
+
+        <aside class="toc">
+
+            <h2>
+                On This Page
+            </h2>
+
+            <a href="#overview">What Is PLC Scaling?</a>
+            <a href="#example">Complete Example</a>
+            <a href="#raw-counts">Raw Counts</a>
+            <a href="#raw-example">Raw Count Example</a>
+            <a href="#formula">Scaling Formula</a>
+            <a href="#signals">Analog Input Types</a>
+            <a href="#transmitter-vs-plc">Transmitter vs PLC</a>
+            <a href="#data-flow">Following the Signal</a>
+            <a href="#troubleshooting">Troubleshooting</a>
+            <a href="#range">Out-of-Range Signals</a>
+            <a href="#clamping">Clamping &amp; Limiting</a>
+            <a href="#precision">Precision &amp; Data Types</a>
+            <a href="#mistakes">Common Mistakes</a>
+            <a href="#workflow">Field Workflow</a>
+            <a href="#tools">Scaling Tools</a>
+
+        </aside>
+
+    </div>
+
+</main>
+
+
+<footer>
+
+    <div class="container">
+
+        <p>
+            <strong>ControlsCalc</strong>
+        </p>
+
+        <p>
+            Engineering and controls calculators and reference material
+            for technicians and engineers.
+        </p>
+
+    </div>
+
+</footer>
+
+</body>
+</html>
