@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frequency ↔ RPM Calculator | ControlsCalc</title>
+    <meta name="description" content="Calculate motor RPM from frequency and motor poles, or calculate frequency from RPM. Includes synchronous speed, motor slip, VFD applications, examples, and troubleshooting.">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f4f7f9;
+            color: #1f2933;
+            line-height: 1.6;
+        }
+
+        header {
+            background: #111827;
+            color: white;
+            padding: 16px 0;
+        }
+
+        .container {
+            width: min(1100px, 92%);
+            margin: auto;
+        }
+
+        .header-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            color: white;
+            text-decoration: none;
+            font-size: 1.35rem;
+            font-weight: bold;
+        }
+
+        nav a {
+            color: #d1d5db;
+            text-decoration: none;
+            margin-left: 24px;
+            font-size: 0.95rem;
+        }
+
+        nav a:hover {
+            color: white;
+        }
+
+        .hero {
+            background: white;
+            padding: 48px 0 36px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .hero h1 {
+            margin: 0 0 12px;
+            font-size: 2.4rem;
+            color: #111827;
+        }
+
+        .hero p {
+            max-width: 800px;
+            margin: 0;
+            color: #4b5563;
+            font-size: 1.08rem;
+        }
+
+        .calculator-section {
+            padding: 36px 0;
+        }
+
+        .calculator-box {
+            background: white;
+            border: 1px solid #dfe5ea;
+            border-radius: 12px;
+            padding: 28px;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.05);
+        }
+
+        .calculator-box h2 {
+            margin-top: 0;
+            color: #111827;
+        }
+
+        .mode-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .mode-button {
+            padding: 11px 18px;
+            border: 1px solid #cbd5e1;
+            border-radius: 7px;
+            background: #f8fafc;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .mode-button.active {
+            background: #111827;
+            color: white;
+            border-color: #111827;
+        }
+
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 20px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-group label {
+            font-weight: 600;
+            margin-bottom: 7px;
+            color: #374151;
+        }
+
+        .input-group input,
+        .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 7px;
+            font-size: 1rem;
+            background: white;
+        }
+
+        .input-group small {
+            margin-top: 5px;
+            color: #6b7280;
+            font-size: 0.85rem;
+        }
+
+        .calculate-button {
+            margin-top: 24px;
+            padding: 13px 22px;
+            background: #111827;
+            color: white;
+            border: none;
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .calculate-button:hover {
+            background: #1f2937;
+        }
+
+        .result {
+            margin-top: 24px;
+            padding: 20px;
+            background: #f1f5f9;
+            border-left: 4px solid #111827;
+            border-radius: 6px;
+        }
+
+        .result-main {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #111827;
+            margin-bottom: 10px;
+        }
+
+        .result-details {
+            color: #4b5563;
+        }
+
+        .warning {
+            margin-top: 16px;
+            padding: 14px 16px;
+            background: #fff7ed;
+            border-left: 4px solid #f97316;
+            border-radius: 6px;
+            color: #7c2d12;
+        }
+
+        .content-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 250px;
+            gap: 30px;
+            align-items: start;
+        }
+
+        article {
+            background: white;
+            border: 1px solid #dfe5ea;
+            border-radius: 12px;
+            padding: 32px;
+        }
+
+        article h2 {
+            margin-top: 0;
+            color: #111827;
+        }
+
+        article h3 {
+            margin-top: 32px;
+            color: #1f2937;
+        }
+
+        article p {
+            color: #4b5563;
+        }
+
+        article ul {
+            color: #4b5563;
+        }
+
+        .formula {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 18px;
+            border-radius: 8px;
+            margin: 18px 0;
+            font-family: "Courier New", monospace;
+            font-size: 1.05rem;
+            overflow-x: auto;
+        }
+
+        .example {
+            background: #f8fafc;
+            border-left: 4px solid #64748b;
+            padding: 18px 20px;
+            margin: 18px 0;
+            border-radius: 5px;
+        }
+
+        .example strong {
+            color: #111827;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th,
+        td {
+            border: 1px solid #dbe2e8;
+            padding: 10px 12px;
+            text-align: center;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #1f2937;
+        }
+
+        td {
+            color: #4b5563;
+        }
+
+        .toc {
+            position: sticky;
+            top: 20px;
+            background: white;
+            border: 1px solid #dfe5ea;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .toc h3 {
+            margin-top: 0;
+            font-size: 1rem;
+        }
+
+        .toc a {
+            display: block;
+            color: #475569;
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin: 9px 0;
+        }
+
+        .toc a:hover {
+            color: #111827;
+        }
+
+        .related {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+            margin-top: 20px;
+        }
+
+        .related a {
+            display: block;
+            padding: 16px;
+            border: 1px solid #dbe2e8;
+            border-radius: 8px;
+            color: #1f2937;
+            text-decoration: none;
+            background: #f8fafc;
+            font-weight: 600;
+        }
+
+        .related a:hover {
+            background: #f1f5f9;
+        }
+
+        footer {
+            margin-top: 50px;
+            padding: 30px 0;
+            background: #111827;
+            color: #9ca3af;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 800px) {
+            .content-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .toc {
+                position: static;
+                order: -1;
+            }
+
+            .input-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .related {
+                grid-template-columns: 1fr;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .header-inner {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            nav a {
+                margin: 0 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="container header-inner">
+        <a href="../" class="logo">ControlsCalc</a>
+
+        <nav>
+            <a href="../#calculators">Calculators</a>
+            <a href="../guides/index.html">Guides</a>
+        </nav>
+    </div>
+</header>
+
+<section class="hero">
+    <div class="container">
+        <h1>Frequency ↔ RPM Calculator</h1>
+
+        <p>
+            Calculate motor speed from frequency and motor poles, or calculate
+            the frequency required for a desired motor speed. Includes
+            synchronous speed, motor slip, and VFD applications.
+        </p>
+    </div>
+</section>
+
+<section class="calculator-section">
+    <div class="container">
+
+        <div class="calculator-box">
+
+            <h2>Calculate</h2>
+
+            <div class="mode-buttons">
+                <button
+                    type="button"
+                    class="mode-button active"
+                    id="frequencyModeButton"
+                    onclick="setMode('frequency')">
+                    Frequency → RPM
+                </button>
+
+                <button
+                    type="button"
+                    class="mode-button"
+                    id="rpmModeButton"
+                    onclick="setMode('rpm')">
+                    RPM → Frequency
+                </button>
+            </div>
+
+            <div class="input-grid">
+
+                <div class="input-group" id="frequencyInputGroup">
+                    <label for="frequency">Frequency (Hz)</label>
+                    <input
+                        type="number"
+                        id="frequency"
+                        value="60"
+                        min="0"
+                        step="any">
+                    <small>Electrical frequency supplied to the motor.</small>
+                </div>
+
+                <div class="input-group" id="rpmInputGroup" style="display:none;">
+                    <label for="rpm">Desired Speed (RPM)</label>
+                    <input
+                        type="number"
+                        id="rpm"
+                        value="1750"
+                        min="0"
+                        step="any">
+                    <small>Desired motor speed in revolutions per minute.</small>
+                </div>
+
+                <div class="input-group">
+                    <label for="poles">Motor Poles</label>
+
+                    <select id="poles">
+                        <option value="2">2 Poles</option>
+                        <option value="4" selected>4 Poles</option>
+                        <option value="6">6 Poles</option>
+                        <option value="8">8 Poles</option>
+                        <option value="10">10 Poles</option>
+                        <option value="12">12 Poles</option>
+                    </select>
+
+                    <small>
+                        Common induction motors use 2, 4, 6, or 8 poles.
+                    </small>
+                </div>
+
+            </div>
+
+            <button
+                type="button"
+                class="calculate-button"
+                onclick="calculate()">
+                Calculate
+            </button>
+
+            <div class="result" id="result">
+                <div class="result-main" id="resultMain">
+                    1800 RPM
+                </div>
+
+                <div class="result-details" id="resultDetails">
+                    Synchronous speed at 60 Hz for a 4-pole motor.
+                </div>
+            </div>
+
+            <div class="warning" id="warning">
+                For an induction motor, actual shaft speed is normally slightly
+                below synchronous speed because of motor slip. Use the motor
+                nameplate or measured shaft speed when actual RPM is required.
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+<section class="calculator-section">
+    <div class="container">
+
+        <div class="content-layout">
+
+            <article>
+
+                <h2 id="how-it-works">How Frequency and RPM Are Related</h2>
+
+                <p>
+                    The rotational speed of an AC motor is closely related to
+                    the frequency of the electrical power supplied to it.
+                    Motor speed also depends on the number of magnetic poles
+                    in the motor.
+                </p>
+
+                <p>
+                    This relationship is especially useful when working with
+                    motors, variable-frequency drives (VFDs), tachometers,
+                    speed feedback, and process equipment driven by AC motors.
+                </p>
+
+                <h3 id="frequency-formula">Frequency → RPM Formula</h3>
+
+                <p>
+                    The theoretical or synchronous speed of an AC motor is:
+                </p>
+
+                <div class="formula">
+                    Synchronous RPM = (120 × Frequency) ÷ Number of Poles
+                </div>
+
+                <p>
+                    The factor 120 comes from converting electrical cycles
+                    per second into revolutions per minute while accounting
+                    for the motor's magnetic poles.
+                </p>
+
+                <h3 id="rpm-formula">RPM → Frequency Formula</h3>
+
+                <p>
+                    If you know the desired synchronous speed and motor pole
+                    count, you can solve the formula for frequency:
+                </p>
+
+                <div class="formula">
+                    Frequency = (RPM × Number of Poles) ÷ 120
+                </div>
+
+                <h3 id="example">Worked Example: 60 Hz, 4-Pole Motor</h3>
+
+                <div class="example">
+
+                    <strong>Given:</strong>
+
+                    <ul>
+                        <li>Frequency = 60 Hz</li>
+                        <li>Motor = 4 poles</li>
+                    </ul>
+
+                    <p>
+                        Synchronous RPM:
+                    </p>
+
+                    <div class="formula">
+                        RPM = (120 × 60) ÷ 4
+                        <br>
+                        RPM = 1800
+                    </div>
+
+                    <strong>Result:</strong> The synchronous speed is
+                    <strong>1800 RPM</strong>.
+                </div>
+
+                <p>
+                    An actual 4-pole induction motor may run somewhat below
+                    1800 RPM under load. For example, a motor nameplate might
+                    show a rated speed around 1750 RPM at 60 Hz.
+                </p>
+
+                <h3 id="reference">Synchronous Speed Reference</h3>
+
+                <p>
+                    The table below shows theoretical synchronous speed.
+                    Actual induction-motor shaft speed will normally be lower.
+                </p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Frequency</th>
+                            <th>2 Pole</th>
+                            <th>4 Pole</th>
+                            <th>6 Pole</th>
+                            <th>8 Pole</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr>
+                            <td>30 Hz</td>
+                            <td>1800 RPM</td>
+                            <td>900 RPM</td>
+                            <td>600 RPM</td>
+                            <td>450 RPM</td>
+                        </tr>
+
+                        <tr>
+                            <td>40 Hz</td>
+                            <td>2400 RPM</td>
+                            <td>1200 RPM</td>
+                            <td>800 RPM</td>
+                            <td>600 RPM</td>
+                        </tr>
+
+                        <tr>
+                            <td>50 Hz</td>
+                            <td>3000 RPM</td>
+                            <td>1500 RPM</td>
+                            <td>1000 RPM</td>
+                            <td>750 RPM</td>
+                        </tr>
+
+                        <tr>
+                            <td>60 Hz</td>
+                            <td>3600 RPM</td>
+                            <td>1800 RPM</td>
+                            <td>1200 RPM</td>
+                            <td>900 RPM</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3 id="poles">Why Motor Poles Matter</h3>
+
+                <p>
+                    Motor poles determine how many magnetic fields are
+                    established around the stator. Increasing the number
+                    of poles reduces the motor's synchronous speed at a
+                    given electrical frequency.
+                </p>
+
+                <p>
+                    At 60 Hz:
+                </p>
+
+                <ul>
+                    <li>2 poles → 3600 RPM</li>
+                    <li>4 poles → 1800 RPM</li>
+                    <li>6 poles → 1200 RPM</li>
+                    <li>8 poles → 900 RPM</li>
+                </ul>
+
+                <p>
+                    This is why selecting the correct motor pole count is
+                    essential when calculating speed from frequency.
+                </p>
+
+                <h3 id="slip">What Is Motor Slip?</h3>
+
+                <p>
+                    Synchronous speed is the theoretical speed of the
+                    rotating magnetic field. An induction motor's rotor
+                    normally runs slightly slower than that field.
+                </p>
+
+                <p>
+                    The difference is called <strong>slip</strong>.
+                    Slip is necessary for an induction motor to produce
+                    torque.
+                </p>
+
+                <div class="formula">
+                    Slip % = ((Synchronous RPM − Actual RPM)
+                    ÷ Synchronous RPM) × 100
+                </div>
+
+                <div class="example">
+
+                    <strong>Example:</strong>
+
+                    <p>
+                        A 4-pole motor operates at 60 Hz and has a measured
+                        shaft speed of 1750 RPM.
+                    </p>
+
+                    <div class="formula">
+                        Synchronous RPM = 1800
+                        <br>
+                        Actual RPM = 1750
+                        <br><br>
+                        Slip = ((1800 − 1750) ÷ 1800) × 100
+                        <br>
+                        Slip ≈ 2.78%
+                    </div>
+
+                </div>
+
+                <h3 id="vfd">Frequency and VFDs</h3>
+
+                <p>
+                    A variable-frequency drive changes the frequency supplied
+                    to an AC motor to control motor speed.
+                </p>
+
+                <p>
+                    Because synchronous speed is proportional to frequency,
+                    reducing frequency generally reduces motor speed.
+                </p>
+
+                <div class="example">
+
+                    <strong>Example:</strong>
+
+                    <p>
+                        A 4-pole motor is operated by a VFD at 40 Hz.
+                    </p>
+
+                    <div class="formula">
+                        RPM = (120 × 40) ÷ 4
+                        <br>
+                        RPM = 1200 RPM
+                    </div>
+
+                    <p>
+                        The theoretical synchronous speed is therefore
+                        1200 RPM. Actual shaft speed will depend on motor
+                        load and slip.
+                    </p>
+
+                </div>
+
+                <h3 id="field">Field Applications</h3>
+
+                <p>
+                    This calculation can be useful when troubleshooting:
+                </p>
+
+                <ul>
+                    <li>VFD-driven motors</li>
+                    <li>Pumps and fans</li>
+                    <li>Conveyors</li>
+                    <li>Compressors</li>
+                    <li>Tachometer feedback</li>
+                    <li>Encoder and speed-feedback systems</li>
+                    <li>Process equipment</li>
+                    <li>Motor nameplate information</li>
+                </ul>
+
+                <p>
+                    For example, if a VFD display shows 45 Hz and the motor
+                    is a 4-pole motor:
+                </p>
+
+                <div class="formula">
+                    RPM = (120 × 45) ÷ 4
+                    <br>
+                    RPM = 1350 RPM
+                </div>
+
+                <p>
+                    If the measured shaft speed is significantly different
+                    from the expected value, investigate the actual motor
+                    characteristics, load, VFD configuration, and feedback
+                    system.
+                </p>
+
+                <h3 id="troubleshooting">Troubleshooting</h3>
+
+                <p>
+                    If calculated and measured motor speeds do not agree,
+                    check the signal chain rather than immediately assuming
+                    the calculation is wrong.
+                </p>
+
+                <ol>
+                    <li>
+                        <strong>Verify the motor pole count.</strong>
+                        Check the motor documentation or nameplate.
+                    </li>
+
+                    <li>
+                        <strong>Verify VFD output frequency.</strong>
+                        Confirm the actual commanded/output frequency rather
+                        than assuming it from the speed command.
+                    </li>
+
+                    <li>
+                        <strong>Check actual shaft speed.</strong>
+                        A tachometer or appropriate speed-feedback device can
+                        provide a direct measurement.
+                    </li>
+
+                    <li>
+                        <strong>Consider motor slip.</strong>
+                        An induction motor normally operates below synchronous
+                        speed.
+                    </li>
+
+                    <li>
+                        <strong>Check the load.</strong>
+                        Increasing motor load can increase slip.
+                    </li>
+
+                    <li>
+                        <strong>Check speed feedback.</strong>
+                        If an encoder or tachometer is being used, verify
+                        scaling, pulses-per-revolution, wiring, and signal
+                        integrity.
+                    </li>
+                </ol>
+
+                <h3 id="mistakes">Common Mistakes</h3>
+
+                <ul>
+                    <li>
+                        Treating synchronous RPM as actual shaft RPM.
+                    </li>
+
+                    <li>
+                        Using the wrong motor pole count.
+                    </li>
+
+                    <li>
+                        Assuming every motor marked "60 Hz" runs at exactly
+                        the calculated synchronous speed.
+                    </li>
+
+                    <li>
+                        Confusing electrical frequency with mechanical RPM.
+                    </li>
+
+                    <li>
+                        Ignoring slip when comparing calculated speed with
+                        measured motor speed.
+                    </li>
+
+                    <li>
+                        Using a speed command instead of the actual VFD
+                        output frequency.
+                    </li>
+
+                    <li>
+                        Forgetting that some applications use gearboxes,
+                        belts, pulleys, or other mechanical speed ratios.
+                    </li>
+                </ul>
+
+                <h3 id="gear-ratio">Gearboxes and Mechanical Speed Ratios</h3>
+
+                <p>
+                    The frequency-to-RPM calculation gives the motor's
+                    theoretical synchronous speed. It does not automatically
+                    account for a gearbox or other mechanical transmission.
+                </p>
+
+                <p>
+                    If a gearbox reduces motor speed by a ratio of 10:1,
+                    a motor turning at 1800 RPM would theoretically produce:
+                </p>
+
+                <div class="formula">
+                    Output RPM = 1800 ÷ 10
+                    <br>
+                    Output RPM = 180 RPM
+                </div>
+
+                <p>
+                    Actual output speed will depend on the motor's actual
+                    speed and the mechanical system.
+                </p>
+
+                <h3 id="workflow">Practical Field Workflow</h3>
+
+                <p>
+                    When troubleshooting a motor-speed problem, use the
+                    following sequence:
+                </p>
+
+                <div class="example">
+
+                    <strong>
+                        VFD frequency → theoretical motor speed →
+                        actual motor speed → mechanical transmission →
+                        final equipment speed
+                    </strong>
+
+                </div>
+
+                <p>
+                    This separates electrical, motor, feedback, and mechanical
+                    problems instead of treating the entire system as one
+                    calculation.
+                </p>
+
+                <h3 id="related">Related ControlsCalc Tools</h3>
+
+                <div class="related">
+
+                    <a href="3-phase-motor-current.html">
+                        3-Phase Motor Current
+                    </a>
+
+                    <a href="power-factor.html">
+                        Power Factor
+                    </a>
+
+                    <a href="ohms-law.html">
+                        Ohm's Law
+                    </a>
+
+                    <a href="analog-scaling.html">
+                        Analog Signal Scaling
+                    </a>
+
+                </div>
+
+            </article>
+
+            <aside class="toc">
+
+                <h3>On This Page</h3>
+
+                <a href="#how-it-works">
+                    How It Works
+                </a>
+
+                <a href="#frequency-formula">
+                    Frequency → RPM
+                </a>
+
+                <a href="#rpm-formula">
+                    RPM → Frequency
+                </a>
+
+                <a href="#example">
+                    Worked Example
+                </a>
+
+                <a href="#reference">
+                    Speed Reference
+                </a>
+
+                <a href="#poles">
+                    Motor Poles
+                </a>
+
+                <a href="#slip">
+                    Motor Slip
+                </a>
+
+                <a href="#vfd">
+                    VFD Applications
+                </a>
+
+                <a href="#field">
+                    Field Applications
+                </a>
+
+                <a href="#troubleshooting">
+                    Troubleshooting
+                </a>
+
+                <a href="#mistakes">
+                    Common Mistakes
+                </a>
+
+                <a href="#gear-ratio">
+                    Gearboxes
+                </a>
+
+                <a href="#workflow">
+                    Field Workflow
+                </a>
+
+                <a href="#related">
+                    Related Tools
+                </a>
+
+            </aside>
+
+        </div>
+
+    </div>
+</section>
+
+<footer>
+    <div class="container">
+        ControlsCalc — Controls & Instrumentation Calculators
+    </div>
+</footer>
+
+<script>
+    let mode = "frequency";
+
+    function setMode(newMode) {
+        mode = newMode;
+
+        const frequencyGroup = document.getElementById("frequencyInputGroup");
+        const rpmGroup = document.getElementById("rpmInputGroup");
+
+        const frequencyButton =
+            document.getElementById("frequencyModeButton");
+
+        const rpmButton =
+            document.getElementById("rpmModeButton");
+
+        if (mode === "frequency") {
+            frequencyGroup.style.display = "flex";
+            rpmGroup.style.display = "none";
+
+            frequencyButton.classList.add("active");
+            rpmButton.classList.remove("active");
+        } else {
+            frequencyGroup.style.display = "none";
+            rpmGroup.style.display = "flex";
+
+            frequencyButton.classList.remove("active");
+            rpmButton.classList.add("active");
+        }
+
+        calculate();
+    }
+
+    function formatNumber(value, decimals = 2) {
+        if (!Number.isFinite(value)) {
+            return "—";
+        }
+
+        if (Math.abs(value) < 1e-9) {
+            value = 0;
+        }
+
+        return Number(value.toFixed(decimals)).toLocaleString();
+    }
+
+    function calculate() {
+        const poles =
+            parseFloat(document.getElementById("poles").value);
+
+        const resultMain =
+            document.getElementById("resultMain");
+
+        const resultDetails =
+            document.getElementById("resultDetails");
+
+        const warning =
+            document.getElementById("warning");
+
+        if (!Number.isFinite(poles) || poles <= 0) {
+            resultMain.textContent = "—";
+            resultDetails.textContent = "Enter a valid motor pole count.";
+            warning.style.display = "none";
+            return;
+        }
+
+        if (mode === "frequency") {
+
+            const frequency =
+                parseFloat(document.getElementById("frequency").value);
+
+            if (!Number.isFinite(frequency) || frequency < 0) {
+                resultMain.textContent = "—";
+                resultDetails.textContent =
+                    "Enter a valid frequency.";
+                warning.style.display = "none";
+                return;
+            }
+
+            const rpm =
+                (120 * frequency) / poles;
+
+            resultMain.textContent =
+                formatNumber(rpm, 2) + " RPM";
+
+            resultDetails.textContent =
+                "Synchronous speed at " +
+                formatNumber(frequency, 2) +
+                " Hz for a " +
+                poles +
+                "-pole motor.";
+
+            warning.style.display = "block";
+
+        } else {
+
+            const rpm =
+                parseFloat(document.getElementById("rpm").value);
+
+            if (!Number.isFinite(rpm) || rpm < 0) {
+                resultMain.textContent = "—";
+                resultDetails.textContent =
+                    "Enter a valid RPM value.";
+                warning.style.display = "none";
+                return;
+            }
+
+            const frequency =
+                (rpm * poles) / 120;
+
+            resultMain.textContent =
+                formatNumber(frequency, 2) + " Hz";
+
+            resultDetails.textContent =
+                "Frequency required for a synchronous speed of " +
+                formatNumber(rpm, 2) +
+                " RPM with a " +
+                poles +
+                "-pole motor.";
+
+            warning.style.display = "block";
+        }
+    }
+
+    document
+        .getElementById("frequency")
+        .addEventListener("input", calculate);
+
+    document
+        .getElementById("rpm")
+        .addEventListener("input", calculate);
+
+    document
+        .getElementById("poles")
+        .addEventListener("change", calculate);
+
+    calculate();
+</script>
+
+</body>
+</html>
