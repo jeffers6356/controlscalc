@@ -6,7 +6,7 @@
 
 <title>RTD & Temperature Sensor Calculator | ControlsCalc</title>
 
-<meta name="description" content="Calculate resistance from temperature or temperature from resistance for PT100, PT1000, Ni1000, and 10k Type II temperature sensors.">
+<meta name="description" content="Calculate resistance from temperature or temperature from resistance for PT100, PT1000, Ni1000, and 10k Type II temperature sensors. Supports Celsius and Fahrenheit.">
 
 <style>
     * {
@@ -359,7 +359,8 @@
     <p class="intro">
         Calculate temperature sensor resistance from temperature, or determine
         temperature from a measured resistance. Supports common PT100, PT1000,
-        Ni1000, and 10k Type II sensor characteristics.
+        Ni1000, and 10k Type II sensor characteristics with Celsius or
+        Fahrenheit temperature units.
     </p>
 
     <section class="calculator">
@@ -416,10 +417,26 @@
 
             </div>
 
+            <div>
+
+                <label for="temperatureUnit">
+                    Temperature Unit
+                </label>
+
+                <select
+                    id="temperatureUnit">
+
+                    <option value="C">Celsius (°C)</option>
+                    <option value="F">Fahrenheit (°F)</option>
+
+                </select>
+
+            </div>
+
             <div id="temperatureField">
 
                 <label for="temperature">
-                    Temperature (°C)
+                    Temperature
                 </label>
 
                 <input
@@ -481,8 +498,8 @@
         </p>
 
         <p>
-            This is useful for checking a sensor against a resistance measurement
-            during troubleshooting.
+            This is useful for checking a sensor against a resistance
+            measurement during troubleshooting.
         </p>
 
     </div>
@@ -544,6 +561,28 @@
 
     </table>
 
+    <h2>Temperature Units</h2>
+
+    <p>
+        The sensor equations themselves use Celsius or absolute temperature
+        internally, depending on the sensor model. The calculator converts
+        Fahrenheit to Celsius before performing the sensor calculation.
+    </p>
+
+    <div class="formula">
+        °C = (°F − 32) × 5 ÷ 9
+    </div>
+
+    <p>
+        When calculating temperature from resistance, the result is calculated
+        internally in Celsius and then converted to Fahrenheit if Fahrenheit
+        is selected.
+    </p>
+
+    <div class="formula">
+        °F = (°C × 9 ÷ 5) + 32
+    </div>
+
     <h2>PT100 and PT1000</h2>
 
     <p>
@@ -587,29 +626,24 @@
         C = −4.183 × 10⁻¹²
     </div>
 
-    <h3>Example: PT100</h3>
+    <h3>Example: PT100 at 212 °F</h3>
 
     <div class="example">
 
         <p>
-            Suppose a meter measures:
+            212 °F is equivalent to:
         </p>
 
         <div class="formula">
-            R = 119.397 Ω
+            100 °C
         </div>
 
         <p>
-            Select <strong>PT100</strong> and use
-            <strong>Resistance → Temperature</strong>.
-        </p>
-
-        <p>
-            The calculated temperature should be approximately:
+            A PT100 at 100 °C has a nominal resistance of approximately:
         </p>
 
         <div class="formula">
-            T ≈ 50 °C
+            138.505 Ω
         </div>
 
     </div>
@@ -644,12 +678,6 @@
         D = −2.000 × 10⁻¹⁷
     </div>
 
-    <p>
-        For Resistance → Temperature, the calculator numerically solves this
-        characteristic until it finds the temperature that corresponds to the
-        measured resistance.
-    </p>
-
     <h2>10k Type II Thermistor</h2>
 
     <p>
@@ -678,23 +706,6 @@
         Temperatures in this equation are absolute temperatures in Kelvin.
     </p>
 
-    <h3>Example</h3>
-
-    <p>
-        If a 10k Type II sensor measures approximately 10,000 Ω:
-    </p>
-
-    <div class="formula">
-        R ≈ 10,000 Ω
-        → T ≈ 25 °C
-    </div>
-
-    <p>
-        If the resistance becomes higher, the calculated temperature becomes
-        lower. If the resistance becomes lower, the calculated temperature
-        becomes higher.
-    </p>
-
     <h2>Field Troubleshooting Example</h2>
 
     <div class="example">
@@ -707,7 +718,7 @@
         </p>
 
         <p>
-            The technician disconnects the sensor and measures:
+            The technician measures:
         </p>
 
         <div class="formula">
@@ -722,19 +733,20 @@
             <li>Sensor: <strong>PT100</strong></li>
             <li>Mode: <strong>Resistance → Temperature</strong></li>
             <li>Resistance: <strong>157.3 Ω</strong></li>
+            <li>Unit: <strong>°F</strong></li>
         </ul>
 
         <p>
-            The result is approximately:
+            The calculator gives approximately:
         </p>
 
         <div class="formula">
-            150 °C
+            302 °F
         </div>
 
         <p>
-            If the physical process is actually around 75 °C, that immediately
-            tells the technician that something needs further investigation.
+            That corresponds to approximately 150 °C. If the physical process
+            is actually around 75 °C / 167 °F, further investigation is needed.
         </p>
 
     </div>
@@ -821,6 +833,12 @@
         </li>
 
         <li>
+            <strong>Mixing Celsius and Fahrenheit:</strong>
+            Always verify the selected temperature unit before entering or
+            interpreting a temperature.
+        </li>
+
+        <li>
             <strong>Measuring an energized circuit:</strong>
             Follow the manufacturer's and site's appropriate procedure before
             disconnecting or resistance-testing an installed sensor.
@@ -867,15 +885,10 @@
     <h2>Engineering Note</h2>
 
     <p>
-        The reverse calculation uses numerical solving for the nonlinear
-        sensor characteristics. The result represents the temperature implied
-        by the selected nominal sensor curve.
-    </p>
-
-    <p>
-        For actual calibration or acceptance testing, verify the sensor
-        manufacturer's part number, tolerance class, applicable standard,
-        wiring configuration, and specified resistance-temperature curve.
+        The calculator uses nominal sensor characteristics. For actual
+        calibration or acceptance testing, verify the sensor manufacturer's
+        part number, tolerance class, applicable standard, wiring configuration,
+        and specified resistance-temperature curve.
     </p>
 
 </main>
@@ -890,14 +903,61 @@ let currentMode = "tempToResistance";
 
 
 /* ---------------------------------------------------------
+   Unit conversion
+--------------------------------------------------------- */
+
+function fahrenheitToCelsius(f) {
+    return (f - 32) * 5 / 9;
+}
+
+function celsiusToFahrenheit(c) {
+    return (c * 9 / 5) + 32;
+}
+
+function getTemperatureUnit() {
+    return document.getElementById("temperatureUnit").value;
+}
+
+function displayTemperature(celsius) {
+
+    const unit = getTemperatureUnit();
+
+    if (unit === "F") {
+        return {
+            value: celsiusToFahrenheit(celsius),
+            symbol: "°F"
+        };
+    }
+
+    return {
+        value: celsius,
+        symbol: "°C"
+    };
+}
+
+function inputToCelsius(value) {
+
+    const unit = getTemperatureUnit();
+
+    if (unit === "F") {
+        return fahrenheitToCelsius(value);
+    }
+
+    return value;
+}
+
+
+/* ---------------------------------------------------------
    Sensor information
 --------------------------------------------------------- */
 
 function updateSensorInfo() {
 
-    const type = document.getElementById("sensorType").value;
+    const type =
+        document.getElementById("sensorType").value;
 
-    const info = document.getElementById("sensorInfo");
+    const info =
+        document.getElementById("sensorInfo");
 
     let html = "";
 
@@ -1132,21 +1192,8 @@ function resistanceFromTemperature(type, temperature) {
 
 function temperatureFromResistance(type, resistance) {
 
-    /*
-        Numerical solving using binary search.
-
-        We search a broad temperature range and repeatedly
-        narrow the interval until the calculated resistance
-        matches the measured resistance.
-    */
-
     let low = -200;
     let high = 500;
-
-    /*
-        Thermistors have a useful range that is more limited
-        than the platinum/nickel models.
-    */
 
     if (type === "ntc10k2") {
 
@@ -1167,18 +1214,8 @@ function temperatureFromResistance(type, resistance) {
             high
         );
 
-    /*
-        Determine whether the selected sensor has an increasing
-        or decreasing resistance curve.
-    */
-
     const increasing =
         highResistance > lowResistance;
-
-    /*
-        Verify the resistance is within the selected model's
-        search range.
-    */
 
     if (increasing) {
 
@@ -1198,10 +1235,6 @@ function temperatureFromResistance(type, resistance) {
             return null;
         }
     }
-
-    /*
-        Binary search.
-    */
 
     for (let i = 0; i < 100; i++) {
 
@@ -1281,7 +1314,7 @@ function calculateTemperatureToResistance() {
     const type =
         document.getElementById("sensorType").value;
 
-    const temperature =
+    const enteredTemperature =
         parseFloat(
             document.getElementById("temperature").value
         );
@@ -1295,7 +1328,7 @@ function calculateTemperatureToResistance() {
     result.style.display = "none";
     error.style.display = "none";
 
-    if (!isFinite(temperature)) {
+    if (!isFinite(enteredTemperature)) {
 
         error.textContent =
             "Please enter a valid temperature.";
@@ -1305,10 +1338,15 @@ function calculateTemperatureToResistance() {
         return;
     }
 
+    const temperatureC =
+        inputToCelsius(
+            enteredTemperature
+        );
+
     const resistance =
         resistanceFromTemperature(
             type,
-            temperature
+            temperatureC
         );
 
     if (!isFinite(resistance) || resistance <= 0) {
@@ -1324,6 +1362,11 @@ function calculateTemperatureToResistance() {
     const sensorName =
         getSensorName(type);
 
+    const unit =
+        getTemperatureUnit() === "F"
+            ? "°F"
+            : "°C";
+
     result.innerHTML = `
 
         <strong>${sensorName}</strong>
@@ -1331,12 +1374,23 @@ function calculateTemperatureToResistance() {
         <br><br>
 
         Temperature:
-        <strong>${formatNumber(temperature)} °C</strong>
+        <strong>
+            ${formatNumber(enteredTemperature)} ${unit}
+        </strong>
+
+        <br><br>
+
+        Equivalent Celsius Temperature:
+        <strong>
+            ${formatNumber(temperatureC)} °C
+        </strong>
 
         <br><br>
 
         Expected Resistance:
-        <strong>${formatNumber(resistance)} Ω</strong>
+        <strong>
+            ${formatNumber(resistance)} Ω
+        </strong>
 
     `;
 
@@ -1377,15 +1431,15 @@ function calculateResistanceToTemperature() {
         return;
     }
 
-    const temperature =
+    const temperatureC =
         temperatureFromResistance(
             type,
             resistance
         );
 
     if (
-        temperature === null ||
-        !isFinite(temperature)
+        temperatureC === null ||
+        !isFinite(temperatureC)
     ) {
 
         error.textContent =
@@ -1396,10 +1450,15 @@ function calculateResistanceToTemperature() {
         return;
     }
 
+    const displayedTemperature =
+        displayTemperature(
+            temperatureC
+        );
+
     const calculatedResistance =
         resistanceFromTemperature(
             type,
-            temperature
+            temperatureC
         );
 
     const sensorName =
@@ -1412,12 +1471,24 @@ function calculateResistanceToTemperature() {
         <br><br>
 
         Measured Resistance:
-        <strong>${formatNumber(resistance)} Ω</strong>
+        <strong>
+            ${formatNumber(resistance)} Ω
+        </strong>
 
         <br><br>
 
         Calculated Temperature:
-        <strong>${formatNumber(temperature)} °C</strong>
+        <strong>
+            ${formatNumber(displayedTemperature.value)}
+            ${displayedTemperature.symbol}
+        </strong>
+
+        <br><br>
+
+        Equivalent Celsius Temperature:
+        <strong>
+            ${formatNumber(temperatureC)} °C
+        </strong>
 
         <br><br>
 
