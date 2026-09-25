@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>4–20 mA vs 0–10 V: Understanding Analog Control Signals | ControlsCalc</title>
+
+    <meta name="description"
+          content="Learn the practical differences between 4–20 mA and 0–10 V analog control signals, including scaling, wiring, voltage drop, noise, measurement, sourcing and sinking, and common field problems.">
+
+    <meta name="keywords"
+          content="4-20mA vs 0-10V, 4-20 mA, 0-10V, analog control signal, analog signals, controls technician, instrumentation, HVAC controls, BAS, BMS">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f5f7fa;
+            color: #172033;
+            line-height: 1.7;
+        }
+
+        a {
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .site-header {
+            background: #ffffff;
+            border-bottom: 1px solid #dfe5ec;
+        }
+
+        .header-inner {
+            width: min(1000px, calc(100% - 40px));
+            margin: 0 auto;
+            padding: 22px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 700;
+            color: #172033;
+            text-decoration: none;
+        }
+
+        .logo:hover {
+            text-decoration: none;
+        }
+
+        .nav {
+            display: flex;
+            gap: 22px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .nav a {
+            color: #475569;
+        }
+
+        .nav a:hover {
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        main {
+            width: min(1000px, calc(100% - 40px));
+            margin: 0 auto;
+            padding: 35px 0 60px;
+        }
+
+        .breadcrumb {
+            font-size: 14px;
+            margin-bottom: 25px;
+            color: #64748b;
+        }
+
+        .hero {
+            background: #ffffff;
+            border: 1px solid #dfe5ec;
+            border-radius: 14px;
+            padding: 38px;
+            margin-bottom: 28px;
+        }
+
+        .hero h1 {
+            margin: 0 0 15px;
+            font-size: 38px;
+            line-height: 1.2;
+            color: #172033;
+        }
+
+        .hero p {
+            margin: 0;
+            max-width: 800px;
+            font-size: 18px;
+            color: #475569;
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 240px;
+            gap: 28px;
+            align-items: start;
+        }
+
+        article {
+            min-width: 0;
+        }
+
+        .toc {
+            position: sticky;
+            top: 20px;
+            background: #ffffff;
+            border: 1px solid #dfe5ec;
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .toc h3 {
+            margin: 0 0 12px;
+            font-size: 16px;
+        }
+
+        .toc ul {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .toc li {
+            margin-bottom: 8px;
+        }
+
+        .toc a {
+            font-size: 13px;
+            color: #475569;
+            line-height: 1.4;
+        }
+
+        .toc a:hover {
+            color: #2563eb;
+        }
+
+        .content-section {
+            background: #ffffff;
+            border: 1px solid #dfe5ec;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 24px;
+        }
+
+        .content-section h2 {
+            margin: 0 0 18px;
+            font-size: 26px;
+            line-height: 1.3;
+            color: #172033;
+        }
+
+        .content-section h3 {
+            margin: 26px 0 10px;
+            font-size: 19px;
+            color: #172033;
+        }
+
+        .content-section p {
+            margin: 0 0 16px;
+        }
+
+        .content-section p:last-child {
+            margin-bottom: 0;
+        }
+
+        .signal-path {
+            background: #f5f7fa;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 18px;
+            margin: 20px 0;
+            text-align: center;
+            font-weight: 600;
+            color: #334155;
+        }
+
+        .formula {
+            background: #f5f7fa;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 18px;
+            margin: 20px 0;
+            font-family: "Courier New", monospace;
+            overflow-x: auto;
+        }
+
+        .callout {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 10px;
+            padding: 18px;
+            margin: 20px 0;
+        }
+
+        .callout strong {
+            color: #1d4ed8;
+        }
+
+        .warning {
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            border-radius: 10px;
+            padding: 18px;
+            margin: 20px 0;
+        }
+
+        .warning strong {
+            color: #92400e;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 15px;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            border: 1px solid #dfe5ec;
+            padding: 12px 14px;
+            text-align: left;
+        }
+
+        .comparison-table th {
+            background: #f5f7fa;
+            font-weight: 700;
+        }
+
+        .comparison-table tr:nth-child(even) td {
+            background: #fafbfc;
+        }
+
+        .step-list {
+            counter-reset: steps;
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+        }
+
+        .step-list li {
+            counter-increment: steps;
+            position: relative;
+            padding: 0 0 16px 42px;
+            margin-bottom: 16px;
+            border-bottom: 1px solid #eef2f7;
+        }
+
+        .step-list li:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .step-list li::before {
+            content: counter(steps);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #2563eb;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        ul,
+        ol {
+            padding-left: 24px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        .related-links {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .related-link {
+            display: block;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 15px;
+            color: #172033;
+            font-weight: 600;
+        }
+
+        .related-link:hover {
+            border-color: #bfdbfe;
+            background: #eff6ff;
+            text-decoration: none;
+        }
+
+        .related-link span {
+            display: block;
+            font-size: 13px;
+            color: #64748b;
+            font-weight: 400;
+            margin-top: 4px;
+        }
+
+        .site-footer {
+            border-top: 1px solid #dfe5ec;
+            background: #ffffff;
+            padding: 25px 0;
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        .footer-inner {
+            width: min(1000px, calc(100% - 40px));
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        @media (max-width: 800px) {
+            .layout {
+                grid-template-columns: 1fr;
+            }
+
+            .toc {
+                position: static;
+                order: -1;
+            }
+
+            .toc ul {
+                columns: 2;
+            }
+        }
+
+        @media (max-width: 650px) {
+            .header-inner {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .nav {
+                flex-wrap: wrap;
+                gap: 14px;
+            }
+
+            main {
+                width: min(100% - 24px, 1000px);
+                padding-top: 20px;
+            }
+
+            .hero,
+            .content-section {
+                padding: 22px;
+            }
+
+            .hero h1 {
+                font-size: 30px;
+            }
+
+            .hero p {
+                font-size: 16px;
+            }
+
+            .related-links {
+                grid-template-columns: 1fr;
+            }
+
+            .toc ul {
+                columns: 1;
+            }
+
+            .comparison-table {
+                font-size: 13px;
+            }
+
+            .comparison-table th,
+            .comparison-table td {
+                padding: 9px;
+            }
+
+            .footer-inner {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="site-header">
+    <div class="header-inner">
+        <a class="logo" href="../index.html">ControlsCalc</a>
+
+        <nav class="nav">
+            <a href="../index.html">Calculators</a>
+            <a href="index.html">Guides</a>
+        </nav>
+    </div>
+</header>
+
+<main>
+
+    <div class="breadcrumb">
+        <a href="index.html">Guides</a> →
+        4–20 mA vs 0–10 V
+    </div>
+
+    <section class="hero">
+        <h1>4–20 mA vs 0–10 V: Understanding Analog Control Signals</h1>
+
+        <p>
+            Learn how 4–20 mA and 0–10 V analog signals work, how they are
+            scaled, how they are measured, and what practical differences
+            matter when troubleshooting controls and instrumentation systems.
+        </p>
+    </section>
+
+    <div class="layout">
+
+        <article>
+
+            <section class="content-section" id="introduction">
+                <h2>1. What Are Analog Control Signals?</h2>
+
+                <p>
+                    Analog control signals are used to represent a continuously
+                    variable measurement or command. Unlike a simple digital
+                    signal that is either on or off, an analog signal can
+                    represent values across a range.
+                </p>
+
+                <p>
+                    Two of the most common analog signal types encountered in
+                    industrial controls, HVAC controls, building automation,
+                    and instrumentation are <strong>4–20 mA</strong> and
+                    <strong>0–10 V</strong>.
+                </p>
+
+                <p>
+                    Both can represent the same engineering range. For example,
+                    a pressure transmitter could represent 0–100 PSI using
+                    either 4–20 mA or 0–10 V.
+                </p>
+
+                <div class="signal-path">
+                    Physical Measurement → Transmitter → Analog Signal → Controller → Engineering Value
+                </div>
+
+                <p>
+                    The important difference is how the information is
+                    electrically represented: 4–20 mA uses <strong>current</strong>,
+                    while 0–10 V uses <strong>voltage</strong>.
+                </p>
+            </section>
+
+
+            <section class="content-section" id="current">
+                <h2>2. How 4–20 mA Works</h2>
+
+                <p>
+                    A 4–20 mA signal represents the measured value using
+                    current flowing through the signal loop.
+                </p>
+
+                <p>
+                    For a standard linear transmitter:
+                </p>
+
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Signal</th>
+                            <th>Percent of Span</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>4 mA</td>
+                            <td>0%</td>
+                        </tr>
+                        <tr>
+                            <td>8 mA</td>
+                            <td>25%</td>
+                        </tr>
+                        <tr>
+                            <td>12 mA</td>
+                            <td>50%</td>
+                        </tr>
+                        <tr>
+                            <td>16 mA</td>
+                            <td>75%</td>
+                        </tr>
+                        <tr>
+                            <td>20 mA</td>
+                            <td>100%</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <p>
+                    The general scaling equation is:
+                </p>
+
+                <div class="formula">
+                    Engineering Value = LRV + ((mA − 4) ÷ 16) × (URV − LRV)
+                </div>
+
+                <p>
+                    For example, a 0–100 PSI transmitter producing 12 mA
+                    represents 50 PSI.
+                </p>
+
+                <div class="callout">
+                    <strong>Why 4 mA instead of 0 mA?</strong><br>
+                    The 4 mA starting point is called a <strong>live zero</strong>.
+                    It allows the receiving system to distinguish a valid
+                    zero measurement from conditions such as an open circuit
+                    or loss of loop current.
+                </div>
+            </section>
+
+
+            <section class="content-section" id="voltage">
+                <h2>3. How 0–10 V Works</h2>
+
+                <p>
+                    A 0–10 V signal represents the measured value using
+                    voltage relative to the signal reference.
+                </p>
+
+                <p>
+                    For a standard linear 0–10 V signal:
+                </p>
+
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Signal</th>
+                            <th>Percent of Span</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>0 V</td>
+                            <td>0%</td>
+                        </tr>
+                        <tr>
+                            <td>2.5 V</td>
+                            <td>25%</td>
+                        </tr>
+                        <tr>
+                            <td>5 V</td>
+                            <td>50%</td>
+                        </tr>
+                        <tr>
+                            <td>7.5 V</td>
+                            <td>75%</td>
+                        </tr>
+                        <tr>
+                            <td>10 V</td>
+                            <td>100%</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <p>
+                    For a 0–100 PSI range, 5 V would therefore represent
+                    50 PSI.
+                </p>
+
+                <p>
+                    The basic scaling equation is:
+                </p>
+
+                <div class="formula">
+                    Engineering Value = LRV + (V ÷ 10) × (URV − LRV)
+                </div>
+
+                <p>
+                    0–10 V signals are particularly common in building
+                    automation and HVAC applications for commands such as
+                    valve position, damper position, actuator position, and
+                    speed references.
+                </p>
+            </section>
+
+
+            <section class="content-section" id="comparison">
+                <h2>4. 4–20 mA vs 0–10 V</h2>
+
+                <p>
+                    The two signal types can represent the same information,
+                    but they behave differently electrically.
+                </p>
+
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Characteristic</th>
+                            <th>4–20 mA</th>
+                            <th>0–10 V</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Signal type</td>
+                            <td>Current</td>
+                            <td>Voltage</td>
+                        </tr>
+                        <tr>
+                            <td>Typical range</td>
+                            <td>4–20 mA</td>
+                            <td>0–10 V</td>
+                        </tr>
+                        <tr>
+                            <td>Zero signal</td>
+                            <td>4 mA</td>
+                            <td>0 V</td>
+                        </tr>
+                        <tr>
+                            <td>Full-scale signal</td>
+                            <td>20 mA</td>
+                            <td>10 V</td>
+                        </tr>
+                        <tr>
+                            <td>Loop wiring</td>
+                            <td>Current loop</td>
+                            <td>Voltage signal and reference</td>
+                        </tr>
+                        <tr>
+                            <td>Voltage drop in wiring</td>
+                            <td>Can affect loop voltage available to devices</td>
+                            <td>Can directly affect the measured signal</td>
+                        </tr>
+                        <tr>
+                            <td>Common applications</td>
+                            <td>Instrumentation and industrial controls</td>
+                            <td>HVAC, BAS/BMS, actuators and control outputs</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <p>
+                    These are common applications rather than absolute rules.
+                    Either signal type can appear in a wide variety of
+                    control systems.
+                </p>
+            </section>
+
+
+            <section class="content-section" id="long-runs">
+                <h2>5. Wiring, Voltage Drop, and Long Cable Runs</h2>
+
+                <p>
+                    One important practical difference is how cable resistance
+                    affects the two signal types.
+                </p>
+
+                <h3>4–20 mA</h3>
+
+                <p>
+                    A current transmitter regulates the loop current. Cable
+                    resistance causes a voltage drop, but the current can
+                    remain at the intended value as long as the transmitter
+                    and receiving devices have enough voltage available to
+                    operate.
+                </p>
+
+                <p>
+                    The loop therefore needs enough supply voltage to overcome
+                    the voltage requirements of the transmitter, input burden,
+                    wiring resistance, and other devices in the loop.
+                </p>
+
+                <h3>0–10 V</h3>
+
+                <p>
+                    A voltage signal is measured directly as a voltage
+                    difference. Resistance in the wiring can become important
+                    when it causes a significant voltage drop or when the
+                    receiving input loads the source.
+                </p>
+
+                <div class="callout">
+                    <strong>Field principle:</strong>
+                    Don't look only at the signal value. Understand what the
+                    source, wiring, and receiving input require electrically.
+                </div>
+            </section>
+
+
+            <section class="content-section" id="250-ohm">
+                <h2>6. The 250 Ω Connection</h2>
+
+                <p>
+                    A 250 Ω resistor provides a convenient way to convert a
+                    4–20 mA signal into a 1–5 V signal.
+                </p>
+
+                <p>
+                    This follows directly from Ohm's law:
+                </p>
+
+                <div class="formula">
+                    V = I × R
+                </div>
+
+                <p>
+                    With a 250 Ω resistor:
+                </p>
+
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Current</th>
+                            <th>Voltage Across 250 Ω</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>4 mA</td>
+                            <td>1 V</td>
+                        </tr>
+                        <tr>
+                            <td>8 mA</td>
+                            <td>2 V</td>
+                        </tr>
+                        <tr>
+                            <td>12 mA</td>
+                            <td>3 V</td>
+                        </tr>
+                        <tr>
+                            <td>16 mA</td>
+                            <td>4 V</td>
+                        </tr>
+                        <tr>
+                            <td>20 mA</td>
+                            <td>5 V</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <p>
+                    This is why a 250 Ω resistor is commonly encountered in
+                    instrumentation systems where a 4–20 mA signal needs to
+                    be represented as a 1–5 V signal.
+                </p>
+
+                <div class="warning">
+                    <strong>Important:</strong>
+                    Adding resistance to a current loop increases the voltage
+                    burden on the loop. The power supply and transmitter must
+                    have enough voltage available for the complete loop.
+                </div>
+            </section>
+
+
+            <section class="content-section" id="sourcing-sinking">
+                <h2>7. Sourcing and Sinking</h2>
+
+                <p>
+                    Terms such as <strong>source</strong> and
+                    <strong>sink</strong> describe how current flows between
+                    control devices and are especially important when wiring
+                    analog I/O.
+                </p>
+
+                <p>
+                    A sourcing output provides current to the connected
+                    circuit. A sinking input or output provides a path for
+                    current to return through the circuit.
+                </p>
+
+                <p>
+                    The exact wiring arrangement depends on the particular
+                    transmitter, PLC, analog input module, controller, or
+                    actuator.
+                </p>
+
+                <div class="callout">
+                    <strong>Field rule:</strong>
+                    Always check the wiring diagram for the specific device.
+                    Don't assume that every "4–20 mA input" or "4–20 mA
+                    output" uses the same terminal arrangement.
+                </div>
+            </section>
+
+
+            <section class="content-section" id="measurement">
+                <h2>8. Measuring 4–20 mA and 0–10 V</h2>
+
+                <h3>Measuring 4–20 mA</h3>
+
+                <p>
+                    Current must be measured <strong>in series</strong> with
+                    the circuit. The meter becomes part of the current path.
+                </p>
+
+                <p>
+                    Before connecting a meter, verify the meter lead position,
+                    measurement function, expected current range, and the
+                    circuit arrangement.
+                </p>
+
+                <div class="warning">
+                    <strong>Meter safety:</strong>
+                    Never place a current meter directly across a voltage
+                    source. Doing so can create a short circuit and may damage
+                    the meter or circuit.
+                </div>
+
+                <h3>Measuring 0–10 V</h3>
+
+                <p>
+                    Voltage is measured <strong>across</strong> the signal and
+                    its reference point.
+                </p>
+
+                <p>
+                    A typical measurement might therefore be made between
+                    the analog signal terminal and the appropriate signal
+                    common/reference terminal.
+                </p>
+
+                <p>
+                    Always follow the equipment manufacturer's wiring and
+                    measurement instructions.
+                </p>
+            </section>
+
+
+            <section class="content-section" id="worked-example">
+                <h2>9. Worked Comparison: 0–100 PSI</h2>
+
+                <p>
+                    Suppose the same 0–100 PSI measurement is represented by
+                    either a 4–20 mA transmitter or a 0–10 V signal.
+                </p>
+
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Pressure</th>
+                            <th>4–20 mA</th>
+                            <th>0–10 V</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>0 PSI</td>
+                            <td>4 mA</td>
+                            <td>0 V</td>
+                        </tr>
+                        <tr>
+                            <td>25 PSI</td>
+                            <td>8 mA</td>
+                            <td>2.5 V</td>
+                        </tr>
+                        <tr>
+                            <td>50 PSI</td>
+                            <td>12 mA</td>
+                            <td>5 V</td>
+                        </tr>
+                        <tr>
+                            <td>75 PSI</td>
+                            <td>16 mA</td>
+                            <td>7.5 V</td>
+                        </tr>
+                        <tr>
+                            <td>100 PSI</td>
+                            <td>20 mA</td>
+                            <td>10 V</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <p>
+                    The engineering information is identical. The electrical
+                    representation is different.
+                </p>
+
+                <div class="formula">
+                    4–20 mA at 12 mA → 50 PSI
+                    <br><br>
+                    0–10 V at 5 V → 50 PSI
+                </div>
+
+                <p>
+                    This is an important concept when troubleshooting:
+                    the controller cannot correctly interpret either signal
+                    unless its input configuration and scaling match the
+                    signal being supplied.
+                </p>
+            </section>
+
+
+            <section class="content-section" id="field-problems">
+                <h2>10. Common Field Problems</h2>
+
+                <h3>4–20 mA stuck near 4 mA</h3>
+
+                <p>
+                    The transmitter may actually be reporting a value near
+                    the bottom of its configured range. Check the process
+                    condition and transmitter configuration before assuming
+                    the signal is faulty.
+                </p>
+
+                <h3>4–20 mA below 4 mA</h3>
+
+                <p>
+                    Depending on the transmitter and configuration, a current
+                    below 4 mA can indicate an underrange condition or a
+                    diagnostic/fault state. Check the device documentation.
+                </p>
+
+                <h3>4–20 mA above 20 mA</h3>
+
+                <p>
+                    Similarly, a signal above 20 mA may indicate overrange
+                    operation or a configured diagnostic condition.
+                </p>
+
+                <h3>0–10 V reads incorrectly</h3>
+
+                <p>
+                    Check the signal reference, controller input configuration,
+                    wiring, source output, and scaling.
+                </p>
+
+                <h3>Signal changes but displayed value is wrong</h3>
+
+                <p>
+                    This often points toward a scaling or configuration issue.
+                    Verify the transmitter range and compare it with the
+                    receiving input and PLC/HMI scaling.
+                </p>
+
+                <h3>Ground-reference problems</h3>
+
+                <p>
+                    Voltage signals depend on the relationship between the
+                    signal and its reference. Differences in reference
+                    potential can therefore create measurement errors.
+                </p>
+
+                <p>
+                    A current loop can also encounter grounding and wiring
+                    problems, so the complete signal circuit should always be
+                    considered rather than assuming one signal type is immune
+                    to field wiring problems.
+                </p>
+            </section>
+
+
+            <section class="content-section" id="choosing">
+                <h2>11. When You'll Commonly Encounter Each Signal</h2>
+
+                <p>
+                    Neither signal type is universally used for every
+                    application. The equipment and control architecture
+                    determine what you will encounter in the field.
+                </p>
+
+                <h3>4–20 mA</h3>
+
+                <ul>
+                    <li>Process instrumentation</li>
+                    <li>Pressure transmitters</li>
+                    <li>Flow transmitters</li>
+                    <li>Level transmitters</li>
+                    <li>Temperature transmitters</li>
+                    <li>Industrial analog inputs</li>
+                    <li>Instrumentation systems</li>
+                </ul>
+
+                <h3>0–10 V</h3>
+
+                <ul>
+                    <li>HVAC controls</li>
+                    <li>Building automation systems</li>
+                    <li>Damper actuators</li>
+                    <li>Valve actuators</li>
+                    <li>Fan speed commands</li>
+                    <li>Controller analog outputs</li>
+                    <li>Equipment control interfaces</li>
+                </ul>
+
+                <p>
+                    These are common examples, not limitations. Always verify
+                    the actual signal type from the equipment documentation
+                    and wiring diagram.
+                </p>
+            </section>
+
+
+            <section class="content-section" id="workflow">
+                <h2>12. Practical Field Workflow</h2>
+
+                <p>
+                    When troubleshooting an analog signal, work through the
+                    signal path instead of immediately changing components.
+                </p>
+
+                <ol class="step-list">
+                    <li>
+                        <strong>Identify the signal type.</strong>
+                        Determine whether the system is using 4–20 mA,
+                        0–10 V, or another signal range.
+                    </li>
+
+                    <li>
+                        <strong>Determine the expected range.</strong>
+                        Find the transmitter or controller LRV and URV and
+                        identify what the signal should represent.
+                    </li>
+
+                    <li>
+                        <strong>Measure the actual signal.</strong>
+                        Measure current in series for a current loop or
+                        voltage across the appropriate points for a voltage
+                        signal.
+                    </li>
+
+                    <li>
+                        <strong>Convert the signal to engineering units.</strong>
+                        Determine what the measured signal should represent.
+                    </li>
+
+                    <li>
+                        <strong>Check the receiving input.</strong>
+                        Verify the analog input range, wiring, signal type,
+                        and configuration.
+                    </li>
+
+                    <li>
+                        <strong>Check PLC scaling.</strong>
+                        Make sure the controller is interpreting the input
+                        using the correct range and units.
+                    </li>
+
+                    <li>
+                        <strong>Check the HMI or supervisory system.</strong>
+                        If the PLC value is correct but the display is wrong,
+                        investigate the tag mapping, scaling, communications,
+                        and display configuration.
+                    </li>
+                </ol>
+
+                <div class="callout">
+                    <strong>Useful troubleshooting principle:</strong>
+                    Find the first point in the signal path where the value
+                    becomes incorrect. That usually tells you which part of
+                    the system needs investigation.
+                </div>
+            </section>
+
+
+            <section class="content-section" id="mistakes">
+                <h2>13. Common Mistakes</h2>
+
+                <ul>
+                    <li>
+                        Assuming every analog signal is 4–20 mA.
+                    </li>
+
+                    <li>
+                        Treating 0 V as automatically equivalent to a valid
+                        zero measurement without checking the signal type.
+                    </li>
+
+                    <li>
+                        Measuring a current loop incorrectly with a multimeter.
+                    </li>
+
+                    <li>
+                        Forgetting the signal reference when measuring voltage.
+                    </li>
+
+                    <li>
+                        Using the wrong input configuration on a PLC or
+                        controller.
+                    </li>
+
+                    <li>
+                        Scaling the PLC for a different range than the
+                        transmitter.
+                    </li>
+
+                    <li>
+                        Assuming cable resistance has the same effect on
+                        current and voltage signals.
+                    </li>
+
+                    <li>
+                        Adding a resistor to a current loop without checking
+                        the available loop voltage.
+                    </li>
+
+                    <li>
+                        Replacing a transmitter before verifying the actual
+                        signal and configuration.
+                    </li>
+                </ul>
+            </section>
+
+
+            <section class="content-section" id="summary">
+                <h2>14. Key Takeaways</h2>
+
+                <p>
+                    4–20 mA and 0–10 V can both represent the same engineering
+                    information, but they do so using different electrical
+                    signals.
+                </p>
+
+                <ul>
+                    <li>
+                        <strong>4–20 mA</strong> represents the signal using
+                        current and uses 4 mA as its standard zero point.
+                    </li>
+
+                    <li>
+                        <strong>0–10 V</strong> represents the signal using
+                        voltage from 0 to 10 V.
+                    </li>
+
+                    <li>
+                        A 250 Ω resistor converts 4–20 mA into 1–5 V.
+                    </li>
+
+                    <li>
+                        Current is measured in series; voltage is measured
+                        across the signal and reference.
+                    </li>
+
+                    <li>
+                        Correct scaling requires the transmitter range and
+                        receiving system configuration to agree.
+                    </li>
+
+                    <li>
+                        The best troubleshooting approach is to follow the
+                        signal from its source through the receiving system
+                        and find the first point where the value becomes
+                        incorrect.
+                    </li>
+                </ul>
+            </section>
+
+
+            <section class="content-section" id="tools">
+                <h2>Related ControlsCalc Tools</h2>
+
+                <p>
+                    Use these calculators and guides to work through analog
+                    signal calculations and troubleshooting.
+                </p>
+
+                <div class="related-links">
+
+                    <a class="related-link" href="../calculators/4-20ma-scaling.html">
+                        4–20 mA Scaling Calculator
+                        <span>Convert loop current into engineering units.</span>
+                    </a>
+
+                    <a class="related-link" href="../calculators/4-20ma-voltage.html">
+                        4–20 mA → Voltage Calculator
+                        <span>Calculate voltage across a loop resistor.</span>
+                    </a>
+
+                    <a class="related-link" href="../calculators/4-20ma-resistor.html">
+                        4–20 mA Loop Resistor Calculator
+                        <span>Calculate resistance and resistor power.</span>
+                    </a>
+
+                    <a class="related-link" href="../calculators/0-10v-scaling.html">
+                        0–10 V Scaling Calculator
+                        <span>Convert a voltage signal into engineering units.</span>
+                    </a>
+
+                    <a class="related-link" href="../calculators/analog-scaling.html">
+                        Analog Scaling Calculator
+                        <span>Scale general analog signals between ranges.</span>
+                    </a>
+
+                    <a class="related-link" href="4-20ma-troubleshooting.html">
+                        4–20 mA Signal Troubleshooting
+                        <span>Follow a practical workflow for finding loop and scaling problems.</span>
+                    </a>
+
+                    <a class="related-link" href="4-20ma.html">
+                        4–20 mA Fundamentals
+                        <span>Learn how current loops work and how they are scaled.</span>
+                    </a>
+
+                    <a class="related-link" href="plc-scaling.html">
+                        PLC Analog Scaling Explained
+                        <span>Understand raw counts, scaling, and engineering units.</span>
+                    </a>
+
+                </div>
+            </section>
+
+        </article>
+
+
+        <aside class="toc">
+            <h3>On This Page</h3>
+
+            <ul>
+                <li><a href="#introduction">What Are Analog Signals?</a></li>
+                <li><a href="#current">How 4–20 mA Works</a></li>
+                <li><a href="#voltage">How 0–10 V Works</a></li>
+                <li><a href="#comparison">4–20 mA vs 0–10 V</a></li>
+                <li><a href="#long-runs">Wiring & Voltage Drop</a></li>
+                <li><a href="#250-ohm">The 250 Ω Connection</a></li>
+                <li><a href="#sourcing-sinking">Sourcing & Sinking</a></li>
+                <li><a href="#measurement">Measuring Signals</a></li>
+                <li><a href="#worked-example">Worked Comparison</a></li>
+                <li><a href="#field-problems">Common Field Problems</a></li>
+                <li><a href="#choosing">Common Applications</a></li>
+                <li><a href="#workflow">Field Workflow</a></li>
+                <li><a href="#mistakes">Common Mistakes</a></li>
+                <li><a href="#summary">Key Takeaways</a></li>
+                <li><a href="#tools">Related Tools</a></li>
+            </ul>
+        </aside>
+
+    </div>
+
+</main>
+
+<footer class="site-footer">
+    <div class="footer-inner">
+        <div>© 2026 ControlsCalc</div>
+        <div>Controls & Instrumentation Calculators</div>
+    </div>
+</footer>
+
+</body>
+</html>
