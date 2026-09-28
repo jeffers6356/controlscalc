@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Controls Technician Toolkit: Field References & Tools | ControlsCalc</title>
+
+<meta name="description" content="Practical field references and tools for controls and instrumentation technicians, including 4–20 mA references, PLC scaling, analog signals, troubleshooting checklists, and commissioning resources.">
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        background: #f5f7fa;
+        color: #172033;
+        line-height: 1.6;
+    }
+
+    a {
+        color: #2563eb;
+    }
+
+    header {
+        background: #ffffff;
+        border-bottom: 1px solid #dfe5ec;
+    }
+
+    .container {
+        width: min(1000px, calc(100% - 40px));
+        margin: 0 auto;
+    }
+
+    .header-inner {
+        min-height: 70px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+    }
+
+    .logo {
+        color: #172033;
+        text-decoration: none;
+        font-size: 1.45rem;
+        font-weight: 800;
+    }
+
+    nav {
+        display: flex;
+        gap: 22px;
+    }
+
+    nav a {
+        color: #475569;
+        text-decoration: none;
+        font-size: 0.95rem;
+    }
+
+    nav a:hover {
+        color: #2563eb;
+    }
+
+    .hero {
+        padding: 56px 0 42px;
+    }
+
+    .eyebrow {
+        margin-bottom: 8px;
+        color: #2563eb;
+        font-size: 13px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+    }
+
+    h1 {
+        margin: 0 0 12px;
+        font-size: 2.5rem;
+        line-height: 1.15;
+    }
+
+    .hero p {
+        max-width: 760px;
+        margin: 0;
+        color: #64748b;
+        font-size: 1.1rem;
+    }
+
+    main {
+        padding-bottom: 60px;
+    }
+
+    .content-section {
+        margin-top: 28px;
+        padding: 30px;
+        background: #ffffff;
+        border: 1px solid #dfe5ec;
+        border-radius: 12px;
+    }
+
+    .content-section h2 {
+        margin: 0 0 10px;
+        font-size: 24px;
+    }
+
+    .content-section > p {
+        margin-top: 0;
+        color: #475569;
+    }
+
+    .resource-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+        margin-top: 22px;
+    }
+
+    .resource-card {
+        display: block;
+        padding: 20px;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        text-decoration: none;
+    }
+
+    .resource-card:hover {
+        background: #eff6ff;
+        border-color: #bfdbfe;
+    }
+
+    .resource-card strong {
+        display: block;
+        margin-bottom: 5px;
+        color: #2563eb;
+        font-size: 17px;
+    }
+
+    .resource-card span {
+        display: block;
+        color: #64748b;
+        font-size: 14px;
+    }
+
+    .reference-table {
+        width: 100%;
+        margin: 20px 0 0;
+        border-collapse: collapse;
+        background: #ffffff;
+    }
+
+    .reference-table th,
+    .reference-table td {
+        padding: 11px 13px;
+        border: 1px solid #d7dee8;
+        text-align: left;
+    }
+
+    .reference-table th {
+        background: #eef2f7;
+    }
+
+    .formula {
+        margin: 18px 0;
+        padding: 18px 20px;
+        background: #f5f7fa;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        font-family: "Courier New", monospace;
+        overflow-x: auto;
+    }
+
+    .checklist {
+        margin: 18px 0 0;
+        padding-left: 24px;
+    }
+
+    .checklist li {
+        margin-bottom: 8px;
+    }
+
+    .note {
+        margin-top: 22px;
+        padding: 18px 20px;
+        background: #eff6ff;
+        border: 1px solid #bfdbfe;
+        border-radius: 8px;
+    }
+
+    .coming-soon {
+        opacity: 0.85;
+    }
+
+    footer {
+        padding: 36px 0;
+        background: #ffffff;
+        border-top: 1px solid #e1e5eb;
+        color: #64748b;
+        font-size: 14px;
+    }
+
+    @media print {
+        header,
+        nav,
+        .hero {
+            display: none;
+        }
+
+        body {
+            background: #ffffff;
+        }
+
+        .content-section {
+            break-inside: avoid;
+            border: 1px solid #cbd5e1;
+            box-shadow: none;
+        }
+
+        footer {
+            display: none;
+        }
+    }
+
+    @media (max-width: 650px) {
+        .container {
+            width: min(100% - 28px, 1000px);
+        }
+
+        .header-inner {
+            min-height: 58px;
+        }
+
+        nav {
+            gap: 14px;
+        }
+
+        h1 {
+            font-size: 2rem;
+        }
+
+        .resource-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .content-section {
+            padding: 22px;
+        }
+
+        .reference-table {
+            font-size: 14px;
+        }
+
+        .reference-table th,
+        .reference-table td {
+            padding: 9px;
+        }
+    }
+</style>
+</head>
+
+<body>
+
+<header>
+
+    <div class="container header-inner">
+
+        <a href="/" class="logo">
+            ControlsCalc
+        </a>
+
+        <nav>
+            <a href="/">Calculators</a>
+            <a href="guides/index.html">Guides</a>
+            <a href="toolkit.html">Toolkit</a>
+        </nav>
+
+    </div>
+
+</header>
+
+
+<section class="hero">
+
+    <div class="container">
+
+        <div class="eyebrow">
+            Technician Toolkit
+        </div>
+
+        <h1>
+            Field References &amp; Controls Tools
+        </h1>
+
+        <p>
+            Practical reference material for controls and instrumentation
+            technicians. Use these resources alongside the ControlsCalc
+            calculators when troubleshooting, commissioning, and checking
+            analog signals in the field.
+        </p>
+
+    </div>
+
+</section>
+
+
+<main>
+
+    <div class="container">
+
+
+        <section class="content-section">
+
+            <h2>Quick Field References</h2>
+
+            <p>
+                Start here for the information technicians most often need
+                while working with analog signals and PLC inputs.
+            </p>
+
+            <div class="resource-grid">
+
+                <a class="resource-card" href="guides/4-20ma.html">
+                    <strong>4–20 mA Quick Reference</strong>
+                    <span>
+                        Understand LRV, URV, zero, span, loop current,
+                        voltage, 250 Ω conversion, and basic troubleshooting.
+                    </span>
+                </a>
+
+                <a class="resource-card" href="guides/plc-scaling.html">
+                    <strong>PLC Scaling Reference</strong>
+                    <span>
+                        Follow the signal from the transmitter through raw
+                        counts and into engineering units.
+                    </span>
+                </a>
+
+                <a class="resource-card" href="guides/4-20ma-vs-0-10v.html">
+                    <strong>4–20 mA vs 0–10 V</strong>
+                    <span>
+                        Compare the two common analog control signals,
+                        including wiring, measurement, and applications.
+                    </span>
+                </a>
+
+                <a class="resource-card" href="guides/4-20ma-troubleshooting.html">
+                    <strong>4–20 mA Troubleshooting</strong>
+                    <span>
+                        Work through the transmitter, loop, analog input,
+                        PLC, and HMI when a signal does not look right.
+                    </span>
+                </a>
+
+            </div>
+
+        </section>
+
+
+        <section class="content-section">
+
+            <h2>4–20 mA Reference Table</h2>
+
+            <p>
+                For a standard linear 4–20 mA signal, these values represent
+                the percentage of configured transmitter span.
+            </p>
+
+            <table class="reference-table">
+
+                <thead>
+
+                    <tr>
+                        <th>Current</th>
+                        <th>Span</th>
+                        <th>Across 250 Ω</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr>
+                        <td>4 mA</td>
+                        <td>0%</td>
+                        <td>1 V</td>
+                    </tr>
+
+                    <tr>
+                        <td>8 mA</td>
+                        <td>25%</td>
+                        <td>2 V</td>
+                    </tr>
+
+                    <tr>
+                        <td>12 mA</td>
+                        <td>50%</td>
+                        <td>3 V</td>
+                    </tr>
+
+                    <tr>
+                        <td>16 mA</td>
+                        <td>75%</td>
+                        <td>4 V</td>
+                    </tr>
+
+                    <tr>
+                        <td>20 mA</td>
+                        <td>100%</td>
+                        <td>5 V</td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+            <div class="formula">
+                Engineering Value = LRV + ((mA − 4) ÷ 16) × (URV − LRV)
+            </div>
+
+            <p>
+                Always use the transmitter's configured LRV and URV. Do not
+                assume that 4 mA always represents zero engineering units.
+            </p>
+
+        </section>
+
+
+        <section class="content-section">
+
+            <h2>PLC Scaling Reference</h2>
+
+            <p>
+                The general linear scaling relationship can be used when
+                converting an input value into an engineering range.
+            </p>
+
+            <div class="formula">
+                Output = Output Low
+                + ((Input − Input Low) ÷ (Input High − Input Low))
+                × (Output High − Output Low)
+            </div>
+
+            <p>
+                PLC raw-count ranges vary by controller, analog input module,
+                configuration, resolution, and data format. Verify the actual
+                module documentation before using a specific raw-count range.
+            </p>
+
+            <div class="resource-grid">
+
+                <a class="resource-card" href="calculators/analog-scaling.html">
+                    <strong>Analog Signal Scaling Calculator</strong>
+                    <span>
+                        Perform general linear scaling between an input range
+                        and an engineering range.
+                    </span>
+                </a>
+
+                <a class="resource-card" href="calculators/4-20ma-scaling.html">
+                    <strong>4–20 mA Scaling Calculator</strong>
+                    <span>
+                        Convert a measured transmitter current into engineering
+                        units using LRV and URV.
+                    </span>
+                </a>
+
+            </div>
+
+        </section>
+
+
+        <section class="content-section">
+
+            <h2>Field Troubleshooting Checklists</h2>
+
+            <h3>4–20 mA Signal</h3>
+
+            <ol class="checklist">
+
+                <li>
+                    Verify the transmitter configuration and its LRV/URV.
+                </li>
+
+                <li>
+                    Measure the actual loop current with the correct meter method.
+                </li>
+
+                <li>
+                    Check loop power supply voltage and available voltage budget.
+                </li>
+
+                <li>
+                    Check wiring, terminals, polarity, and added resistance.
+                </li>
+
+                <li>
+                    Verify the analog input is configured for the expected signal type.
+                </li>
+
+                <li>
+                    Check PLC raw counts and scaling.
+                </li>
+
+                <li>
+                    Compare the PLC value with the transmitter's measured process value.
+                </li>
+
+            </ol>
+
+
+            <h3>0–10 V Signal</h3>
+
+            <ol class="checklist">
+
+                <li>
+                    Verify the expected signal range and common/reference connection.
+                </li>
+
+                <li>
+                    Measure the voltage directly at the source.
+                </li>
+
+                <li>
+                    Measure again at the receiving input when practical.
+                </li>
+
+                <li>
+                    Check wiring, polarity, grounding, and voltage drop.
+                </li>
+
+                <li>
+                    Verify the analog input configuration.
+                </li>
+
+                <li>
+                    Check PLC scaling and the displayed engineering value.
+                </li>
+
+            </ol>
+
+        </section>
+
+
+        <section class="content-section">
+
+            <h2>ControlsCalc Tools</h2>
+
+            <p>
+                Use the calculators directly from the field workflow.
+            </p>
+
+            <div class="resource-grid">
+
+                <a class="resource-card" href="calculators/4-20ma-scaling.html">
+                    <strong>4–20 mA Scaling</strong>
+                    <span>
+                        Convert current into engineering units.
+                    </span>
+                </a>
+
+                <a class="resource-card" href="calculators/4-20ma-voltage.html">
+                    <strong>4–20 mA to Voltage</strong>
+                    <span>
+                        Calculate voltage across a loop resistor.
+                    </span>
+                </a>
+
+                <a class="resource-card" href="calculators/4-20ma-resistor.html">
+                    <strong>4–20 mA Loop Resistor</strong>
+                    <span>
+                        Calculate resistance and resistor power.
+                    </span>
+                </a>
+
+                <a class="resource-card" href="calculators/0-10v-scaling.html">
+                    <strong>0–10 V Scaling</strong>
+                    <span>
+                        Convert a 0–10 V signal into engineering units.
+                    </span>
+                </a>
+
+                <a class="resource-card" href="calculators/pressure-transmitter.html">
+                    <strong>Pressure Transmitter Scaling</strong>
+                    <span>
+                        Convert a 4–20 mA pressure signal into pressure.
+                    </span>
+                </a>
+
+                <a class="resource-card" href="calculators/flow-transmitter.html">
+                    <strong>Flow Transmitter Scaling</strong>
+                    <span>
+                        Calculate flow using linear or square-root scaling.
+                    </span>
+                </a>
+
+            </div>
+
+        </section>
+
+
+        <section class="content-section coming-soon">
+
+            <h2>Downloadable Technician Resources</h2>
+
+            <p>
+                These are the next resources planned for the ControlsCalc
+                Technician Toolkit.
+            </p>
+
+            <div class="resource-grid">
+
+                <div class="resource-card">
+
+                    <strong>
+                        4–20 mA Field Reference Sheet
+                    </strong>
+
+                    <span>
+                        Printable one-page reference for current, span,
+                        voltage, scaling, and loop troubleshooting.
+                    </span>
+
+                </div>
+
+
+                <div class="resource-card">
+
+                    <strong>
+                        PLC Scaling Worksheet
+                    </strong>
+
+                    <span>
+                        A field worksheet for documenting signal range,
+                        raw counts, engineering range, and scaling results.
+                    </span>
+
+                </div>
+
+
+                <div class="resource-card">
+
+                    <strong>
+                        Transmitter Calibration Worksheet
+                    </strong>
+
+                    <span>
+                        Document LRV, URV, test points, measured signal,
+                        calculated value, and as-found/as-left results.
+                    </span>
+
+                </div>
+
+
+                <div class="resource-card">
+
+                    <strong>
+                        Analog Input Commissioning Checklist
+                    </strong>
+
+                    <span>
+                        A structured checklist for verifying wiring,
+                        configuration, scaling, and displayed values.
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="note">
+
+                <strong>Tip:</strong>
+
+                This page is designed to be printable from a browser.
+                Use your browser's Print command to create a field reference
+                copy.
+
+            </div>
+
+        </section>
+
+    </div>
+
+</main>
+
+
+<footer>
+
+    <div class="container">
+
+        <p>
+            <strong>ControlsCalc</strong>
+        </p>
+
+        <p>
+            Engineering and controls calculators for technicians and engineers.
+        </p>
+
+    </div>
+
+</footer>
+
+</body>
+</html>
