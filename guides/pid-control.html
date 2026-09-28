@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>PID Control Explained: Proportional, Integral &amp; Derivative | ControlsCalc</title>
+
+    <meta
+        name="description"
+        content="PID control explained for controls technicians and engineers. Learn proportional, integral, derivative, bias, error, tuning, output limits, and practical PLC and HVAC examples."
+    >
+
+    <meta name="google-site-verification" content="JiB6q9DgpG_PMN6uKs9CJmFynIo4ZNUUF0Ua31uChU" />
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #172033;
+            background: #f5f7fa;
+            line-height: 1.7;
+        }
+
+        a {
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            width: min(1000px, calc(100% - 40px));
+            margin: 0 auto;
+        }
+
+        header {
+            background: #ffffff;
+            border-bottom: 1px solid #dfe5ec;
+        }
+
+        .header-inner {
+            min-height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .logo {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: #172033;
+        }
+
+        .back-link {
+            font-size: 0.95rem;
+        }
+
+        main {
+            padding: 50px 0 70px;
+        }
+
+        .page-header {
+            margin-bottom: 30px;
+        }
+
+        .eyebrow {
+            margin-bottom: 8px;
+            color: #2563eb;
+            font-size: 0.82rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            margin: 0 0 14px;
+            font-size: clamp(2rem, 5vw, 3rem);
+            line-height: 1.15;
+        }
+
+        .page-header p {
+            max-width: 800px;
+            margin: 0;
+            color: #526071;
+            font-size: 1.08rem;
+        }
+
+        .content-section {
+            background: #ffffff;
+            border: 1px solid #dfe5ec;
+            border-radius: 12px;
+            padding: 30px;
+            margin-top: 24px;
+        }
+
+        .content-section h2 {
+            margin-top: 0;
+            margin-bottom: 14px;
+            font-size: 1.55rem;
+            line-height: 1.3;
+        }
+
+        .content-section h3 {
+            margin-top: 28px;
+            margin-bottom: 8px;
+            font-size: 1.15rem;
+        }
+
+        .formula {
+            margin: 20px 0;
+            padding: 18px;
+            background: #f5f7fa;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-family: "Courier New", monospace;
+            overflow-x: auto;
+        }
+
+        .callout {
+            margin: 20px 0;
+            padding: 18px 20px;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 8px;
+        }
+
+        .example {
+            margin: 20px 0;
+            padding: 18px 20px;
+            background: #f8fafc;
+            border-left: 4px solid #2563eb;
+        }
+
+        .toc {
+            background: #ffffff;
+            border: 1px solid #dfe5ec;
+            border-radius: 12px;
+            padding: 24px 30px;
+            margin-top: 24px;
+        }
+
+        .toc h2 {
+            margin-top: 0;
+            font-size: 1.2rem;
+        }
+
+        .toc ul {
+            margin-bottom: 0;
+        }
+
+        .tool-card {
+            display: block;
+            padding: 18px;
+            margin-top: 12px;
+            border: 1px solid #dfe5ec;
+            border-radius: 9px;
+            background: #ffffff;
+        }
+
+        .tool-card strong {
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .tool-card span {
+            color: #526071;
+            font-size: 0.94rem;
+        }
+
+        .related-list {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+            margin-top: 18px;
+        }
+
+        .related-list a {
+            display: block;
+            padding: 14px 16px;
+            border: 1px solid #dfe5ec;
+            border-radius: 8px;
+            background: #ffffff;
+            font-weight: 600;
+        }
+
+        .related-list a:hover {
+            background: #f8fafc;
+            text-decoration: none;
+        }
+
+        ul {
+            padding-left: 22px;
+        }
+
+        footer {
+            padding: 30px 0 50px;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        @media (max-width: 650px) {
+            .container {
+                width: min(100% - 28px, 1000px);
+            }
+
+            main {
+                padding-top: 35px;
+            }
+
+            .content-section,
+            .toc {
+                padding: 22px;
+            }
+
+            .related-list {
+                grid-template-columns: 1fr;
+            }
+
+            .header-inner {
+                min-height: 64px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="container header-inner">
+        <a class="logo" href="../index.html">ControlsCalc</a>
+        <a class="back-link" href="../index.html">← ControlsCalc Home</a>
+    </div>
+</header>
+
+<main>
+    <div class="container">
+
+        <section class="page-header">
+            <div class="eyebrow">Controls &amp; Automation Guide</div>
+
+            <h1>PID Control Explained</h1>
+
+            <p>
+                A practical guide to proportional, integral, and derivative
+                control for PLCs, DDC systems, HVAC controls, and industrial
+                process applications.
+            </p>
+        </section>
+
+        <nav class="toc">
+            <h2>In This Guide</h2>
+
+            <ul>
+                <li><a href="#what-is-pid">What Is PID Control?</a></li>
+                <li><a href="#control-loop">The Basic Control Loop</a></li>
+                <li><a href="#error">Understanding Error</a></li>
+                <li><a href="#proportional">Proportional Control</a></li>
+                <li><a href="#integral">Integral Control</a></li>
+                <li><a href="#derivative">Derivative Control</a></li>
+                <li><a href="#bias">Bias and Manual Reset</a></li>
+                <li><a href="#formula">PID Output Equation</a></li>
+                <li><a href="#example">Practical Example</a></li>
+                <li><a href="#tuning">PID Tuning</a></li>
+                <li><a href="#common-problems">Common PID Problems</a></li>
+                <li><a href="#controls">PID in PLC and HVAC Controls</a></li>
+                <li><a href="#calculator">PID Calculator</a></li>
+            </ul>
+        </nav>
+
+        <section class="content-section" id="what-is-pid">
+
+            <h2>What Is PID Control?</h2>
+
+            <p>
+                PID stands for <strong>Proportional, Integral, and
+                Derivative</strong>. A PID controller continuously compares a
+                desired value, called the setpoint, with the measured process
+                value and adjusts an output to reduce the difference.
+            </p>
+
+            <p>
+                PID control is widely used for temperature, pressure, flow,
+                level, speed, humidity, and other continuously varying
+                processes.
+            </p>
+
+            <div class="callout">
+                <strong>The basic idea:</strong>
+                measure the process, compare it to the desired value,
+                calculate the error, and adjust the output.
+            </div>
+
+            <p>
+                For example, an HVAC controller may have a 72 °F room
+                temperature setpoint while the measured room temperature is
+                68 °F. The PID controller uses that error to determine how
+                much heating output is required.
+            </p>
+
+        </section>
+
+        <section class="content-section" id="control-loop">
+
+            <h2>The Basic Control Loop</h2>
+
+            <p>
+                A typical closed-loop control system contains several basic
+                elements:
+            </p>
+
+            <ol>
+                <li>
+                    <strong>Setpoint:</strong> the desired operating value.
+                </li>
+                <li>
+                    <strong>Process variable:</strong> the measured value.
+                </li>
+                <li>
+                    <strong>Controller:</strong> calculates the required
+                    output.
+                </li>
+                <li>
+                    <strong>Final control element:</strong> changes the
+                    process, such as a valve, damper, heater, or VFD.
+                </li>
+                <li>
+                    <strong>Process:</strong> the physical system being
+                    controlled.
+                </li>
+            </ol>
+
+            <p>
+                The process variable is fed back to the controller, allowing
+                the controller to continuously respond to changes.
+            </p>
+
+            <div class="formula">
+                Setpoint → Controller → Final Control Element → Process
+                → Measurement → Controller
+            </div>
+
+        </section>
+
+        <section class="content-section" id="error">
+
+            <h2>Understanding Error</h2>
+
+            <p>
+                Error is the difference between the setpoint and the measured
+                process variable.
+            </p>
+
+            <div class="formula">
+                Error = Setpoint − Process Variable
+            </div>
+
+            <div class="example">
+
+                <strong>Example:</strong>
+
+                Setpoint = 75 °F
+
+                <br>
+                Process variable = 72 °F
+
+                <br><br>
+
+                Error = 75 − 72 = <strong>+3 °F</strong>
+
+            </div>
+
+            <p>
+                The sign of the error matters. Depending on whether the
+                controller is configured for direct or reverse action, a
+                positive error may cause the output to increase or decrease.
+            </p>
+
+        </section>
+
+        <section class="content-section" id="proportional">
+
+            <h2>Proportional Control</h2>
+
+            <p>
+                The proportional term responds to the current error. A larger
+                error produces a larger proportional contribution to the
+                controller output.
+            </p>
+
+            <div class="formula">
+                Proportional Contribution = Kp × Error
+            </div>
+
+            <p>
+                <strong>Kp</strong> is the proportional gain.
+            </p>
+
+            <div class="example">
+
+                If:
+
+                <br>
+                Error = 4
+
+                <br>
+                Kp = 2
+
+                <br><br>
+
+                Proportional Contribution = 2 × 4 =
+                <strong>8%</strong>
+
+            </div>
+
+            <h3>Increasing Proportional Gain</h3>
+
+            <p>
+                Increasing proportional gain makes the controller respond more
+                strongly to a given error. Excessive gain can make a system
+                oscillate or become unstable, while insufficient gain can make
+                the response slow or leave substantial error.
+            </p>
+
+            <p>
+                Some controllers do not use gain directly. They may instead
+                specify <strong>proportional band</strong>. The relationship
+                between gain and proportional band depends on the controller's
+                convention.
+            </p>
+
+        </section>
+
+        <section class="content-section" id="integral">
+
+            <h2>Integral Control</h2>
+
+            <p>
+                Integral action responds to accumulated error over time. Its
+                purpose is to move the controller output when a persistent
+                error remains.
+            </p>
+
+            <p>
+                This is particularly important in processes where a
+                proportional-only controller settles with an offset from the
+                setpoint.
+            </p>
+
+            <div class="callout">
+                <strong>Think of integral as accumulated correction.</strong>
+                A small error that persists can eventually produce a
+                significant change in controller output.
+            </div>
+
+            <p>
+                The integral term depends on both the magnitude and duration of
+                the error. Different controllers implement reset/integral
+                calculations using different conventions and time units.
+            </p>
+
+            <h3>Integral Windup</h3>
+
+            <p>
+                A common PID problem occurs when the controller output reaches
+                a limit while integral action continues accumulating. When the
+                process eventually moves back toward the operating range, the
+                accumulated integral term can cause excessive output and a
+                prolonged recovery.
+            </p>
+
+            <p>
+                Many modern controllers include some form of
+                <strong>anti-reset windup</strong> to limit this behavior.
+            </p>
+
+        </section>
+
+        <section class="content-section" id="derivative">
+
+            <h2>Derivative Control</h2>
+
+            <p>
+                Derivative action responds to the rate at which the error or
+                process variable is changing.
+            </p>
+
+            <p>
+                Whereas proportional action looks at the current error and
+                integral action considers accumulated error, derivative action
+                provides information about how quickly the system is changing.
+            </p>
+
+            <div class="callout">
+                <strong>Derivative is predictive in nature.</strong>
+                A rapidly changing process can produce a derivative response
+                before the process reaches the setpoint.
+            </div>
+
+            <p>
+                Derivative action can help reduce overshoot in some processes,
+                but it can also amplify measurement noise. For that reason,
+                derivative filtering is common in practical controllers.
+            </p>
+
+        </section>
+
+        <section class="content-section" id="bias">
+
+            <h2>Bias and Manual Reset</h2>
+
+            <p>
+                Bias is the controller output around which the PID corrections
+                operate. Depending on the controller, it may also be called
+                <strong>manual reset</strong>.
+            </p>
+
+            <p>
+                Consider a heating system that normally requires approximately
+                40% valve output to maintain its operating temperature. A bias
+                near that operating point gives the controller a useful
+                starting output.
+            </p>
+
+            <p>
+                The exact terminology and behavior vary between controller
+                manufacturers, so the controller documentation should always
+                be checked.
+            </p>
+
+        </section>
+
+        <section class="content-section" id="formula">
+
+            <h2>PID Output Equation</h2>
+
+            <p>
+                A simplified representation of controller output is:
+            </p>
+
+            <div class="formula">
+                Output = Bias + Proportional Contribution
+                + Integral Contribution + Derivative Contribution
+            </div>
+
+            <p>
+                Using proportional gain:
+            </p>
+
+            <div class="formula">
+                Output = Bias + (Kp × Error) + Integral Contribution
+                + Derivative Contribution
+            </div>
+
+            <p>
+                The actual equation used by a particular PLC, DDC controller,
+                or process controller may differ. Controller configuration can
+                also include output limits, deadband, filtering, sample time,
+                anti-windup, setpoint tracking, and direct/reverse action.
+            </p>
+
+        </section>
+
+        <section class="content-section" id="example">
+
+            <h2>Practical PID Example</h2>
+
+            <div class="example">
+
+                A temperature controller has:
+
+                <br><br>
+
+                Setpoint = 75 °F
+
+                <br>
+                Process Variable = 72 °F
+
+                <br>
+                Bias = 50%
+
+                <br>
+                Kp = 2
+
+                <br>
+                Integral contribution = 5%
+
+                <br>
+                Derivative contribution = 0%
+
+                <br><br>
+
+                Error = 75 − 72 = <strong>3 °F</strong>
+
+                <br><br>
+
+                Output = 50 + (2 × 3) + 5 + 0
+
+                <br><br>
+
+                <strong>Output = 61%</strong>
+
+            </div>
+
+            <p>
+                This example illustrates the purpose of the individual terms.
+                The bias provides the starting output, proportional action
+                responds to the current error, and integral action adds a
+                correction based on accumulated error.
+            </p>
+
+        </section>
+
+        <section class="content-section" id="tuning">
+
+            <h2>PID Tuning</h2>
+
+            <p>
+                PID tuning is the process of selecting controller parameters
+                that produce an acceptable response from the controlled
+                process.
+            </p>
+
+            <p>
+                There is no single set of PID values that works for every
+                process. The appropriate settings depend on the process
+                dynamics, sensor behavior, final control element, loop scan
+                time, delays, and the response that is required.
+            </p>
+
+            <h3>Common Tuning Considerations</h3>
+
+            <ul>
+                <li>
+                    How quickly does the process respond to an output change?
+                </li>
+                <li>
+                    Is there significant process dead time?
+                </li>
+                <li>
+                    Does the sensor introduce filtering or delay?
+                </li>
+                <li>
+                    Can the final control element respond smoothly?
+                </li>
+                <li>
+                    Is overshoot acceptable?
+                </li>
+                <li>
+                    How much process noise is present?
+                </li>
+                <li>
+                    What are the minimum and maximum output limits?
+                </li>
+            </ul>
+
+            <p>
+                A loop that is stable but slow may require different tuning
+                from a loop where rapid response is important.
+            </p>
+
+        </section>
+
+        <section class="content-section" id="common-problems">
+
+            <h2>Common PID Problems</h2>
+
+            <h3>Oscillation</h3>
+
+            <p>
+                Continuous oscillation can result from excessive gain,
+                excessive integral action, process delay, or other loop
+                dynamics.
+            </p>
+
+            <h3>Slow Response</h3>
+
+            <p>
+                A controller may respond slowly when proportional action is
+                too weak, integral action is too slow, or the process itself
+                has significant lag.
+            </p>
+
+            <h3>Overshoot</h3>
+
+            <p>
+                Overshoot occurs when the process moves beyond the desired
+                operating point. Excessive gain, aggressive integral action,
+                process delay, or accumulated integral can contribute.
+            </p>
+
+            <h3>Output Saturation</h3>
+
+            <p>
+                If the controller reaches 0% or 100% output, the final control
+                element may no longer be able to provide additional correction.
+                Integral windup can become a problem if the integral term
+                continues accumulating.
+            </p>
+
+            <h3>Noisy Output</h3>
+
+            <p>
+                Measurement noise can cause frequent controller output changes,
+                particularly when derivative action is enabled. Filtering or
+                different tuning may be required.
+            </p>
+
+        </section>
+
+        <section class="content-section" id="controls">
+
+            <h2>PID in PLC and HVAC Controls</h2>
+
+            <p>
+                PID control appears throughout industrial automation and
+                building automation.
+            </p>
+
+            <ul>
+                <li>Supply-air temperature control</li>
+                <li>Space temperature control</li>
+                <li>Chilled-water valve control</li>
+                <li>Heating-water valve control</li>
+                <li>Duct static-pressure control</li>
+                <li>Fan VFD speed control</li>
+                <li>Pump pressure control</li>
+                <li>Flow control</li>
+                <li>Tank level control</li>
+                <li>Process temperature control</li>
+            </ul>
+
+            <p>
+                In a typical BAS application, a temperature sensor provides
+                the process variable, a controller executes the PID algorithm,
+                and the resulting output modulates a valve, damper, or VFD.
+            </p>
+
+            <p>
+                In a PLC application, the same basic concept can be used for
+                process variables such as pressure, flow, level, speed, or
+                temperature.
+            </p>
+
+        </section>
+
+        <section class="content-section" id="calculator">
+
+            <h2>Calculate PID Output</h2>
+
+            <p>
+                Use the ControlsCalc PID Output / Bias Calculator to work
+                through the simplified controller-output equation.
+            </p>
+
+            <a class="tool-card" href="../calculators/pid-output-bias.html">
+
+                <strong>PID Output / Bias Calculator →</strong>
+
+                <span>
+                    Calculate controller output from error, proportional gain,
+                    bias, and integral and derivative contributions.
+                </span>
+
+            </a>
+
+        </section>
+
+        <section class="content-section">
+
+            <h2>Related Controls Tools</h2>
+
+            <div class="related-list">
+
+                <a href="../calculators/analog-scaling.html">
+                    Analog Signal Scaling
+                </a>
+
+                <a href="../calculators/plc-raw-counts.html">
+                    PLC Raw Counts → Engineering Units
+                </a>
+
+                <a href="../calculators/4-20ma-scaling.html">
+                    4–20 mA Scaling
+                </a>
+
+                <a href="../calculators/4-20ma-voltage.html">
+                    4–20 mA to Voltage
+                </a>
+
+                <a href="../calculators/modbus-register-converter.html">
+                    Modbus Register Converter
+                </a>
+
+                <a href="../calculators/flow-transmitter.html">
+                    Flow Transmitter Scaling
+                </a>
+
+            </div>
+
+        </section>
+
+    </div>
+</main>
+
+<footer>
+    <div class="container">
+        ControlsCalc — Controls &amp; Instrumentation Calculators
+    </div>
+</footer>
+
+</body>
+</html>
