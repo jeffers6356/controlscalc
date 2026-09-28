@@ -5,6 +5,9 @@
     <url>
         <loc>https://controlscalc.com/</loc>
     </url>
+    <url>
+    <loc>https://controlscalc.com/toolkit.html</loc>
+    </url>
 
     <!-- Calculators -->
     <url>
@@ -49,6 +52,12 @@
     <url>
         <loc>https://controlscalc.com/calculators/ieee-754.html</loc>
     </url>
+    <url>
+    <loc>https://controlscalc.com/calculators/plc-raw-counts.html</loc>
+</url>
+    <url>
+    <loc>https://controlscalc.com/calculators/motor-hp-to-amps.html</loc>
+</url>
 
     <!-- Guides -->
     <url>
@@ -69,11 +78,6 @@
     <url>
     <loc>https://controlscalc.com/guides/4-20ma-vs-0-10v.html</loc>
     </url>
-    <url>
-    <loc>https://controlscalc.com/toolkit.html</loc>
-    </url>
-    <url>
-    <loc>https://controlscalc.com/calculators/plc-raw-counts.html</loc>
-</url>
+   
 
 </urlset>
