@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="description"
+        content="Level transmitter scaling calculator for converting 4–20 mA signals to tank level and calculating expected transmitter current from level."
+    >
+
+    <meta
+        name="google-site-verification"
+        content="JiB6q9DgpG_PMN6uKs9CJmFynIo4ZNUUF0Ua31uChU"
+    />
+
+    <title>Level Transmitter Scaling Calculator: 4–20 mA | ControlsCalc</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #172033;
+            background: #f5f7fa;
+            line-height: 1.6;
+        }
+
+        a {
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        header {
+            background: #ffffff;
+            border-bottom: 1px solid #dfe5ec;
+        }
+
+        .header-inner {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 700;
+            color: #172033;
+        }
+
+        .container {
+            width: min(1000px, calc(100% - 40px));
+            margin: 0 auto;
+            padding: 40px 0 60px;
+        }
+
+        .breadcrumb {
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .hero {
+            margin-bottom: 30px;
+        }
+
+        .hero h1 {
+            margin: 0 0 10px;
+            font-size: 36px;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            margin: 0;
+            max-width: 760px;
+            color: #526174;
+            font-size: 17px;
+        }
+
+        .calculator-card {
+            background: #ffffff;
+            border: 1px solid #dfe5ec;
+            border-radius: 14px;
+            padding: 32px;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+            margin-bottom: 30px;
+        }
+
+        .mode-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 28px;
+        }
+
+        .mode-option {
+            position: relative;
+        }
+
+        .mode-option input {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .mode-label {
+            display: block;
+            padding: 16px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 600;
+            background: #ffffff;
+            transition: all 0.15s ease;
+        }
+
+        .mode-label:hover {
+            border-color: #2563eb;
+        }
+
+        .mode-option input:checked + .mode-label {
+            border-color: #2563eb;
+            background: #eff6ff;
+            color: #1d4ed8;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 0;
+        }
+
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 12px 13px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            background: #ffffff;
+            color: #172033;
+            font-size: 16px;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.10);
+        }
+
+        .field-help {
+            margin-top: 5px;
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 25px;
+            padding: 14px 18px;
+            border: none;
+            border-radius: 8px;
+            background: #2563eb;
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        .result {
+            display: none;
+            margin-top: 25px;
+            padding: 22px;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 10px;
+        }
+
+        .result h2 {
+            margin: 0 0 10px;
+            color: #1d4ed8;
+            font-size: 21px;
+        }
+
+        .result-main {
+            font-size: 30px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .result-details {
+            color: #334155;
+        }
+
+        .result-details p {
+            margin: 5px 0;
+        }
+
+        .warning {
+            display: none;
+            margin-top: 15px;
+            padding: 14px;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+            color: #991b1b;
+        }
+
+        .error {
+            display: none;
+            margin-top: 20px;
+            padding: 14px;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+            color: #991b1b;
+        }
+
+        .content-section {
+            background: #ffffff;
+            border: 1px solid #dfe5ec;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 25px;
+        }
+
+        .content-section h2 {
+            margin-top: 0;
+            margin-bottom: 14px;
+            font-size: 24px;
+        }
+
+        .content-section h3 {
+            margin-top: 25px;
+            margin-bottom: 8px;
+            font-size: 18px;
+        }
+
+        .content-section p {
+            color: #526174;
+        }
+
+        .formula {
+            margin: 18px 0;
+            padding: 18px;
+            background: #f5f7fa;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+
+        .formula code {
+            font-family: "Courier New", monospace;
+            color: #172033;
+        }
+
+        .reference-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 18px;
+        }
+
+        .reference-table th,
+        .reference-table td {
+            padding: 11px 12px;
+            border-bottom: 1px solid #e2e8f0;
+            text-align: left;
+        }
+
+        .reference-table th {
+            background: #f5f7fa;
+            font-weight: 600;
+        }
+
+        .related-links {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+            margin-top: 20px;
+        }
+
+        .related-link {
+            display: block;
+            padding: 16px;
+            border: 1px solid #dfe5ec;
+            border-radius: 9px;
+            background: #ffffff;
+        }
+
+        .related-link strong {
+            display: block;
+            margin-bottom: 4px;
+            color: #172033;
+        }
+
+        .related-link span {
+            display: block;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px 20px;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        @media (max-width: 650px) {
+            .container {
+                width: min(100% - 24px, 1000px);
+                padding-top: 25px;
+            }
+
+            .calculator-card,
+            .content-section {
+                padding: 22px;
+            }
+
+            .hero h1 {
+                font-size: 29px;
+            }
+
+            .form-grid,
+            .mode-selector,
+            .related-links {
+                grid-template-columns: 1fr;
+            }
+
+            .reference-table {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="header-inner">
+        <a class="logo" href="../index.html">ControlsCalc</a>
+    </div>
+</header>
+
+<main class="container">
+
+    <div class="breadcrumb">
+        <a href="../index.html">Home</a> →
+        <a href="../index.html">Calculators</a> →
+        Level Transmitter Scaling
+    </div>
+
+    <section class="hero">
+        <h1>Level Transmitter Scaling Calculator</h1>
+        <p>
+            Convert a 4–20 mA level transmitter signal into engineering units,
+            or calculate the expected transmitter current from a measured level.
+        </p>
+    </section>
+
+    <section class="calculator-card">
+
+        <div class="mode-selector">
+
+            <div class="mode-option">
+                <input
+                    type="radio"
+                    id="modeCurrentToLevel"
+                    name="mode"
+                    value="currentToLevel"
+                    checked
+                >
+                <label
+                    class="mode-label"
+                    for="modeCurrentToLevel"
+                >
+                    4–20 mA → Level
+                </label>
+            </div>
+
+            <div class="mode-option">
+                <input
+                    type="radio"
+                    id="modeLevelToCurrent"
+                    name="mode"
+                    value="levelToCurrent"
+                >
+                <label
+                    class="mode-label"
+                    for="modeLevelToCurrent"
+                >
+                    Level → 4–20 mA
+                </label>
+            </div>
+
+        </div>
+
+        <div class="form-grid">
+
+            <div class="form-group">
+                <label for="lrValue">Lower Range Value (LRV)</label>
+                <input
+                    type="number"
+                    id="lrValue"
+                    step="any"
+                    value="0"
+                >
+                <div class="field-help">
+                    Level represented by 4 mA.
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="urValue">Upper Range Value (URV)</label>
+                <input
+                    type="number"
+                    id="urValue"
+                    step="any"
+                    value="100"
+                >
+                <div class="field-help">
+                    Level represented by 20 mA.
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="unit">Engineering Unit</label>
+                <input
+                    type="text"
+                    id="unit"
+                    value="ft"
+                    placeholder="ft, in, %, m, etc."
+                >
+                <div class="field-help">
+                    Enter the unit used by the transmitter.
+                </div>
+            </div>
+
+            <div class="form-group" id="currentInputGroup">
+                <label for="current">Measured Current (mA)</label>
+                <input
+                    type="number"
+                    id="current"
+                    step="any"
+                    value="12"
+                >
+                <div class="field-help">
+                    Transmitter output measured in the field.
+                </div>
+            </div>
+
+            <div class="form-group" id="levelInputGroup" style="display: none;">
+                <label for="level">Measured Level</label>
+                <input
+                    type="number"
+                    id="level"
+                    step="any"
+                    value="50"
+                >
+                <div class="field-help">
+                    Level you want to convert into transmitter current.
+                </div>
+            </div>
+
+        </div>
+
+        <button type="button" onclick="calculate()">
+            Calculate
+        </button>
+
+        <div class="error" id="error"></div>
+
+        <div class="result" id="result">
+
+            <h2 id="resultTitle">Level</h2>
+
+            <div class="result-main" id="resultMain"></div>
+
+            <div class="result-details">
+                <p id="resultDetail1"></p>
+                <p id="resultDetail2"></p>
+                <p id="resultDetail3"></p>
+            </div>
+
+            <div class="warning" id="warning"></div>
+
+        </div>
+
+    </section>
+
+    <section class="content-section">
+
+        <h2>How Level Transmitter Scaling Works</h2>
+
+        <p>
+            A typical 4–20 mA level transmitter represents a configured
+            measurement range using 4 mA for the Lower Range Value (LRV)
+            and 20 mA for the Upper Range Value (URV).
+        </p>
+
+        <p>
+            For a linear transmitter, the measured level can be calculated
+            directly from the transmitter current.
+        </p>
+
+        <div class="formula">
+            <code>
+                Level = LRV + ((mA − 4) ÷ 16) × (URV − LRV)
+            </code>
+        </div>
+
+        <p>
+            The reverse calculation determines what current should be
+            produced for a particular level:
+        </p>
+
+        <div class="formula">
+            <code>
+                mA = 4 + ((Level − LRV) ÷ (URV − LRV)) × 16
+            </code>
+        </div>
+
+    </section>
+
+    <section class="content-section">
+
+        <h2>4–20 mA Level Reference</h2>
+
+        <table class="reference-table">
+            <thead>
+                <tr>
+                    <th>Current</th>
+                    <th>Percent of Span</th>
+                    <th>Level</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr>
+                    <td>4 mA</td>
+                    <td>0%</td>
+                    <td>LRV</td>
+                </tr>
+                <tr>
+                    <td>8 mA</td>
+                    <td>25%</td>
+                    <td>25% of span</td>
+                </tr>
+                <tr>
+                    <td>12 mA</td>
+                    <td>50%</td>
+                    <td>50% of span</td>
+                </tr>
+                <tr>
+                    <td>16 mA</td>
+                    <td>75%</td>
+                    <td>75% of span</td>
+                </tr>
+                <tr>
+                    <td>20 mA</td>
+                    <td>100%</td>
+                    <td>URV</td>
+                </tr>
+            </tbody>
+        </table>
+
+    </section>
+
+    <section class="content-section">
+
+        <h2>Example</h2>
+
+        <p>
+            Suppose a level transmitter is configured for:
+        </p>
+
+        <ul>
+            <li>LRV = 0 ft</li>
+            <li>URV = 20 ft</li>
+            <li>Measured signal = 14 mA</li>
+        </ul>
+
+        <p>
+            The transmitter is 62.5% of the way through its 4–20 mA span.
+        </p>
+
+        <div class="formula">
+            <code>
+                Level = 0 + ((14 − 4) ÷ 16) × 20
+            </code>
+            <br><br>
+            <code>
+                Level = 12.5 ft
+            </code>
+        </div>
+
+        <p>
+            Therefore, a 14 mA signal corresponds to approximately
+            <strong>12.5 ft</strong> for this transmitter configuration.
+        </p>
+
+    </section>
+
+    <section class="content-section">
+
+        <h2>Field Notes</h2>
+
+        <h3>Check the transmitter configuration</h3>
+
+        <p>
+            The LRV and URV used by the controller must match the transmitter's
+            configured range. A transmitter can be physically measuring the
+            correct level while the controller displays the wrong value if
+            the scaling ranges do not match.
+        </p>
+
+        <h3>4 mA does not always mean an empty tank</h3>
+
+        <p>
+            The transmitter's LRV may represent a level other than zero.
+            For example, a transmitter might be configured for 5–25 ft,
+            making 4 mA equal to 5 ft and 20 mA equal to 25 ft.
+        </p>
+
+        <h3>Check the signal at the transmitter and controller</h3>
+
+        <p>
+            When troubleshooting a level indication problem, compare the
+            current measured at the transmitter with the current arriving
+            at the control system input. A difference can indicate wiring,
+            termination, grounding, or other loop problems.
+        </p>
+
+        <h3>Level measurement technology matters</h3>
+
+        <p>
+            Different level technologies—including differential pressure,
+            radar, ultrasonic, guided wave radar, and other sensors—can have
+            different installation and configuration considerations. This
+            calculator addresses the 4–20 mA scaling relationship rather than
+            the underlying measurement technology.
+        </p>
+
+    </section>
+
+    <section class="content-section">
+
+        <h2>Related ControlsCalc Tools</h2>
+
+        <div class="related-links">
+
+            <a class="related-link" href="4-20ma-scaling.html">
+                <strong>4–20 mA Scaling Calculator</strong>
+                <span>
+                    Convert a 4–20 mA signal into engineering units.
+                </span>
+            </a>
+
+            <a class="related-link" href="pressure-transmitter.html">
+                <strong>Pressure Transmitter Scaling</strong>
+                <span>
+                    Convert a 4–20 mA pressure transmitter signal into
+                    engineering units.
+                </span>
+            </a>
+
+            <a class="related-link" href="flow-transmitter.html">
+                <strong>Flow Transmitter Scaling</strong>
+                <span>
+                    Calculate flow from a 4–20 mA transmitter signal,
+                    including square-root extraction.
+                </span>
+            </a>
+
+            <a class="related-link" href="../guides/4-20ma.html">
+                <strong>4–20 mA Explained</strong>
+                <span>
+                    Learn how current loops, scaling, span, and loop
+                    measurements work.
+                </span>
+            </a>
+
+            <a class="related-link" href="../guides/4-20ma-troubleshooting.html">
+                <strong>4–20 mA Troubleshooting Guide</strong>
+                <span>
+                    Practical steps for finding faults in a current loop.
+                </span>
+            </a>
+
+        </div>
+
+    </section>
+
+</main>
+
+<footer>
+    © 2026 ControlsCalc — Controls & Instrumentation Calculators
+</footer>
+
+<script>
+    const currentToLevelRadio =
+        document.getElementById("modeCurrentToLevel");
+
+    const levelToCurrentRadio =
+        document.getElementById("modeLevelToCurrent");
+
+    const currentInputGroup =
+        document.getElementById("currentInputGroup");
+
+    const levelInputGroup =
+        document.getElementById("levelInputGroup");
+
+    function updateMode() {
+
+        if (currentToLevelRadio.checked) {
+
+            currentInputGroup.style.display = "block";
+            levelInputGroup.style.display = "none";
+
+        } else {
+
+            currentInputGroup.style.display = "none";
+            levelInputGroup.style.display = "block";
+
+        }
+
+        document.getElementById("result").style.display = "none";
+        document.getElementById("error").style.display = "none";
+    }
+
+    currentToLevelRadio.addEventListener("change", updateMode);
+    levelToCurrentRadio.addEventListener("change", updateMode);
+
+    function calculate() {
+
+        const lrv = parseFloat(
+            document.getElementById("lrValue").value
+        );
+
+        const urv = parseFloat(
+            document.getElementById("urValue").value
+        );
+
+        const unit =
+            document.getElementById("unit").value.trim() || "units";
+
+        const errorElement =
+            document.getElementById("error");
+
+        const resultElement =
+            document.getElementById("result");
+
+        const warningElement =
+            document.getElementById("warning");
+
+        errorElement.style.display = "none";
+        resultElement.style.display = "none";
+        warningElement.style.display = "none";
+
+        if (!Number.isFinite(lrv) || !Number.isFinite(urv)) {
+
+            errorElement.textContent =
+                "Please enter valid LRV and URV values.";
+
+            errorElement.style.display = "block";
+            return;
+        }
+
+        if (urv === lrv) {
+
+            errorElement.textContent =
+                "LRV and URV must be different values.";
+
+            errorElement.style.display = "block";
+            return;
+        }
+
+        if (currentToLevelRadio.checked) {
+
+            const current = parseFloat(
+                document.getElementById("current").value
+            );
+
+            if (!Number.isFinite(current)) {
+
+                errorElement.textContent =
+                    "Please enter a valid current value.";
+
+                errorElement.style.display = "block";
+                return;
+            }
+
+            const percentage =
+                ((current - 4) / 16) * 100;
+
+            const level =
+                lrv +
+                ((current - 4) / 16) *
+                (urv - lrv);
+
+            const span =
+                urv - lrv;
+
+            document.getElementById("resultTitle").textContent =
+                "Calculated Level";
+
+            document.getElementById("resultMain").textContent =
+                `${formatNumber(level)} ${unit}`;
+
+            document.getElementById("resultDetail1").textContent =
+                `Signal: ${formatNumber(current)} mA`;
+
+            document.getElementById("resultDetail2").textContent =
+                `Transmitter span: ${formatNumber(span)} ${unit}`;
+
+            document.getElementById("resultDetail3").textContent =
+                `Position in 4–20 mA span: ${formatNumber(percentage)}%`;
+
+            if (current < 4 || current > 20) {
+
+                warningElement.textContent =
+                    "The measured current is outside the normal 4–20 mA operating range.";
+
+                warningElement.style.display = "block";
+            }
+
+        } else {
+
+            const level = parseFloat(
+                document.getElementById("level").value
+            );
+
+            if (!Number.isFinite(level)) {
+
+                errorElement.textContent =
+                    "Please enter a valid level value.";
+
+                errorElement.style.display = "block";
+                return;
+            }
+
+            const percentage =
+                ((level - lrv) / (urv - lrv)) * 100;
+
+            const current =
+                4 +
+                ((level - lrv) / (urv - lrv)) *
+                16;
+
+            document.getElementById("resultTitle").textContent =
+                "Expected Transmitter Output";
+
+            document.getElementById("resultMain").textContent =
+                `${formatNumber(current)} mA`;
+
+            document.getElementById("resultDetail1").textContent =
+                `Level: ${formatNumber(level)} ${unit}`;
+
+            document.getElementById("resultDetail2").textContent =
+                `Position in level span: ${formatNumber(percentage)}%`;
+
+            document.getElementById("resultDetail3").textContent =
+                `Configured range: ${formatNumber(lrv)} to ${formatNumber(urv)} ${unit}`;
+
+            if (current < 4 || current > 20) {
+
+                warningElement.textContent =
+                    "The calculated output is outside the normal 4–20 mA range because the level is outside the configured LRV/URV range.";
+
+                warningElement.style.display = "block";
+            }
+        }
+
+        resultElement.style.display = "block";
+    }
+
+    function formatNumber(value) {
+
+        return Number(value).toLocaleString(
+            undefined,
+            {
+                maximumFractionDigits: 4
+            }
+        );
+    }
+
+    updateMode();
+</script>
+
+</body>
+</html>
