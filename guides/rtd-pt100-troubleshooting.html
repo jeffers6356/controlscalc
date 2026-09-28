@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>RTD &amp; PT100 Troubleshooting Guide | ControlsCalc</title>
+
+    <meta
+        name="description"
+        content="Learn how to troubleshoot RTD and PT100 temperature sensors. Covers resistance measurement, 2-wire, 3-wire and 4-wire wiring, common faults, lead resistance, and practical field checks."
+    >
+
+    <meta name="google-site-verification" content="JiB6q9DgpG_PMN6uKs9CJmFynIo4ZNUUF0Ua31uChU" />
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #172033;
+            background: #f5f7fa;
+            line-height: 1.7;
+        }
+
+        a {
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            width: min(1000px, calc(100% - 40px));
+            margin: 0 auto;
+        }
+
+        header {
+            background: #ffffff;
+            border-bottom: 1px solid #dfe5ec;
+        }
+
+        .header-inner {
+            min-height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .logo {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: #172033;
+        }
+
+        .back-link {
+            font-size: 0.95rem;
+        }
+
+        main {
+            padding: 50px 0 70px;
+        }
+
+        .page-header {
+            margin-bottom: 30px;
+        }
+
+        .eyebrow {
+            margin-bottom: 8px;
+            color: #2563eb;
+            font-size: 0.82rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            margin: 0 0 14px;
+            font-size: clamp(2rem, 5vw, 3rem);
+            line-height: 1.15;
+        }
+
+        .page-header p {
+            max-width: 800px;
+            margin: 0;
+            color: #526071;
+            font-size: 1.08rem;
+        }
+
+        .content-section {
+            background: #ffffff;
+            border: 1px solid #dfe5ec;
+            border-radius: 12px;
+            padding: 30px;
+            margin-top: 24px;
+        }
+
+        .content-section h2 {
+            margin-top: 0;
+            margin-bottom: 14px;
+            font-size: 1.55rem;
+            line-height: 1.3;
+        }
+
+        .content-section h3 {
+            margin-top: 28px;
+            margin-bottom: 8px;
+            font-size: 1.15rem;
+        }
+
+        .formula {
+            margin: 20px 0;
+            padding: 18px;
+            background: #f5f7fa;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-family: "Courier New", monospace;
+            overflow-x: auto;
+        }
+
+        .callout {
+            margin: 20px 0;
+            padding: 18px 20px;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 8px;
+        }
+
+        .warning {
+            margin: 20px 0;
+            padding: 18px 20px;
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            border-radius: 8px;
+        }
+
+        .example {
+            margin: 20px 0;
+            padding: 18px 20px;
+            background: #f8fafc;
+            border-left: 4px solid #2563eb;
+        }
+
+        .toc {
+            background: #ffffff;
+            border: 1px solid #dfe5ec;
+            border-radius: 12px;
+            padding: 24px 30px;
+            margin-top: 24px;
+        }
+
+        .toc h2 {
+            margin-top: 0;
+            font-size: 1.2rem;
+        }
+
+        .toc ul {
+            margin-bottom: 0;
+        }
+
+        .reference-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .reference-table th,
+        .reference-table td {
+            padding: 12px 14px;
+            border: 1px solid #dfe5ec;
+            text-align: left;
+        }
+
+        .reference-table th {
+            background: #f5f7fa;
+        }
+
+        .tool-card {
+            display: block;
+            padding: 18px;
+            margin-top: 12px;
+            border: 1px solid #dfe5ec;
+            border-radius: 9px;
+            background: #ffffff;
+        }
+
+        .tool-card strong {
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .tool-card span {
+            color: #526071;
+            font-size: 0.94rem;
+        }
+
+        .related-list {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+            margin-top: 18px;
+        }
+
+        .related-list a {
+            display: block;
+            padding: 14px 16px;
+            border: 1px solid #dfe5ec;
+            border-radius: 8px;
+            background: #ffffff;
+            font-weight: 600;
+        }
+
+        .related-list a:hover {
+            background: #f8fafc;
+            text-decoration: none;
+        }
+
+        ul,
+        ol {
+            padding-left: 22px;
+        }
+
+        footer {
+            padding: 30px 0 50px;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        @media (max-width: 650px) {
+            .container {
+                width: min(100% - 28px, 1000px);
+            }
+
+            main {
+                padding-top: 35px;
+            }
+
+            .content-section,
+            .toc {
+                padding: 22px;
+            }
+
+            .related-list {
+                grid-template-columns: 1fr;
+            }
+
+            .reference-table {
+                display: block;
+                overflow-x: auto;
+            }
+
+            .header-inner {
+                min-height: 64px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="container header-inner">
+        <a class="logo" href="../index.html">ControlsCalc</a>
+        <a class="back-link" href="../index.html">← ControlsCalc Home</a>
+    </div>
+</header>
+
+<main>
+    <div class="container">
+
+        <section class="page-header">
+            <div class="eyebrow">Field Troubleshooting Guide</div>
+
+            <h1>RTD &amp; PT100 Troubleshooting</h1>
+
+            <p>
+                A practical field guide to troubleshooting RTD temperature
+                sensors, including PT100 sensors, wiring, resistance
+                measurements, lead resistance, and common failure modes.
+            </p>
+        </section>
+
+        <nav class="toc">
+            <h2>In This Guide</h2>
+
+            <ul>
+                <li><a href="#rtd">What Is an RTD?</a></li>
+                <li><a href="#pt100">What Is a PT100?</a></li>
+                <li><a href="#resistance">RTD Resistance</a></li>
+                <li><a href="#wiring">2-Wire, 3-Wire &amp; 4-Wire RTDs</a></li>
+                <li><a href="#measurement">Measuring an RTD</a></li>
+                <li><a href="#temperature">Estimating Temperature from Resistance</a></li>
+                <li><a href="#faults">Common RTD Faults</a></li>
+                <li><a href="#lead-resistance">Lead Resistance</a></li>
+                <li><a href="#controller">Checking the Controller Input</a></li>
+                <li><a href="#workflow">Field Troubleshooting Workflow</a></li>
+                <li><a href="#examples">Common Fault Examples</a></li>
+                <li><a href="#calculator">RTD Calculator</a></li>
+            </ul>
+        </nav>
+
+        <section class="content-section" id="rtd">
+
+            <h2>What Is an RTD?</h2>
+
+            <p>
+                RTD stands for <strong>Resistance Temperature Detector</strong>.
+                An RTD measures temperature by using the predictable change in
+                electrical resistance that occurs as the sensing element's
+                temperature changes.
+            </p>
+
+            <p>
+                RTDs are commonly used in industrial automation, process
+                control, HVAC systems, laboratory equipment, and other
+                applications where accurate temperature measurement is
+                required.
+            </p>
+
+            <p>
+                Common RTD types include PT100 and PT1000 sensors.
+            </p>
+
+            <div class="callout">
+                <strong>Key concept:</strong>
+                An RTD is fundamentally a resistance device. When
+                troubleshooting one, measuring resistance is often the most
+                useful first diagnostic step.
+            </div>
+
+        </section>
+
+        <section class="content-section" id="pt100">
+
+            <h2>What Is a PT100?</h2>
+
+            <p>
+                A PT100 is a platinum RTD with a nominal resistance of
+                <strong>100 Ω at 0 °C</strong>.
+            </p>
+
+            <p>
+                Its resistance increases as temperature increases.
+            </p>
+
+            <div class="formula">
+                PT100 at 0 °C ≈ 100 Ω
+            </div>
+
+            <p>
+                The actual resistance at a particular temperature is determined
+                by the applicable RTD characteristic and standard, such as
+                IEC 60751.
+            </p>
+
+            <p>
+                This means a PT100 should not be treated as a simple resistor
+                with a fixed temperature coefficient when high accuracy is
+                required.
+            </p>
+
+        </section>
+
+        <section class="content-section" id="resistance">
+
+            <h2>RTD Resistance</h2>
+
+            <p>
+                A PT100 has approximately the following resistance values near
+                common operating temperatures:
+            </p>
+
+            <table class="reference-table">
+
+                <thead>
+                    <tr>
+                        <th>Temperature</th>
+                        <th>Approximate PT100 Resistance</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    <tr>
+                        <td>0 °C</td>
+                        <td>100.00 Ω</td>
+                    </tr>
+
+                    <tr>
+                        <td>25 °C</td>
+                        <td>109.73 Ω</td>
+                    </tr>
+
+                    <tr>
+                        <td>50 °C</td>
+                        <td>119.40 Ω</td>
+                    </tr>
+
+                    <tr>
+                        <td>100 °C</td>
+                        <td>138.51 Ω</td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+            <p>
+                These values are useful as field reference points. For precise
+                temperature calculations, use the applicable RTD standard and
+                sensor specification.
+            </p>
+
+        </section>
+
+        <section class="content-section" id="wiring">
+
+            <h2>2-Wire, 3-Wire &amp; 4-Wire RTDs</h2>
+
+            <h3>2-Wire RTD</h3>
+
+            <p>
+                A 2-wire RTD has two conductors connected directly to the
+                sensing element.
+            </p>
+
+            <p>
+                The resistance of the connecting wires is therefore included
+                in the measured resistance.
+            </p>
+
+            <p>
+                This can introduce significant measurement error when long
+                cable runs or high accuracy are involved.
+            </p>
+
+            <h3>3-Wire RTD</h3>
+
+            <p>
+                Three-wire RTDs are common in industrial control systems.
+                The third wire allows the measuring device to compensate for
+                much of the resistance of the connecting leads.
+            </p>
+
+            <p>
+                For the compensation to work correctly, the appropriate wires
+                generally need to have similar resistance.
+            </p>
+
+            <h3>4-Wire RTD</h3>
+
+            <p>
+                Four-wire RTDs provide a higher-accuracy measurement by
+                separating the excitation and measurement paths.
+            </p>
+
+            <p>
+                This configuration can largely eliminate the effect of lead
+                resistance when used with an appropriate measurement circuit.
+            </p>
+
+            <div class="warning">
+                <strong>Important:</strong>
+                Always verify the transmitter or controller's RTD input wiring
+                requirements. Wire colors and terminal arrangements are not
+                universal.
+            </div>
+
+        </section>
+
+        <section class="content-section" id="measurement">
+
+            <h2>How to Measure an RTD</h2>
+
+            <p>
+                A digital multimeter can be used to make a basic resistance
+                check of an RTD.
+            </p>
+
+            <ol>
+                <li>Disconnect the RTD from the measuring circuit when appropriate.</li>
+                <li>Set the meter to resistance (Ω).</li>
+                <li>Identify the sensor conductors.</li>
+                <li>Measure the resistance across the appropriate conductors.</li>
+                <li>Compare the measured resistance with the expected value.</li>
+            </ol>
+
+            <p>
+                For a 3-wire RTD, measure the resistance between the conductors
+                according to the sensor's wiring arrangement. Two of the
+                combinations should typically include the sensing element,
+                while the relationship between the readings can help identify
+                the common lead.
+            </p>
+
+            <div class="callout">
+                <strong>Field tip:</strong>
+                Record the actual sensor temperature at the time of the
+                resistance measurement. A resistance value by itself is much
+                more useful when you know what temperature the sensor is
+                physically experiencing.
+            </div>
+
+        </section>
+
+        <section class="content-section" id="temperature">
+
+            <h2>Estimating Temperature from Resistance</h2>
+
+            <p>
+                Once the RTD resistance has been measured, it can be compared
+                with the expected resistance-temperature relationship.
+            </p>
+
+            <div class="example">
+
+                <strong>Example:</strong>
+
+                <br><br>
+
+                A PT100 measures approximately 119.4 Ω.
+
+                <br><br>
+
+                That is consistent with a temperature of approximately
+                <strong>50 °C</strong> for a standard PT100 characteristic.
+
+            </div>
+
+            <p>
+                For temperatures above 0 °C, a commonly used approximation is:
+            </p>
+
+            <div class="formula">
+                R(T) = R₀ × [1 + A·T + B·T²]
+            </div>
+
+            <p>
+                where the coefficients and applicable temperature range depend
+                on the RTD standard.
+            </p>
+
+            <p>
+                For precision work, use the complete standard equation or the
+                manufacturer's calibration data rather than relying on a
+                simplified approximation.
+            </p>
+
+            <a class="tool-card" href="../calculators/rtd-temperature.html">
+
+                <strong>RTD Temperature Calculator →</strong>
+
+                <span>
+                    Calculate RTD temperature from resistance for PT100,
+                    PT1000, and other supported sensor configurations.
+                </span>
+
+            </a>
+
+        </section>
+
+        <section class="content-section" id="faults">
+
+            <h2>Common RTD Faults</h2>
+
+            <h3>Open Circuit</h3>
+
+            <p>
+                A broken conductor or failed sensing element can produce an
+                open circuit.
+            </p>
+
+            <p>
+                Depending on the controller, transmitter, or PLC input, an
+                open RTD may appear as a very high temperature, a fault
+                condition, or another configured failure indication.
+            </p>
+
+            <h3>Short Circuit</h3>
+
+            <p>
+                A shorted sensor or conductors can produce an unusually low
+                resistance and therefore an abnormally low indicated
+                temperature or sensor fault.
+            </p>
+
+            <h3>Incorrect Resistance</h3>
+
+            <p>
+                A sensor can develop resistance that does not correspond to
+                its actual temperature because of damage, contamination,
+                incorrect sensor type, or wiring problems.
+            </p>
+
+            <h3>Intermittent Connection</h3>
+
+            <p>
+                Loose terminals, damaged conductors, vibration, or moisture
+                can cause an RTD signal to change intermittently.
+            </p>
+
+        </section>
+
+        <section class="content-section" id="lead-resistance">
+
+            <h2>Lead Resistance</h2>
+
+            <p>
+                One of the most common sources of RTD measurement error is the
+                resistance of the connecting wires.
+            </p>
+
+            <p>
+                With a 2-wire RTD, the resistance of both conductors is added
+                directly to the sensor resistance seen by the measuring
+                instrument.
+            </p>
+
+            <div class="example">
+
+                Suppose a PT100 has an actual resistance of 109.73 Ω, but the
+                two connecting conductors contribute 2 Ω total.
+
+                <br><br>
+
+                The measuring device may see approximately:
+
+                <div class="formula">
+                    109.73 Ω + 2 Ω = 111.73 Ω
+                </div>
+
+                That additional resistance can produce a noticeable
+                temperature error.
+
+            </div>
+
+            <p>
+                Three-wire and four-wire configurations are commonly used to
+                reduce the effect of lead resistance.
+            </p>
+
+        </section>
+
+        <section class="content-section" id="controller">
+
+            <h2>Checking the Controller Input</h2>
+
+            <p>
+                If the sensor resistance appears correct but the controller
+                indicates the wrong temperature, investigate the input
+                configuration.
+            </p>
+
+            <p>
+                Check:
+            </p>
+
+            <ul>
+                <li>RTD type</li>
+                <li>PT100 vs PT1000 selection</li>
+                <li>2-wire, 3-wire, or 4-wire configuration</li>
+                <li>Temperature units</li>
+                <li>Input range</li>
+                <li>Sensor fault settings</li>
+                <li>Input filtering</li>
+                <li>Scaling or offset</li>
+            </ul>
+
+            <div class="warning">
+                <strong>PT100 vs PT1000 matters.</strong>
+                A PT100 and PT1000 do not have the same nominal resistance.
+                Selecting the wrong sensor type in a controller can result in
+                a large temperature error even when the sensor and wiring are
+                functioning correctly.
+            </div>
+
+        </section>
+
+        <section class="content-section" id="workflow">
+
+            <h2>Field Troubleshooting Workflow</h2>
+
+            <ol>
+
+                <li>
+                    <strong>Verify the actual process temperature.</strong>
+                    Use a suitable independent measurement when possible.
+                </li>
+
+                <li>
+                    <strong>Identify the sensor type.</strong>
+                    Confirm PT100, PT1000, or another RTD type.
+                </li>
+
+                <li>
+                    <strong>Identify the wiring configuration.</strong>
+                    Determine whether the sensor is 2-wire, 3-wire, or 4-wire.
+                </li>
+
+                <li>
+                    <strong>Inspect the wiring.</strong>
+                    Check terminals, connectors, cable damage, and signs of
+                    moisture or corrosion.
+                </li>
+
+                <li>
+                    <strong>Measure resistance.</strong>
+                    Compare the measured resistance with the expected value
+                    for the actual sensor temperature.
+                </li>
+
+                <li>
+                    <strong>Check lead resistance.</strong>
+                    Particularly for 2-wire installations or long cable runs.
+                </li>
+
+                <li>
+                    <strong>Check controller configuration.</strong>
+                    Verify sensor type, wiring configuration, scaling, units,
+                    and input settings.
+                </li>
+
+                <li>
+                    <strong>Check the controller input.</strong>
+                    If the sensor and wiring are correct, investigate the input
+                    hardware or signal conditioning.
+                </li>
+
+            </ol>
+
+            <div class="callout">
+                <strong>Good troubleshooting practice:</strong>
+                Separate the problem into three sections:
+                <strong>sensor → wiring → controller.</strong>
+                Verify each section independently instead of assuming the
+                displayed temperature identifies the failed component.
+            </div>
+
+        </section>
+
+        <section class="content-section" id="examples">
+
+            <h2>Common Fault Examples</h2>
+
+            <h3>Example 1: Temperature Reads Extremely High</h3>
+
+            <p>
+                An open RTD circuit can cause some controllers to interpret the
+                input as an extreme temperature or sensor fault.
+            </p>
+
+            <p>
+                Check the sensor and wiring for an open circuit before
+                replacing the controller.
+            </p>
+
+            <h3>Example 2: Temperature Reads Extremely Low</h3>
+
+            <p>
+                Check for a shorted sensor or wiring fault. Also verify that
+                the controller is configured for the correct RTD type.
+            </p>
+
+            <h3>Example 3: Temperature Is Consistently Too High</h3>
+
+            <p>
+                If the error is consistent, check sensor type, lead resistance,
+                wiring configuration, scaling, and calibration.
+            </p>
+
+            <h3>Example 4: Temperature Jumps Around</h3>
+
+            <p>
+                Inspect terminals and wiring for intermittent connections.
+                Vibration, damaged cable, moisture, and loose terminals can
+                cause intermittent RTD readings.
+            </p>
+
+            <h3>Example 5: PT100 Measures Correctly but Controller Is Wrong</h3>
+
+            <p>
+                If the measured resistance agrees with the actual temperature,
+                investigate the controller configuration and input hardware.
+            </p>
+
+        </section>
+
+        <section class="content-section" id="calculator">
+
+            <h2>RTD Temperature Calculator</h2>
+
+            <p>
+                Use the ControlsCalc RTD Temperature Calculator to convert RTD
+                resistance into temperature and work with common RTD sensor
+                types.
+            </p>
+
+            <a class="tool-card" href="../calculators/rtd-temperature.html">
+
+                <strong>RTD Temperature Calculator →</strong>
+
+                <span>
+                    Convert measured RTD resistance into temperature for
+                    common RTD sensor types.
+                </span>
+
+            </a>
+
+        </section>
+
+        <section class="content-section">
+
+            <h2>Related Controls Guides</h2>
+
+            <div class="related-list">
+
+                <a href="4-20ma.html">
+                    4–20 mA Explained
+                </a>
+
+                <a href="4-20ma-troubleshooting.html">
+                    4–20 mA Troubleshooting
+                </a>
+
+                <a href="0-10v-troubleshooting.html">
+                    0–10 V Troubleshooting
+                </a>
+
+                <a href="plc-scaling.html">
+                    PLC Analog Scaling Explained
+                </a>
+
+                <a href="pid-control.html">
+                    PID Control Explained
+                </a>
+
+                <a href="modbus-basics.html">
+                    Modbus Basics
+                </a>
+
+            </div>
+
+        </section>
+
+    </div>
+</main>
+
+<footer>
+    ControlsCalc — Controls &amp; Instrumentation Calculators
+</footer>
+
+</body>
+</html>
