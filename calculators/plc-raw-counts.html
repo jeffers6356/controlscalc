@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>PLC Raw Counts to Engineering Units Calculator | ControlsCalc</title>
+
+<meta
+    name="description"
+    content="Convert PLC analog input raw counts into engineering units using configurable raw and engineering ranges. Includes the scaling formula, percentage of span, examples, and PLC troubleshooting guidance."
+>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f5f7fa;
+    color: #172033;
+    line-height: 1.6;
+}
+
+a {
+    color: #2563eb;
+}
+
+header {
+    background: #ffffff;
+    border-bottom: 1px solid #dfe5ec;
+}
+
+.container {
+    width: min(1000px, calc(100% - 40px));
+    margin: 0 auto;
+}
+
+.header-inner {
+    min-height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.logo {
+    color: #172033;
+    text-decoration: none;
+    font-size: 1.45rem;
+    font-weight: 800;
+}
+
+nav {
+    display: flex;
+    gap: 22px;
+}
+
+nav a {
+    color: #475569;
+    text-decoration: none;
+    font-size: 0.95rem;
+}
+
+nav a:hover {
+    color: #2563eb;
+}
+
+main {
+    padding: 50px 0 70px;
+}
+
+.calculator-card {
+    background: #ffffff;
+    border: 1px solid #dfe5ec;
+    border-radius: 14px;
+    padding: 32px;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+}
+
+.eyebrow {
+    margin-bottom: 8px;
+    color: #2563eb;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+h1 {
+    margin: 0 0 12px;
+    font-size: 2.3rem;
+    line-height: 1.15;
+}
+
+.calculator-intro {
+    margin: 0 0 28px;
+    color: #64748b;
+    font-size: 1.05rem;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group.full-width {
+    grid-column: 1 / -1;
+}
+
+label {
+    margin-bottom: 7px;
+    font-weight: 700;
+}
+
+input {
+    width: 100%;
+    padding: 12px 13px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 16px;
+    color: #172033;
+    background: #ffffff;
+}
+
+input:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.10);
+}
+
+.input-help {
+    margin-top: 5px;
+    color: #64748b;
+    font-size: 13px;
+}
+
+button {
+    width: 100%;
+    margin-top: 24px;
+    padding: 13px 18px;
+    border: none;
+    border-radius: 8px;
+    background: #2563eb;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #1d4ed8;
+}
+
+.result {
+    display: none;
+    margin-top: 24px;
+    padding: 20px;
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 10px;
+}
+
+.result.show {
+    display: block;
+}
+
+.result h2 {
+    margin: 0 0 12px;
+    color: #2563eb;
+    font-size: 20px;
+}
+
+.result-value {
+    margin: 10px 0;
+    font-size: 30px;
+    font-weight: 800;
+}
+
+.result-details {
+    color: #475569;
+}
+
+.error {
+    display: none;
+    margin-top: 20px;
+    padding: 16px;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    color: #991b1b;
+}
+
+.error.show {
+    display: block;
+}
+
+.status-warning {
+    margin-top: 14px;
+    padding: 12px 14px;
+    background: #fff7ed;
+    border: 1px solid #fed7aa;
+    border-radius: 8px;
+    color: #9a3412;
+}
+
+.content-section {
+    margin-top: 28px;
+    padding: 30px;
+    background: #ffffff;
+    border: 1px solid #dfe5ec;
+    border-radius: 12px;
+}
+
+.content-section h2 {
+    margin: 0 0 12px;
+    font-size: 24px;
+}
+
+.content-section h3 {
+    margin: 26px 0 10px;
+    font-size: 19px;
+}
+
+.formula {
+    margin: 20px 0;
+    padding: 18px 20px;
+    background: #f5f7fa;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-family: "Courier New", monospace;
+    overflow-x: auto;
+}
+
+.example {
+    margin: 20px 0;
+    padding: 20px;
+    background: #ffffff;
+    border: 1px solid #dfe5ec;
+    border-radius: 10px;
+}
+
+.example strong {
+    color: #172033;
+}
+
+.related-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.related-list li {
+    margin-bottom: 10px;
+}
+
+.related-list a {
+    display: block;
+    padding: 12px 14px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    text-decoration: none;
+}
+
+.related-list a:hover {
+    background: #eff6ff;
+    border-color: #bfdbfe;
+}
+
+footer {
+    padding: 36px 0;
+    background: #ffffff;
+    border-top: 1px solid #e1e5eb;
+    color: #64748b;
+    font-size: 14px;
+}
+
+footer p {
+    margin: 4px 0;
+}
+
+@media (max-width: 650px) {
+
+    .container {
+        width: min(100% - 28px, 1000px);
+    }
+
+    .header-inner {
+        min-height: 58px;
+    }
+
+    nav {
+        gap: 14px;
+    }
+
+    main {
+        padding-top: 30px;
+    }
+
+    .calculator-card {
+        padding: 22px;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-group.full-width {
+        grid-column: auto;
+    }
+
+    .content-section {
+        padding: 22px;
+    }
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+<header>
+
+    <div class="container header-inner">
+
+        <a href="/" class="logo">
+            ControlsCalc
+        </a>
+
+        <nav>
+            <a href="/#calculators">Calculators</a>
+            <a href="/guides/index.html">Guides</a>
+            <a href="/toolkit.html">Toolkit</a>
+        </nav>
+
+    </div>
+
+</header>
+
+
+<main>
+
+    <div class="container">
+
+
+        <!-- Calculator -->
+
+        <section class="calculator-card">
+
+            <div class="eyebrow">
+                PLC &amp; Controls
+            </div>
+
+            <h1>
+                PLC Raw Counts → Engineering Units
+            </h1>
+
+            <p class="calculator-intro">
+                Convert a PLC analog input raw value into engineering units
+                using the configured raw-count and engineering ranges.
+            </p>
+
+
+            <div class="form-grid">
+
+
+                <div class="form-group">
+
+                    <label for="rawInput">
+                        Raw Input
+                    </label>
+
+                    <input
+                        type="number"
+                        id="rawInput"
+                        placeholder="9830"
+                        step="any"
+                    >
+
+                    <div class="input-help">
+                        Actual raw value being read by the PLC.
+                    </div>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="rawLow">
+                        Raw Minimum
+                    </label>
+
+                    <input
+                        type="number"
+                        id="rawLow"
+                        placeholder="3277"
+                        step="any"
+                    >
+
+                    <div class="input-help">
+                        Raw value corresponding to the engineering minimum.
+                    </div>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="rawHigh">
+                        Raw Maximum
+                    </label>
+
+                    <input
+                        type="number"
+                        id="rawHigh"
+                        placeholder="16384"
+                        step="any"
+                    >
+
+                    <div class="input-help">
+                        Raw value corresponding to the engineering maximum.
+                    </div>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="engLow">
+                        Engineering Minimum
+                    </label>
+
+                    <input
+                        type="number"
+                        id="engLow"
+                        placeholder="0"
+                        step="any"
+                    >
+
+                    <div class="input-help">
+                        Engineering value at the raw minimum.
+                    </div>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="engHigh">
+                        Engineering Maximum
+                    </label>
+
+                    <input
+                        type="number"
+                        id="engHigh"
+                        placeholder="100"
+                        step="any"
+                    >
+
+                    <div class="input-help">
+                        Engineering value at the raw maximum.
+                    </div>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="unit">
+                        Engineering Unit
+                    </label>
+
+                    <input
+                        type="text"
+                        id="unit"
+                        placeholder="PSI"
+                    >
+
+                    <div class="input-help">
+                        Example: PSI, °F, %, GPM, °C.
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+            <button type="button" onclick="calculateScaling()">
+                Calculate
+            </button>
+
+
+            <div id="error" class="error"></div>
+
+
+            <div id="result" class="result">
+
+                <h2>
+                    Scaling Result
+                </h2>
+
+                <div
+                    id="resultValue"
+                    class="result-value"
+                ></div>
+
+                <div
+                    id="resultDetails"
+                    class="result-details"
+                ></div>
+
+            </div>
+
+        </section>
+
+
+        <!-- Explanation -->
+
+        <section class="content-section">
+
+            <h2>
+                PLC Raw Count Scaling Formula
+            </h2>
+
+            <p>
+                A PLC analog input often represents a field signal as a
+                numerical raw value. The PLC program then converts that raw
+                value into engineering units such as PSI, temperature,
+                percentage, flow, or level.
+            </p>
+
+            <div class="formula">
+
+                Engineering Value =
+                Engineering Low +
+                ((Raw Input − Raw Low) ÷
+                (Raw High − Raw Low))
+                ×
+                (Engineering High − Engineering Low)
+
+            </div>
+
+            <p>
+                The raw-count range depends on the controller, analog input
+                module, resolution, configuration, and data format. Always
+                verify the actual values used by the PLC system.
+            </p>
+
+        </section>
+
+
+        <!-- Example -->
+
+        <section class="content-section">
+
+            <h2>
+                Example
+            </h2>
+
+            <div class="example">
+
+                <p>
+                    Suppose a PLC analog input uses a raw range of
+                    <strong>3277 to 16384</strong> counts to represent
+                    <strong>0–100 PSI</strong>.
+                </p>
+
+                <p>
+                    If the PLC reads <strong>9830 counts</strong>:
+                </p>
+
+                <div class="formula">
+
+                    0 + ((9830 − 3277) ÷
+                    (16384 − 3277)) × 100
+
+                    = 50.0 PSI
+
+                </div>
+
+                <p>
+                    The calculated engineering value is approximately
+                    <strong>50 PSI</strong>.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- Troubleshooting -->
+
+        <section class="content-section">
+
+            <h2>
+                Troubleshooting PLC Scaling
+            </h2>
+
+            <h3>
+                The field signal is correct but the PLC value is wrong
+            </h3>
+
+            <p>
+                Measure the actual transmitter signal first. If the measured
+                4–20 mA or 0–10 V signal is correct but the displayed
+                engineering value is wrong, check the analog input
+                configuration, raw-count range, scaling formula, engineering
+                limits, and PLC logic.
+            </p>
+
+            <h3>
+                The raw count is correct but the engineering value is wrong
+            </h3>
+
+            <p>
+                Verify that the PLC program is using the correct raw minimum,
+                raw maximum, engineering minimum, and engineering maximum.
+                Also check for offsets, clamping, filtering, or additional
+                signal processing.
+            </p>
+
+            <h3>
+                The raw value is outside the expected range
+            </h3>
+
+            <p>
+                An out-of-range raw value can indicate an over-range or
+                under-range field signal, incorrect input configuration,
+                wiring problems, or a raw-count range that does not match
+                the actual analog input module.
+            </p>
+
+        </section>
+
+
+        <!-- Common Mistakes -->
+
+        <section class="content-section">
+
+            <h2>
+                Common Mistakes
+            </h2>
+
+            <ul>
+
+                <li>
+                    Using the wrong raw-count minimum or maximum.
+                </li>
+
+                <li>
+                    Assuming every PLC uses the same raw-count range.
+                </li>
+
+                <li>
+                    Scaling a 4–20 mA input as though it were 0–20 mA.
+                </li>
+
+                <li>
+                    Reversing the engineering-unit minimum and maximum.
+                </li>
+
+                <li>
+                    Ignoring negative engineering ranges.
+                </li>
+
+                <li>
+                    Troubleshooting the PLC value without first measuring
+                    the actual field signal.
+                </li>
+
+                <li>
+                    Forgetting that PLC logic may apply additional scaling,
+                    offsets, filtering, clamping, or square-root extraction.
+                </li>
+
+            </ul>
+
+        </section>
+
+
+        <!-- Related Calculators -->
+
+        <section class="content-section">
+
+            <h2>
+                Related Calculators
+            </h2>
+
+            <ul class="related-list">
+
+                <li>
+                    <a href="analog-scaling.html">
+                        Analog Signal Scaling
+                    </a>
+                </li>
+
+                <li>
+                    <a href="4-20ma-scaling.html">
+                        4–20 mA Scaling
+                    </a>
+                </li>
+
+                <li>
+                    <a href="0-10v-scaling.html">
+                        0–10 V Scaling
+                    </a>
+                </li>
+
+                <li>
+                    <a href="4-20ma-voltage.html">
+                        4–20 mA to Voltage
+                    </a>
+                </li>
+
+                <li>
+                    <a href="ieee-754.html">
+                        IEEE-754 Floating Point Converter
+                    </a>
+                </li>
+
+            </ul>
+
+        </section>
+
+
+        <!-- Related Guides -->
+
+        <section class="content-section">
+
+            <h2>
+                Related Guides
+            </h2>
+
+            <ul class="related-list">
+
+                <li>
+                    <a href="../guides/plc-scaling.html">
+                        PLC Analog Scaling Explained
+                    </a>
+                </li>
+
+                <li>
+                    <a href="../guides/4-20ma.html">
+                        4–20 mA Explained
+                    </a>
+                </li>
+
+                <li>
+                    <a href="../guides/4-20ma-troubleshooting.html">
+                        How to Troubleshoot a 4–20 mA Signal
+                    </a>
+                </li>
+
+            </ul>
+
+        </section>
+
+
+        <!-- Engineering Note -->
+
+        <section class="content-section">
+
+            <h2>
+                Engineering Note
+            </h2>
+
+            <p>
+                This calculator performs a general linear conversion between
+                a raw input range and an engineering-unit range. PLC raw-count
+                values are not universal. Different controllers and analog
+                input modules can use different numerical ranges depending on
+                hardware, resolution, configuration, and data representation.
+            </p>
+
+            <p>
+                For field troubleshooting, verify the actual analog signal,
+                I/O configuration, raw value, and PLC scaling logic rather than
+                assuming a particular manufacturer's raw-count range.
+            </p>
+
+        </section>
+
+
+    </div>
+
+</main>
+
+
+<footer>
+
+    <div class="container">
+
+        <p>
+            <strong>ControlsCalc</strong>
+        </p>
+
+        <p>
+            Engineering and controls calculators for technicians and engineers.
+        </p>
+
+    </div>
+
+</footer>
+
+
+<script>
+
+function formatNumber(value, decimals = 3) {
+
+    if (!Number.isFinite(value)) {
+        return "—";
+    }
+
+    if (Math.abs(value) < 1e-10) {
+        value = 0;
+    }
+
+    return Number(
+        value.toFixed(decimals)
+    ).toLocaleString();
+
+}
+
+
+function calculateScaling() {
+
+    const rawInput =
+        parseFloat(
+            document.getElementById("rawInput").value
+        );
+
+    const rawLow =
+        parseFloat(
+            document.getElementById("rawLow").value
+        );
+
+    const rawHigh =
+        parseFloat(
+            document.getElementById("rawHigh").value
+        );
+
+    const engLow =
+        parseFloat(
+            document.getElementById("engLow").value
+        );
+
+    const engHigh =
+        parseFloat(
+            document.getElementById("engHigh").value
+        );
+
+    const unit =
+        document.getElementById("unit").value.trim();
+
+    const error =
+        document.getElementById("error");
+
+    const result =
+        document.getElementById("result");
+
+    const resultValue =
+        document.getElementById("resultValue");
+
+    const resultDetails =
+        document.getElementById("resultDetails");
+
+
+    error.classList.remove("show");
+
+    result.classList.remove("show");
+
+
+    if (
+        !Number.isFinite(rawInput) ||
+        !Number.isFinite(rawLow) ||
+        !Number.isFinite(rawHigh) ||
+        !Number.isFinite(engLow) ||
+        !Number.isFinite(engHigh)
+    ) {
+
+        error.textContent =
+            "Please enter valid numeric values for all ranges and the raw input.";
+
+        error.classList.add("show");
+
+        return;
+
+    }
+
+
+    if (rawHigh === rawLow) {
+
+        error.textContent =
+            "Raw minimum and raw maximum cannot be the same value.";
+
+        error.classList.add("show");
+
+        return;
+
+    }
+
+
+    if (engHigh === engLow) {
+
+        error.textContent =
+            "Engineering minimum and engineering maximum cannot be the same value.";
+
+        error.classList.add("show");
+
+        return;
+
+    }
+
+
+    const fraction =
+        (rawInput - rawLow) /
+        (rawHigh - rawLow);
+
+
+    const engineeringValue =
+        engLow +
+        fraction *
+        (engHigh - engLow);
+
+
+    const percent =
+        fraction * 100;
+
+
+    const displayUnit =
+        unit || "engineering units";
+
+
+    resultValue.innerHTML =
+        `${formatNumber(engineeringValue)} ${displayUnit}`;
+
+
+    resultDetails.innerHTML = `
+        <strong>Raw input:</strong>
+        ${formatNumber(rawInput)}
+        <br>
+
+        <strong>Raw span position:</strong>
+        ${formatNumber(percent, 2)}%
+        <br>
+
+        <strong>Engineering range:</strong>
+        ${formatNumber(engLow)}
+        to
+        ${formatNumber(engHigh)}
+        ${displayUnit}
+    `;
+
+
+    if (
+        rawInput < Math.min(rawLow, rawHigh) ||
+        rawInput > Math.max(rawLow, rawHigh)
+    ) {
+
+        resultDetails.innerHTML += `
+
+            <div class="status-warning">
+
+                <strong>Warning:</strong>
+                The raw input is outside the configured raw range.
+                The result has still been calculated for diagnostic purposes.
+
+            </div>
+
+        `;
+
+    }
+
+
+    result.classList.add("show");
+
+}
+
+</script>
+
+</body>
+
+</html>
