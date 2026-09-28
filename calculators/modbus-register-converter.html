@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Modbus Register Converter: Raw Value to Engineering Units | ControlsCalc</title>
+
+    <meta
+        name="description"
+        content="Convert Modbus register values into engineering units using scaling, offset, and register range settings. Useful for PLCs, HMIs, SCADA, BAS, and instrumentation."
+    >
+
+    <meta name="google-site-verification" content="JiB6q9DgpG_PMN6uKs9CJmFynIo4ZNUUF0Ua31uChU" />
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #172033;
+            background: #f5f7fa;
+            line-height: 1.6;
+        }
+
+        a {
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            width: min(1000px, calc(100% - 40px));
+            margin: 0 auto;
+        }
+
+        header {
+            background: #ffffff;
+            border-bottom: 1px solid #dfe5ec;
+        }
+
+        .header-inner {
+            min-height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .logo {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: #172033;
+        }
+
+        .back-link {
+            font-size: 0.95rem;
+        }
+
+        main {
+            padding: 50px 0 70px;
+        }
+
+        .page-header {
+            margin-bottom: 28px;
+        }
+
+        .eyebrow {
+            margin-bottom: 8px;
+            color: #2563eb;
+            font-size: 0.82rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            margin: 0 0 12px;
+            font-size: clamp(2rem, 5vw, 3rem);
+            line-height: 1.15;
+        }
+
+        .page-header p {
+            max-width: 760px;
+            margin: 0;
+            color: #526071;
+            font-size: 1.08rem;
+        }
+
+        .calculator-card {
+            background: #ffffff;
+            border: 1px solid #dfe5ec;
+            border-radius: 14px;
+            padding: 32px;
+            box-shadow: 0 4px 18px rgba(23, 32, 51, 0.05);
+            margin-bottom: 30px;
+        }
+
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 20px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .field label {
+            margin-bottom: 7px;
+            font-weight: 600;
+        }
+
+        .field input,
+        .field select {
+            width: 100%;
+            padding: 12px 13px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            background: #ffffff;
+            color: #172033;
+            font: inherit;
+        }
+
+        .field input:focus,
+        .field select:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .field-help {
+            margin-top: 5px;
+            color: #64748b;
+            font-size: 0.86rem;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 24px;
+            padding: 13px 18px;
+            border: 0;
+            border-radius: 8px;
+            background: #2563eb;
+            color: #ffffff;
+            font: inherit;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        .result {
+            display: none;
+            margin-top: 24px;
+            padding: 22px;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 10px;
+        }
+
+        .result h2 {
+            margin: 0 0 10px;
+            color: #1d4ed8;
+            font-size: 1.2rem;
+        }
+
+        .result-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .result-details {
+            color: #334155;
+        }
+
+        .error {
+            display: none;
+            margin-top: 20px;
+            padding: 14px 16px;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+            color: #991b1b;
+        }
+
+        .content-section {
+            background: #ffffff;
+            border: 1px solid #dfe5ec;
+            border-radius: 12px;
+            padding: 30px;
+            margin-top: 24px;
+        }
+
+        .content-section h2 {
+            margin-top: 0;
+            margin-bottom: 14px;
+            font-size: 1.5rem;
+        }
+
+        .content-section h3 {
+            margin-top: 24px;
+            margin-bottom: 8px;
+            font-size: 1.15rem;
+        }
+
+        .formula {
+            margin: 18px 0;
+            padding: 18px;
+            background: #f5f7fa;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-family: "Courier New", monospace;
+            overflow-x: auto;
+        }
+
+        .example {
+            padding: 18px;
+            background: #f8fafc;
+            border-left: 4px solid #2563eb;
+            margin: 18px 0;
+        }
+
+        .related-list {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+            margin-top: 18px;
+        }
+
+        .related-list a {
+            display: block;
+            padding: 14px 16px;
+            border: 1px solid #dfe5ec;
+            border-radius: 8px;
+            background: #ffffff;
+            font-weight: 600;
+        }
+
+        .related-list a:hover {
+            background: #f8fafc;
+            text-decoration: none;
+        }
+
+        ul {
+            padding-left: 22px;
+        }
+
+        footer {
+            padding: 30px 0 50px;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        @media (max-width: 650px) {
+            .container {
+                width: min(100% - 28px, 1000px);
+            }
+
+            main {
+                padding-top: 35px;
+            }
+
+            .calculator-card,
+            .content-section {
+                padding: 22px;
+            }
+
+            .input-grid,
+            .related-list {
+                grid-template-columns: 1fr;
+            }
+
+            .header-inner {
+                min-height: 64px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="container header-inner">
+        <a class="logo" href="../index.html">ControlsCalc</a>
+        <a class="back-link" href="../index.html">← All Calculators</a>
+    </div>
+</header>
+
+<main>
+    <div class="container">
+
+        <section class="page-header">
+            <div class="eyebrow">PLC &amp; Controls</div>
+
+            <h1>Modbus Register Converter</h1>
+
+            <p>
+                Convert a Modbus register value into an engineering value using
+                configurable raw and engineering ranges. Useful for PLCs, HMIs,
+                SCADA systems, BAS controllers, gateways, and instrumentation.
+            </p>
+        </section>
+
+        <section class="calculator-card">
+
+            <div class="input-grid">
+
+                <div class="field">
+                    <label for="rawValue">Register Value</label>
+                    <input
+                        type="number"
+                        id="rawValue"
+                        step="any"
+                        placeholder="e.g. 500"
+                    >
+                    <div class="field-help">
+                        Numeric value read from the Modbus register.
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="rawMin">Raw Minimum</label>
+                    <input
+                        type="number"
+                        id="rawMin"
+                        step="any"
+                        value="0"
+                    >
+                    <div class="field-help">
+                        Minimum value of the register range.
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="rawMax">Raw Maximum</label>
+                    <input
+                        type="number"
+                        id="rawMax"
+                        step="any"
+                        value="1000"
+                    >
+                    <div class="field-help">
+                        Maximum value of the register range.
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="engMin">Engineering Minimum</label>
+                    <input
+                        type="number"
+                        id="engMin"
+                        step="any"
+                        value="0"
+                    >
+                    <div class="field-help">
+                        Engineering value corresponding to the raw minimum.
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="engMax">Engineering Maximum</label>
+                    <input
+                        type="number"
+                        id="engMax"
+                        step="any"
+                        value="100"
+                    >
+                    <div class="field-help">
+                        Engineering value corresponding to the raw maximum.
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="unit">Engineering Unit</label>
+                    <input
+                        type="text"
+                        id="unit"
+                        placeholder="e.g. PSI, °F, %, RPM"
+                    >
+                    <div class="field-help">
+                        Optional unit displayed with the result.
+                    </div>
+                </div>
+
+            </div>
+
+            <button type="button" onclick="calculateModbus()">
+                Calculate
+            </button>
+
+            <div class="error" id="error"></div>
+
+            <div class="result" id="result">
+
+                <h2>Engineering Value</h2>
+
+                <div class="result-value" id="resultValue"></div>
+
+                <div class="result-details" id="resultDetails"></div>
+
+            </div>
+
+        </section>
+
+        <section class="content-section">
+
+            <h2>How Modbus Register Scaling Works</h2>
+
+            <p>
+                A Modbus register normally contains a numeric value rather than
+                the engineering value displayed by an operator interface.
+                The receiving device may need to scale that register into
+                units such as PSI, °F, %, RPM, or °C.
+            </p>
+
+            <p>
+                A common linear scaling calculation is:
+            </p>
+
+            <div class="formula">
+                Engineering Value = Engineering Low +
+                ((Register Value − Raw Low) ÷
+                (Raw High − Raw Low)) ×
+                (Engineering High − Engineering Low)
+            </div>
+
+            <p>
+                This is the same basic linear relationship used for many PLC
+                analog-input scaling applications.
+            </p>
+
+        </section>
+
+        <section class="content-section">
+
+            <h2>Example</h2>
+
+            <div class="example">
+
+                <strong>Example:</strong>
+
+                A Modbus register ranges from 0 to 1000 and represents
+                0–100 PSI.
+
+                <br><br>
+
+                Register value = 500
+
+                <br>
+                Raw range = 0–1000
+
+                <br>
+                Engineering range = 0–100 PSI
+
+                <br><br>
+
+                Engineering Value =
+                0 + ((500 − 0) ÷ (1000 − 0)) × (100 − 0)
+
+                <br><br>
+
+                <strong>Result = 50 PSI</strong>
+
+            </div>
+
+        </section>
+
+        <section class="content-section">
+
+            <h2>Important Modbus Considerations</h2>
+
+            <p>
+                The scaling calculation is only one part of interpreting a
+                Modbus value correctly. Always verify how the device's register
+                is defined.
+            </p>
+
+            <h3>Register Addressing</h3>
+
+            <p>
+                Documentation may use different addressing conventions such as
+                0-based offsets, 1-based register numbers, or traditional
+                4xxxx/3xxxx notation. The address shown in a manufacturer's
+                documentation does not always correspond directly to the
+                address entered into a Modbus driver.
+            </p>
+
+            <h3>Integer Versus Floating-Point Values</h3>
+
+            <p>
+                Some devices store a measurement in a single 16-bit register,
+                while others use two registers to store a 32-bit integer or
+                IEEE-754 floating-point value.
+            </p>
+
+            <p>
+                If two registers are involved, verify the device's word order
+                and byte order before applying scaling.
+            </p>
+
+            <h3>Built-In Scaling</h3>
+
+            <p>
+                Some devices already scale values before placing them into the
+                Modbus register. For example, a temperature of 72.5 °F might
+                be transmitted as 725, with an implied divisor of 10.
+            </p>
+
+            <p>
+                In that case, the register scaling documented by the device
+                must be applied before interpreting the value as the final
+                engineering measurement.
+            </p>
+
+        </section>
+
+        <section class="content-section">
+
+            <h2>Common Modbus Scaling Mistakes</h2>
+
+            <ul>
+                <li>Using the wrong register address or offset.</li>
+                <li>Confusing holding registers with input registers.</li>
+                <li>Assuming every register contains a 16-bit integer.</li>
+                <li>Ignoring signed versus unsigned data types.</li>
+                <li>Using the wrong byte or word order for multi-register values.</li>
+                <li>Applying scaling twice when the device already applies it.</li>
+                <li>Assuming the register range without checking the device documentation.</li>
+            </ul>
+
+        </section>
+
+        <section class="content-section">
+
+            <h2>Related Controls Calculators</h2>
+
+            <div class="related-list">
+
+                <a href="plc-raw-counts.html">
+                    PLC Raw Counts → Engineering Units
+                </a>
+
+                <a href="ieee-754.html">
+                    IEEE-754 Floating Point Converter
+                </a>
+
+                <a href="analog-scaling.html">
+                    Analog Signal Scaling
+                </a>
+
+                <a href="4-20ma-scaling.html">
+                    4–20 mA Scaling
+                </a>
+
+                <a href="voltage-to-current.html">
+                    Voltage → Current
+                </a>
+
+                <a href="current-to-voltage.html">
+                    Current → Voltage
+                </a>
+
+            </div>
+
+        </section>
+
+    </div>
+</main>
+
+<footer>
+    <div class="container">
+        ControlsCalc — Controls &amp; Instrumentation Calculators
+    </div>
+</footer>
+
+<script>
+    function calculateModbus() {
+
+        const rawValue = parseFloat(document.getElementById("rawValue").value);
+        const rawMin = parseFloat(document.getElementById("rawMin").value);
+        const rawMax = parseFloat(document.getElementById("rawMax").value);
+        const engMin = parseFloat(document.getElementById("engMin").value);
+        const engMax = parseFloat(document.getElementById("engMax").value);
+        const unit = document.getElementById("unit").value.trim();
+
+        const error = document.getElementById("error");
+        const result = document.getElementById("result");
+
+        error.style.display = "none";
+        result.style.display = "none";
+
+        if (
+            !Number.isFinite(rawValue) ||
+            !Number.isFinite(rawMin) ||
+            !Number.isFinite(rawMax) ||
+            !Number.isFinite(engMin) ||
+            !Number.isFinite(engMax)
+        ) {
+            error.textContent = "Please enter a valid value in all required fields.";
+            error.style.display = "block";
+            return;
+        }
+
+        if (rawMax === rawMin) {
+            error.textContent = "Raw maximum and raw minimum cannot be the same.";
+            error.style.display = "block";
+            return;
+        }
+
+        const engineeringValue =
+            engMin +
+            ((rawValue - rawMin) / (rawMax - rawMin)) *
+            (engMax - engMin);
+
+        const rawSpan = rawMax - rawMin;
+
+        const percentage =
+            ((rawValue - rawMin) / rawSpan) * 100;
+
+        const formattedValue =
+            Math.abs(engineeringValue) >= 1000
+                ? engineeringValue.toLocaleString(undefined, {
+                    maximumFractionDigits: 3
+                })
+                : engineeringValue.toLocaleString(undefined, {
+                    maximumFractionDigits: 4
+                });
+
+        document.getElementById("resultValue").textContent =
+            formattedValue + (unit ? " " + unit : "");
+
+        let details =
+            "Register value: " + rawValue +
+            "<br>Raw range: " + rawMin + " to " + rawMax +
+            "<br>Engineering range: " + engMin + " to " + engMax +
+            (unit ? " " + unit : "") +
+            "<br>Position within raw range: " +
+            percentage.toFixed(2) + "%";
+
+        if (rawValue < rawMin || rawValue > rawMax) {
+            details +=
+                "<br><br><strong>Warning:</strong> The register value is outside the configured raw range.";
+        }
+
+        document.getElementById("resultDetails").innerHTML = details;
+
+        result.style.display = "block";
+    }
+</script>
+
+</body>
+</html>
