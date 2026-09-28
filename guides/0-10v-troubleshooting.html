@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>How to Troubleshoot a 0–10 V Signal | ControlsCalc</title>
+
+    <meta
+        name="description"
+        content="Learn how to troubleshoot 0–10 V control signals. Covers measuring voltage, common wiring faults, signal scaling, controller inputs, actuators, and practical field troubleshooting."
+    >
+
+    <meta name="google-site-verification" content="JiB6q9DgpG_PMN6uKs9CJmFynIo4ZNUUF0Ua31uChU" />
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #172033;
+            background: #f5f7fa;
+            line-height: 1.7;
+        }
+
+        a {
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            width: min(1000px, calc(100% - 40px));
+            margin: 0 auto;
+        }
+
+        header {
+            background: #ffffff;
+            border-bottom: 1px solid #dfe5ec;
+        }
+
+        .header-inner {
+            min-height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .logo {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: #172033;
+        }
+
+        .back-link {
+            font-size: 0.95rem;
+        }
+
+        main {
+            padding: 50px 0 70px;
+        }
+
+        .page-header {
+            margin-bottom: 30px;
+        }
+
+        .eyebrow {
+            margin-bottom: 8px;
+            color: #2563eb;
+            font-size: 0.82rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            margin: 0 0 14px;
+            font-size: clamp(2rem, 5vw, 3rem);
+            line-height: 1.15;
+        }
+
+        .page-header p {
+            max-width: 800px;
+            margin: 0;
+            color: #526071;
+            font-size: 1.08rem;
+        }
+
+        .content-section {
+            background: #ffffff;
+            border: 1px solid #dfe5ec;
+            border-radius: 12px;
+            padding: 30px;
+            margin-top: 24px;
+        }
+
+        .content-section h2 {
+            margin-top: 0;
+            margin-bottom: 14px;
+            font-size: 1.55rem;
+            line-height: 1.3;
+        }
+
+        .content-section h3 {
+            margin-top: 28px;
+            margin-bottom: 8px;
+            font-size: 1.15rem;
+        }
+
+        .formula {
+            margin: 20px 0;
+            padding: 18px;
+            background: #f5f7fa;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-family: "Courier New", monospace;
+            overflow-x: auto;
+        }
+
+        .callout {
+            margin: 20px 0;
+            padding: 18px 20px;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 8px;
+        }
+
+        .warning {
+            margin: 20px 0;
+            padding: 18px 20px;
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            border-radius: 8px;
+        }
+
+        .example {
+            margin: 20px 0;
+            padding: 18px 20px;
+            background: #f8fafc;
+            border-left: 4px solid #2563eb;
+        }
+
+        .toc {
+            background: #ffffff;
+            border: 1px solid #dfe5ec;
+            border-radius: 12px;
+            padding: 24px 30px;
+            margin-top: 24px;
+        }
+
+        .toc h2 {
+            margin-top: 0;
+            font-size: 1.2rem;
+        }
+
+        .toc ul {
+            margin-bottom: 0;
+        }
+
+        .reference-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .reference-table th,
+        .reference-table td {
+            padding: 12px 14px;
+            border: 1px solid #dfe5ec;
+            text-align: left;
+        }
+
+        .reference-table th {
+            background: #f5f7fa;
+        }
+
+        .tool-card {
+            display: block;
+            padding: 18px;
+            margin-top: 12px;
+            border: 1px solid #dfe5ec;
+            border-radius: 9px;
+            background: #ffffff;
+        }
+
+        .tool-card strong {
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .tool-card span {
+            color: #526071;
+            font-size: 0.94rem;
+        }
+
+        .related-list {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+            margin-top: 18px;
+        }
+
+        .related-list a {
+            display: block;
+            padding: 14px 16px;
+            border: 1px solid #dfe5ec;
+            border-radius: 8px;
+            background: #ffffff;
+            font-weight: 600;
+        }
+
+        .related-list a:hover {
+            background: #f8fafc;
+            text-decoration: none;
+        }
+
+        ul,
+        ol {
+            padding-left: 22px;
+        }
+
+        footer {
+            padding: 30px 0 50px;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        @media (max-width: 650px) {
+            .container {
+                width: min(100% - 28px, 1000px);
+            }
+
+            main {
+                padding-top: 35px;
+            }
+
+            .content-section,
+            .toc {
+                padding: 22px;
+            }
+
+            .related-list {
+                grid-template-columns: 1fr;
+            }
+
+            .reference-table {
+                display: block;
+                overflow-x: auto;
+            }
+
+            .header-inner {
+                min-height: 64px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="container header-inner">
+        <a class="logo" href="../index.html">ControlsCalc</a>
+        <a class="back-link" href="../index.html">← ControlsCalc Home</a>
+    </div>
+</header>
+
+<main>
+    <div class="container">
+
+        <section class="page-header">
+            <div class="eyebrow">Field Troubleshooting Guide</div>
+
+            <h1>How to Troubleshoot a 0–10 V Signal</h1>
+
+            <p>
+                A practical field guide for troubleshooting 0–10 V analog
+                control signals used by HVAC controls, PLCs, actuators,
+                sensors, and other automation equipment.
+            </p>
+        </section>
+
+        <nav class="toc">
+            <h2>In This Guide</h2>
+
+            <ul>
+                <li><a href="#signal">Understanding the 0–10 V Signal</a></li>
+                <li><a href="#reference">0–10 V Quick Reference</a></li>
+                <li><a href="#meter">How to Measure a 0–10 V Signal</a></li>
+                <li><a href="#source">Check the Signal Source</a></li>
+                <li><a href="#load">Check the Receiving Device</a></li>
+                <li><a href="#wiring">Check the Wiring</a></li>
+                <li><a href="#readings">What Different Readings Mean</a></li>
+                <li><a href="#scaling">Check Signal Scaling</a></li>
+                <li><a href="#ground">Ground and Reference Problems</a></li>
+                <li><a href="#workflow">Field Troubleshooting Workflow</a></li>
+                <li><a href="#examples">Common Fault Examples</a></li>
+                <li><a href="#calculator">0–10 V Calculator</a></li>
+            </ul>
+        </nav>
+
+        <section class="content-section" id="signal">
+
+            <h2>Understanding the 0–10 V Signal</h2>
+
+            <p>
+                A 0–10 V signal is an analog voltage signal commonly used to
+                command or represent a continuously variable value.
+            </p>
+
+            <p>
+                In building automation, for example, a controller may send
+                0–10 V to a valve actuator, damper actuator, or variable-speed
+                drive. A sensor or transmitter may also use a voltage signal
+                to represent a measured process value.
+            </p>
+
+            <p>
+                The exact meaning of the voltage depends on the equipment
+                configuration. A common arrangement is:
+            </p>
+
+            <div class="formula">
+                0 V = 0%
+                <br>
+                5 V = 50%
+                <br>
+                10 V = 100%
+            </div>
+
+            <p>
+                However, not every application uses the full 0–10 V range.
+                Always verify the intended range in the equipment
+                documentation.
+            </p>
+
+        </section>
+
+        <section class="content-section" id="reference">
+
+            <h2>0–10 V Quick Reference</h2>
+
+            <table class="reference-table">
+
+                <thead>
+                    <tr>
+                        <th>Signal</th>
+                        <th>Approximate Output</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td>0 V</td>
+                        <td>0%</td>
+                    </tr>
+
+                    <tr>
+                        <td>1 V</td>
+                        <td>10%</td>
+                    </tr>
+
+                    <tr>
+                        <td>2 V</td>
+                        <td>20%</td>
+                    </tr>
+
+                    <tr>
+                        <td>5 V</td>
+                        <td>50%</td>
+                    </tr>
+
+                    <tr>
+                        <td>7.5 V</td>
+                        <td>75%</td>
+                    </tr>
+
+                    <tr>
+                        <td>10 V</td>
+                        <td>100%</td>
+                    </tr>
+                </tbody>
+
+            </table>
+
+            <p>
+                This assumes a linear 0–10 V signal where 0 V represents the
+                bottom of the range and 10 V represents the top.
+            </p>
+
+        </section>
+
+        <section class="content-section" id="meter">
+
+            <h2>How to Measure a 0–10 V Signal</h2>
+
+            <p>
+                A digital multimeter set to DC voltage is normally sufficient
+                to check a 0–10 V control signal.
+            </p>
+
+            <ol>
+                <li>Set the meter to DC voltage.</li>
+                <li>Identify the signal terminal.</li>
+                <li>Identify the signal reference or common terminal.</li>
+                <li>Place the meter leads across the signal and reference.</li>
+                <li>Compare the measured voltage with the expected signal.</li>
+            </ol>
+
+            <div class="warning">
+                <strong>Important:</strong>
+                Do not assume that every terminal labeled COM is connected to
+                the same reference. Verify the wiring and equipment
+                documentation before making measurements or connections.
+            </div>
+
+            <p>
+                Measuring from the signal terminal to the wrong reference can
+                produce a misleading reading even when the signal source is
+                functioning correctly.
+            </p>
+
+        </section>
+
+        <section class="content-section" id="source">
+
+            <h2>Check the Signal Source</h2>
+
+            <p>
+                If a 0–10 V signal is incorrect, begin by determining whether
+                the problem is at the source or somewhere downstream.
+            </p>
+
+            <p>
+                Examples of signal sources include:
+            </p>
+
+            <ul>
+                <li>PLC analog outputs</li>
+                <li>DDC controller outputs</li>
+                <li>HVAC controllers</li>
+                <li>Signal converters</li>
+                <li>Transducers</li>
+                <li>Building automation controllers</li>
+            </ul>
+
+            <p>
+                Check what the controller is actually commanding. If the
+                software says the output should be 7 V but the physical output
+                measures 0 V, the problem is likely upstream of the receiving
+                device.
+            </p>
+
+            <div class="example">
+
+                <strong>Example:</strong>
+
+                <br><br>
+
+                Controller output command = 70%
+
+                <br>
+                Expected voltage = approximately 7 V
+
+                <br>
+                Measured voltage = 0.2 V
+
+                <br><br>
+
+                This suggests the problem should be investigated at the
+                controller output, wiring, reference, or output configuration
+                rather than assuming the actuator itself is faulty.
+
+            </div>
+
+        </section>
+
+        <section class="content-section" id="load">
+
+            <h2>Check the Receiving Device</h2>
+
+            <p>
+                Once the source has been verified, measure the signal at the
+                receiving device.
+            </p>
+
+            <p>
+                Common receiving devices include:
+            </p>
+
+            <ul>
+                <li>Valve actuators</li>
+                <li>Damper actuators</li>
+                <li>VFD analog inputs</li>
+                <li>PLC analog inputs</li>
+                <li>DDC analog inputs</li>
+                <li>Signal conditioners</li>
+            </ul>
+
+            <p>
+                Compare the voltage at the source with the voltage at the
+                receiving device.
+            </p>
+
+            <div class="callout">
+                <strong>Useful diagnostic:</strong>
+                If the voltage is correct at the source but incorrect at the
+                receiving device, focus on the wiring, common/reference,
+                connections, and loading between those points.
+            </div>
+
+        </section>
+
+        <section class="content-section" id="wiring">
+
+            <h2>Check the Wiring</h2>
+
+            <p>
+                0–10 V systems are generally sensitive to wiring and reference
+                problems because the receiving device measures voltage relative
+                to a reference.
+            </p>
+
+            <h3>Common Wiring Problems</h3>
+
+            <ul>
+                <li>Open signal conductor</li>
+                <li>Open common/reference conductor</li>
+                <li>Loose terminal</li>
+                <li>Incorrect terminal connection</li>
+                <li>Shorted signal conductor</li>
+                <li>Shared or incorrect reference</li>
+                <li>Damaged cable</li>
+                <li>Incorrect polarity or terminal assignment</li>
+            </ul>
+
+            <p>
+                If possible, compare the voltage directly at the source and
+                directly at the load. This can quickly identify whether the
+                signal is being lost between the two points.
+            </p>
+
+        </section>
+
+        <section class="content-section" id="readings">
+
+            <h2>What Different Readings Can Mean</h2>
+
+            <table class="reference-table">
+
+                <thead>
+                    <tr>
+                        <th>Measured Signal</th>
+                        <th>Possible Investigation</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    <tr>
+                        <td>0 V</td>
+                        <td>
+                            Check source output, power, wiring, reference,
+                            configuration, and output command.
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>Approximately expected voltage</td>
+                        <td>
+                            Signal source and measurement reference may be
+                            functioning correctly. Investigate the receiving
+                            device if the process is still incorrect.
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>Higher than expected</td>
+                        <td>
+                            Check output configuration, scaling, reference,
+                            and whether another signal is influencing the
+                            measurement.
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>Unstable or rapidly changing</td>
+                        <td>
+                            Check controller behavior, process conditions,
+                            wiring, reference stability, noise, and grounding.
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>Correct at source, wrong at load</td>
+                        <td>
+                            Investigate wiring, terminals, reference, and
+                            loading.
+                        </td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+            <p>
+                These readings are diagnostic starting points rather than
+                definitive fault identifications. The equipment's wiring and
+                specifications should always be checked.
+            </p>
+
+        </section>
+
+        <section class="content-section" id="scaling">
+
+            <h2>Check Signal Scaling</h2>
+
+            <p>
+                A physically correct voltage can still produce an incorrect
+                system response if the signal scaling is wrong.
+            </p>
+
+            <p>
+                For a simple 0–10 V signal representing 0–100%:
+            </p>
+
+            <div class="formula">
+                Percentage = Voltage ÷ 10 × 100
+            </div>
+
+            <div class="example">
+
+                A controller output of:
+
+                <br><br>
+
+                6 V
+
+                <br><br>
+
+                corresponds to:
+
+                <br><br>
+
+                6 ÷ 10 × 100 = <strong>60%</strong>
+
+            </div>
+
+            <p>
+                However, a device may use a different engineering range. For
+                example, 0–10 V might represent 0–100 PSI, −40–250 °F, or
+                another configured range.
+            </p>
+
+            <p>
+                Check both the electrical signal range and the engineering
+                range.
+            </p>
+
+            <a class="tool-card" href="../calculators/0-10v-scaling.html">
+
+                <strong>0–10 V Scaling Calculator →</strong>
+
+                <span>
+                    Convert a 0–10 V signal into engineering units using
+                    configurable input and output ranges.
+                </span>
+
+            </a>
+
+        </section>
+
+        <section class="content-section" id="ground">
+
+            <h2>Ground and Reference Problems</h2>
+
+            <p>
+                Voltage signals depend on the reference used by the measuring
+                device. Problems can occur when the signal source and receiving
+                device do not share the expected reference.
+            </p>
+
+            <p>
+                Symptoms can include:
+            </p>
+
+            <ul>
+                <li>Unexpected voltage readings</li>
+                <li>Signal offset</li>
+                <li>Unstable readings</li>
+                <li>Signal that changes when other equipment operates</li>
+                <li>Different readings when measured at different points</li>
+            </ul>
+
+            <p>
+                Verify the manufacturer's wiring requirements before bonding
+                commons or grounds together. Do not assume that connecting two
+                references together is always appropriate.
+            </p>
+
+        </section>
+
+        <section class="content-section" id="workflow">
+
+            <h2>Field Troubleshooting Workflow</h2>
+
+            <ol>
+                <li>
+                    <strong>Determine the expected signal.</strong>
+                    Find the controller command, configuration, or device
+                    documentation.
+                </li>
+
+                <li>
+                    <strong>Measure at the source.</strong>
+                    Determine whether the controller is actually producing the
+                    expected voltage.
+                </li>
+
+                <li>
+                    <strong>Measure at the receiving device.</strong>
+                    Compare the reading with the source.
+                </li>
+
+                <li>
+                    <strong>Verify the reference.</strong>
+                    Make sure the meter and receiving device are using the
+                    correct signal reference.
+                </li>
+
+                <li>
+                    <strong>Inspect wiring.</strong>
+                    Check terminals, conductors, polarity, and connections.
+                </li>
+
+                <li>
+                    <strong>Verify configuration.</strong>
+                    Check input/output type, signal range, scaling, and
+                    operating mode.
+                </li>
+
+                <li>
+                    <strong>Check the receiving device.</strong>
+                    If the correct voltage reaches the device but the output
+                    or process is incorrect, investigate the actuator,
+                    transducer, or input configuration.
+                </li>
+            </ol>
+
+            <div class="callout">
+                <strong>Good troubleshooting practice:</strong>
+                Make one measurement at a time and use each measurement to
+                narrow the fault location. Avoid changing multiple settings
+                before establishing what the signal is actually doing.
+            </div>
+
+        </section>
+
+        <section class="content-section" id="examples">
+
+            <h2>Common Fault Examples</h2>
+
+            <h3>Example 1: Controller Says 50%, Actuator Does Not Move</h3>
+
+            <p>
+                A controller commands 50% output. A measurement at the
+                controller shows approximately 5 V, but the actuator terminal
+                measures 0 V.
+            </p>
+
+            <p>
+                The next investigation should focus on the wiring, common,
+                terminals, and connections between the controller and actuator.
+            </p>
+
+            <h3>Example 2: Actuator Receives 5 V but Moves to the Wrong Position</h3>
+
+            <p>
+                If the actuator is receiving the expected voltage, investigate
+                the actuator configuration and scaling. The actuator may be
+                configured for a different input range or operating mode.
+            </p>
+
+            <h3>Example 3: 10 V Command Produces Only Half Output</h3>
+
+            <p>
+                Verify the receiving device's input configuration. It may be
+                configured for 0–20 V, 0–5 V, or another range rather than
+                0–10 V.
+            </p>
+
+            <h3>Example 4: Signal Changes When Another Device Starts</h3>
+
+            <p>
+                Investigate reference connections, grounding, shared wiring,
+                power supplies, and electrical noise. Measure the signal and
+                reference directly while the condition occurs.
+            </p>
+
+        </section>
+
+        <section class="content-section" id="calculator">
+
+            <h2>0–10 V Scaling Calculator</h2>
+
+            <p>
+                Once the electrical signal has been verified, use the
+                ControlsCalc 0–10 V Scaling Calculator to convert the measured
+                voltage into an engineering value.
+            </p>
+
+            <a class="tool-card" href="../calculators/0-10v-scaling.html">
+
+                <strong>0–10 V Scaling Calculator →</strong>
+
+                <span>
+                    Convert voltage into engineering units such as percentage,
+                    temperature, pressure, position, or other linear ranges.
+                </span>
+
+            </a>
+
+            <a class="tool-card" href="../calculators/analog-scaling.html">
+
+                <strong>Analog Signal Scaling Calculator →</strong>
+
+                <span>
+                    Scale a configurable analog input range into an engineering
+                    range.
+                </span>
+
+            </a>
+
+        </section>
+
+        <section class="content-section">
+
+            <h2>Related Controls Guides</h2>
+
+            <div class="related-list">
+
+                <a href="4-20ma.html">
+                    4–20 mA Explained
+                </a>
+
+                <a href="4-20ma-troubleshooting.html">
+                    4–20 mA Troubleshooting
+                </a>
+
+                <a href="4-20ma-vs-0-10v.html">
+                    4–20 mA vs 0–10 V
+                </a>
+
+                <a href="plc-scaling.html">
+                    PLC Analog Scaling Explained
+                </a>
+
+                <a href="pid-control.html">
+                    PID Control Explained
+                </a>
+
+                <a href="modbus-basics.html">
+                    Modbus Basics
+                </a>
+
+            </div>
+
+        </section>
+
+    </div>
+</main>
+
+<footer>
+    <div class="container">
+        ControlsCalc — Controls &amp; Instrumentation Calculators
+    </div>
+</footer>
+
+</body>
+</html>
