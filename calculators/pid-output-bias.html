@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>PID Output &amp; Bias Calculator: Controller Output | ControlsCalc</title>
+
+    <meta
+        name="description"
+        content="Calculate PID controller output from error, proportional gain, bias, integral contribution, and derivative contribution. Useful for PLC, DDC, HVAC, and process control applications."
+    >
+
+    <meta name="google-site-verification" content="JiB6q9DgpG_PMN6uKs9CJmFynIo4ZNUUF0Ua31uChU" />
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #172033;
+            background: #f5f7fa;
+            line-height: 1.6;
+        }
+
+        a {
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            width: min(1000px, calc(100% - 40px));
+            margin: 0 auto;
+        }
+
+        header {
+            background: #ffffff;
+            border-bottom: 1px solid #dfe5ec;
+        }
+
+        .header-inner {
+            min-height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .logo {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: #172033;
+        }
+
+        .back-link {
+            font-size: 0.95rem;
+        }
+
+        main {
+            padding: 50px 0 70px;
+        }
+
+        .page-header {
+            margin-bottom: 28px;
+        }
+
+        .eyebrow {
+            margin-bottom: 8px;
+            color: #2563eb;
+            font-size: 0.82rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            margin: 0 0 12px;
+            font-size: clamp(2rem, 5vw, 3rem);
+            line-height: 1.15;
+        }
+
+        .page-header p {
+            max-width: 760px;
+            margin: 0;
+            color: #526071;
+            font-size: 1.08rem;
+        }
+
+        .calculator-card {
+            background: #ffffff;
+            border: 1px solid #dfe5ec;
+            border-radius: 14px;
+            padding: 32px;
+            box-shadow: 0 4px 18px rgba(23, 32, 51, 0.05);
+            margin-bottom: 30px;
+        }
+
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 20px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .field label {
+            margin-bottom: 7px;
+            font-weight: 600;
+        }
+
+        .field input,
+        .field select {
+            width: 100%;
+            padding: 12px 13px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            background: #ffffff;
+            color: #172033;
+            font: inherit;
+        }
+
+        .field input:focus,
+        .field select:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .field-help {
+            margin-top: 5px;
+            color: #64748b;
+            font-size: 0.86rem;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 24px;
+            padding: 13px 18px;
+            border: 0;
+            border-radius: 8px;
+            background: #2563eb;
+            color: #ffffff;
+            font: inherit;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        .result {
+            display: none;
+            margin-top: 24px;
+            padding: 22px;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 10px;
+        }
+
+        .result h2 {
+            margin: 0 0 10px;
+            color: #1d4ed8;
+            font-size: 1.2rem;
+        }
+
+        .result-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 14px;
+        }
+
+        .result-details {
+            color: #334155;
+        }
+
+        .error {
+            display: none;
+            margin-top: 20px;
+            padding: 14px 16px;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+            color: #991b1b;
+        }
+
+        .content-section {
+            background: #ffffff;
+            border: 1px solid #dfe5ec;
+            border-radius: 12px;
+            padding: 30px;
+            margin-top: 24px;
+        }
+
+        .content-section h2 {
+            margin-top: 0;
+            margin-bottom: 14px;
+            font-size: 1.5rem;
+        }
+
+        .content-section h3 {
+            margin-top: 24px;
+            margin-bottom: 8px;
+            font-size: 1.15rem;
+        }
+
+        .formula {
+            margin: 18px 0;
+            padding: 18px;
+            background: #f5f7fa;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-family: "Courier New", monospace;
+            overflow-x: auto;
+        }
+
+        .example {
+            padding: 18px;
+            background: #f8fafc;
+            border-left: 4px solid #2563eb;
+            margin: 18px 0;
+        }
+
+        .related-list {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+            margin-top: 18px;
+        }
+
+        .related-list a {
+            display: block;
+            padding: 14px 16px;
+            border: 1px solid #dfe5ec;
+            border-radius: 8px;
+            background: #ffffff;
+            font-weight: 600;
+        }
+
+        .related-list a:hover {
+            background: #f8fafc;
+            text-decoration: none;
+        }
+
+        ul {
+            padding-left: 22px;
+        }
+
+        footer {
+            padding: 30px 0 50px;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        @media (max-width: 650px) {
+            .container {
+                width: min(100% - 28px, 1000px);
+            }
+
+            main {
+                padding-top: 35px;
+            }
+
+            .calculator-card,
+            .content-section {
+                padding: 22px;
+            }
+
+            .input-grid,
+            .related-list {
+                grid-template-columns: 1fr;
+            }
+
+            .full-width {
+                grid-column: auto;
+            }
+
+            .header-inner {
+                min-height: 64px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="container header-inner">
+        <a class="logo" href="../index.html">ControlsCalc</a>
+        <a class="back-link" href="../index.html">← All Calculators</a>
+    </div>
+</header>
+
+<main>
+    <div class="container">
+
+        <section class="page-header">
+            <div class="eyebrow">PLC &amp; Controls</div>
+
+            <h1>PID Output &amp; Bias Calculator</h1>
+
+            <p>
+                Calculate controller output from proportional error, gain,
+                bias, and optional integral and derivative contributions.
+                Useful for PLC, DDC, HVAC, and process-control applications.
+            </p>
+        </section>
+
+        <section class="calculator-card">
+
+            <div class="input-grid">
+
+                <div class="field">
+                    <label for="errorValue">Error</label>
+                    <input
+                        type="number"
+                        id="errorValue"
+                        step="any"
+                        placeholder="e.g. 5"
+                    >
+                    <div class="field-help">
+                        Setpoint minus process variable, using the same units as the controller's proportional calculation.
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="gain">Proportional Gain (Kp)</label>
+                    <input
+                        type="number"
+                        id="gain"
+                        step="any"
+                        value="1"
+                    >
+                    <div class="field-help">
+                        Proportional gain applied to the error.
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="bias">Bias / Manual Reset (%)</label>
+                    <input
+                        type="number"
+                        id="bias"
+                        step="any"
+                        value="50"
+                    >
+                    <div class="field-help">
+                        Base controller output before proportional, integral, and derivative contributions.
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="integral">Integral Contribution (%)</label>
+                    <input
+                        type="number"
+                        id="integral"
+                        step="any"
+                        value="0"
+                    >
+                    <div class="field-help">
+                        Enter the current accumulated integral contribution.
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="derivative">Derivative Contribution (%)</label>
+                    <input
+                        type="number"
+                        id="derivative"
+                        step="any"
+                        value="0"
+                    >
+                    <div class="field-help">
+                        Enter the current derivative contribution.
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="outputLow">Output Minimum (%)</label>
+                    <input
+                        type="number"
+                        id="outputLow"
+                        step="any"
+                        value="0"
+                    >
+                    <div class="field-help">
+                        Minimum controller output limit.
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="outputHigh">Output Maximum (%)</label>
+                    <input
+                        type="number"
+                        id="outputHigh"
+                        step="any"
+                        value="100"
+                    >
+                    <div class="field-help">
+                        Maximum controller output limit.
+                    </div>
+                </div>
+
+            </div>
+
+            <button type="button" onclick="calculatePID()">
+                Calculate PID Output
+            </button>
+
+            <div class="error" id="error"></div>
+
+            <div class="result" id="result">
+
+                <h2>Controller Output</h2>
+
+                <div class="result-value" id="resultValue"></div>
+
+                <div class="result-details" id="resultDetails"></div>
+
+            </div>
+
+        </section>
+
+        <section class="content-section">
+
+            <h2>PID Output Formula</h2>
+
+            <p>
+                For the simplified calculation used by this calculator, the
+                controller output is:
+            </p>
+
+            <div class="formula">
+                Output = Bias + (Kp × Error) + Integral Contribution + Derivative Contribution
+            </div>
+
+            <p>
+                The calculated output is then limited to the configured
+                minimum and maximum output values.
+            </p>
+
+            <p>
+                This calculator treats the integral and derivative terms as
+                already-calculated contributions. A real PID controller
+                calculates those terms from process history and timing.
+            </p>
+
+        </section>
+
+        <section class="content-section">
+
+            <h2>Example</h2>
+
+            <div class="example">
+
+                <strong>Example:</strong>
+
+                A temperature controller has:
+
+                <br><br>
+
+                Bias = 50%
+
+                <br>
+                Error = 5
+
+                <br>
+                Kp = 2
+
+                <br>
+                Integral contribution = 5%
+
+                <br>
+                Derivative contribution = 0%
+
+                <br><br>
+
+                Output = 50 + (2 × 5) + 5 + 0
+
+                <br><br>
+
+                <strong>Controller Output = 65%</strong>
+
+            </div>
+
+        </section>
+
+        <section class="content-section">
+
+            <h2>What Is PID Bias?</h2>
+
+            <p>
+                Bias is the controller output around which proportional,
+                integral, and derivative action operates. It is sometimes
+                called manual reset or output bias, depending on the
+                controller.
+            </p>
+
+            <p>
+                For example, a modulating heating valve may require
+                approximately 40% output to maintain a particular operating
+                condition. That operating output can serve as a useful
+                starting point for the controller's bias.
+            </p>
+
+            <h3>Why Bias Matters</h3>
+
+            <p>
+                Without an appropriate bias or integral contribution, a
+                proportional-only controller may require a persistent error
+                to maintain the output needed by the process.
+            </p>
+
+            <p>
+                Integral action can move the controller output until that
+                persistent error is reduced, depending on the controller's
+                configuration and tuning.
+            </p>
+
+        </section>
+
+        <section class="content-section">
+
+            <h2>Important PID Notes</h2>
+
+            <ul>
+                <li>
+                    Different PLCs, DDC controllers, and process controllers
+                    implement PID equations differently.
+                </li>
+                <li>
+                    Some controllers use gain while others use proportional
+                    band.
+                </li>
+                <li>
+                    Integral and derivative settings may use different time
+                    units or calculation conventions.
+                </li>
+                <li>
+                    Direct-acting and reverse-acting controllers can produce
+                    different output responses to the same error.
+                </li>
+                <li>
+                    Output limits, anti-reset windup, deadband, filtering,
+                    sample time, and setpoint tracking can affect actual
+                    controller behavior.
+                </li>
+                <li>
+                    This calculator is intended to illustrate and calculate
+                    the controller equation; it is not a substitute for the
+                    PID implementation documentation for a particular
+                    controller.
+                </li>
+            </ul>
+
+        </section>
+
+        <section class="content-section">
+
+            <h2>Related Controls Calculators</h2>
+
+            <div class="related-list">
+
+                <a href="analog-scaling.html">
+                    Analog Signal Scaling
+                </a>
+
+                <a href="plc-raw-counts.html">
+                    PLC Raw Counts → Engineering Units
+                </a>
+
+                <a href="4-20ma-scaling.html">
+                    4–20 mA Scaling
+                </a>
+
+                <a href="4-20ma-voltage.html">
+                    4–20 mA to Voltage
+                </a>
+
+                <a href="pressure-transmitter.html">
+                    Pressure Transmitter Scaling
+                </a>
+
+                <a href="flow-transmitter.html">
+                    Flow Transmitter Scaling
+                </a>
+
+            </div>
+
+        </section>
+
+    </div>
+</main>
+
+<footer>
+    <div class="container">
+        ControlsCalc — Controls &amp; Instrumentation Calculators
+    </div>
+</footer>
+
+<script>
+    function calculatePID() {
+
+        const errorValue = parseFloat(
+            document.getElementById("errorValue").value
+        );
+
+        const gain = parseFloat(
+            document.getElementById("gain").value
+        );
+
+        const bias = parseFloat(
+            document.getElementById("bias").value
+        );
+
+        const integral = parseFloat(
+            document.getElementById("integral").value
+        );
+
+        const derivative = parseFloat(
+            document.getElementById("derivative").value
+        );
+
+        const outputLow = parseFloat(
+            document.getElementById("outputLow").value
+        );
+
+        const outputHigh = parseFloat(
+            document.getElementById("outputHigh").value
+        );
+
+        const error = document.getElementById("error");
+        const result = document.getElementById("result");
+
+        error.style.display = "none";
+        result.style.display = "none";
+
+        if (
+            !Number.isFinite(errorValue) ||
+            !Number.isFinite(gain) ||
+            !Number.isFinite(bias) ||
+            !Number.isFinite(integral) ||
+            !Number.isFinite(derivative) ||
+            !Number.isFinite(outputLow) ||
+            !Number.isFinite(outputHigh)
+        ) {
+            error.textContent =
+                "Please enter a valid value in all fields.";
+            error.style.display = "block";
+            return;
+        }
+
+        if (outputHigh <= outputLow) {
+            error.textContent =
+                "Output maximum must be greater than output minimum.";
+            error.style.display = "block";
+            return;
+        }
+
+        const proportionalContribution = gain * errorValue;
+
+        const rawOutput =
+            bias +
+            proportionalContribution +
+            integral +
+            derivative;
+
+        const limitedOutput =
+            Math.min(
+                Math.max(rawOutput, outputLow),
+                outputHigh
+            );
+
+        const wasLimited = limitedOutput !== rawOutput;
+
+        document.getElementById("resultValue").textContent =
+            limitedOutput.toFixed(2) + "%";
+
+        let details =
+            "Bias: " + bias.toFixed(2) + "%" +
+            "<br>Proportional contribution: " +
+            proportionalContribution.toFixed(2) + "%" +
+            "<br>Integral contribution: " +
+            integral.toFixed(2) + "%" +
+            "<br>Derivative contribution: " +
+            derivative.toFixed(2) + "%" +
+            "<br>Unrestricted output: " +
+            rawOutput.toFixed(2) + "%" +
+            "<br>Output limits: " +
+            outputLow.toFixed(2) +
+            "% to " +
+            outputHigh.toFixed(2) + "%";
+
+        if (wasLimited) {
+            details +=
+                "<br><br><strong>Output limiting applied:</strong> " +
+                "The calculated output exceeded the configured controller limits.";
+        }
+
+        document.getElementById("resultDetails").innerHTML = details;
+
+        result.style.display = "block";
+    }
+</script>
+
+</body>
+</html>
